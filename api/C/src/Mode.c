@@ -71,15 +71,12 @@ void Mode_onHttpRequest(Mode* c, char requestBuffer[],
     BeamSearch_init(&c->beamSearch, &c->searchConditions);
 
     // ビームサーチを実行し、最良ノードを得る
-    clock_t t0 = clock();
+    double startTime = omp_get_wtime();
     SearchNode bestNode = BeamSearch_run(&c->beamSearch, &c->searchConditions);
-    clock_t t1 = clock();
+    double elapsedTime = omp_get_wtime() - startTime;
 
     // 探索で使用したメモリを開放させる
     BeamSearch_finish(&c->beamSearch);
-
-    // 経過時間（clock関数は全スレッドの和を返すため正確ではない）
-    double elapsedTime = (double)(t1 - t0) / CLOCKS_PER_SEC;
 
     // レスポンス用のバッファーに、JSON形式で、探索結果のデータを書き込む
     writeNodeDataStr(responseBuffer, responseBufferSize, &bestNode, elapsedTime);
