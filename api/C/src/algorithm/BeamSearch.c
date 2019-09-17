@@ -10,7 +10,7 @@ static void (*BeamSearch_countCombo)(SearchNode*, SearchConditions*, bool) = NUL
 // プライベート関数
 static void BeamSearch_initQueue(BeamSearch* this, BoardSettings *bsp);
 static double BeamSearch_getMoveCost(BeamSearch* this, int depth);
-static void BeamSearch_expandNodes(BeamSearch* this, double moveCost, SearchConditions *scp);
+static void BeamSearch_expandNodes(BeamSearch* this, SearchConditions *scp, double moveCost);
 static void BeamSearch_mergeNodes(BeamSearch* this);
 static void BeamSearch_cutBranch(BeamSearch* this);
 static int cmp(const void*, const void*);
@@ -84,7 +84,7 @@ SearchNode BeamSearch_run(BeamSearch* this, SearchConditions *scp)
     double moveCost = BeamSearch_getMoveCost(this, i);
 
     // キューからノードを取り出し、展開する
-    BeamSearch_expandNodes(this, moveCost, scp);
+    BeamSearch_expandNodes(this, scp, moveCost);
 
     // スレッド別に、離れたアドレス上に持たせたノードを、連続するデータ（ポインタ配列）として統合する
     BeamSearch_mergeNodes(this);
@@ -152,18 +152,17 @@ static double BeamSearch_getMoveCost(BeamSearch* this, int depth)
 // キューからノードを取り出し、展開する関数
 // moveCost 深さに応じた移動コスト
 // *scp     探索条件オブジェクトのアドレス
-static void BeamSearch_expandNodes(BeamSearch* this, double moveCost, SearchConditions *scp)
+static void BeamSearch_expandNodes(BeamSearch* this, SearchConditions *scp, double moveCost)
 {
   BoardSettings *bsp = SearchConditions_getBoardSettings(scp);
   SearchSettings *ssp = SearchConditions_getSearchSettings(scp);
+  ExcellentNodes *enp = &this->excellentNodes;
   SearchNode *parentNode = NULL;
   SearchNode *childNode = NULL;
   ComboData *comboData = NULL;
-  uint64_t *hashValueP = NULL;
-  ExcellentNodes *enp = &this->excellentNodes;
+  uint64_t *hashValue = NULL;
   char prevIndex, currIndex, nextIndex, maxDirection;
-  int i, j, len, threadId, baseIndex, childIndex;
-  int parentsCount = this->parentsCount;
+  int i, j, threadId, baseIndex, childIndex;
   double evaluation;
 
   // スレッド別の子ノード数を0で初期化する
@@ -171,9 +170,9 @@ static void BeamSearch_expandNodes(BeamSearch* this, double moveCost, SearchCond
 
   // i(親ノード)のループについてOpenMPで並列化する
   #pragma omp parallel for private(j, prevIndex, currIndex, nextIndex,\
-            maxDirection, hashValueP, parentNode, childNode, comboData,\
+            maxDirection, parentNode, childNode, comboData, hashValue,\
             evaluation, threadId, baseIndex, childIndex) num_threads(this->maxThreads)
-  for (i = 0; i < parentsCount; i++) {
+  for (i = 0; i < this->parentsCount; i++) {
     parentNode = this->parentsP[i];                       // 親ノード
     prevIndex = SearchNode_getPreviousIndex(parentNode);  // 直前の座標
     currIndex = SearchNode_getCurrentIndex(parentNode);   // 現在の座標
@@ -192,18 +191,18 @@ static void BeamSearch_expandNodes(BeamSearch* this, double moveCost, SearchCond
 
       // スレッドに応じて、次に使用する配列のインデックスを算出
       childIndex = baseIndex + this->childrenCounts[threadId];
+      childNode = &this->children[childIndex];
 
       // 親ノードのデータを子ノードにコピーする
-      childNode = &this->children[childIndex];
-      *childNode = *parentNode;
+      SearchNode_copyWithoutComboData(childNode, parentNode);
 
       // 子ノードを移動させる
-      hashValueP = SearchNode_moveTo(childNode, nextIndex, j);
+      hashValue = SearchNode_moveTo(childNode, nextIndex, j);
 
       // 調査済みの局面なら展開しない
-      if (!HashNode_makeTree(this->rootHashNode, hashValueP)) continue;
+      if (!HashNode_makeTree(this->rootHashNode, hashValue)) continue;
 
-      // スレッド別の、子ノード数を加算する（ここで初めて展開が確定）
+      // 子ノード数を加算する（ここで初めて展開が確定）
       this->childrenCounts[threadId]++;
 
       // コンボ情報を初期化して解析し、評価関数に渡す

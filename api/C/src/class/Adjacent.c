@@ -35,8 +35,6 @@ void Adjacent_initTablePointer(char boardLength)
 // char width    盤面の横幅
 static void Adjacent_initTable(char table[], const char height, const char width)
 {
-  static const char bufSize = SIZE_OF_CHAR * DIRECTION_MAX;
-
   for (char index = 0; index < height * width; index++) {
     char *buf0 = &table[DIRECTION_MAX * index],
          X = (index % width) + 1,
@@ -52,39 +50,39 @@ static void Adjacent_initTable(char table[], const char height, const char width
 
     if (1 == X && 1 == Y) {
       char topLeft[] = {E, S, -1, -1, SE, -2, -2, -2};
-      memcpy(buf0, topLeft, bufSize);
+      memcpy(buf0, topLeft, DIRECTION_MAX);
     }
     else if (width == X && 1 == Y) {
       char topRight[] = {W, S, -1, -1, SW, -2, -2, -2};
-      memcpy(buf0, topRight, bufSize);
+      memcpy(buf0, topRight, DIRECTION_MAX);
     }
     else if (1 == X && height == Y) {
       char bottomLeft[] = {N, E, -1, -1, NE, -2, -2, -2};
-      memcpy(buf0, bottomLeft, bufSize);
+      memcpy(buf0, bottomLeft, DIRECTION_MAX);
     }
     else if (width == X && height == Y) {
       char bottomRight[] = {N, W, -1, -1, NW, -2, -2, -2};
-      memcpy(buf0, bottomRight, bufSize);
+      memcpy(buf0, bottomRight, DIRECTION_MAX);
     }
     else if (1 == Y) {
       char top[] = {W, E, S, -1, SW, SE, -2, -2};
-      memcpy(buf0, top, bufSize);
+      memcpy(buf0, top, DIRECTION_MAX);
     }
     else if (1 == X) {
       char left[] = {N, E, S, -1, NE, SE, -2, -2};
-      memcpy(buf0, left, bufSize);
+      memcpy(buf0, left, DIRECTION_MAX);
     }
     else if (width == X) {
       char right[] = {N, W, S, -1, NW, SW, -2, -2};
-      memcpy(buf0, right, bufSize);
+      memcpy(buf0, right, DIRECTION_MAX);
     }
     else if (height == Y) {
       char bottom[] = {N, W, E, -1, NW, NE, -2, -2};
-      memcpy(buf0, bottom, bufSize);
+      memcpy(buf0, bottom, DIRECTION_MAX);
     }
     else {
       char center[] = {N, W, E, S, NW, NE, SW, SE};
-      memcpy(buf0, center, bufSize);
+      memcpy(buf0, center, DIRECTION_MAX);
     }
   }
 }

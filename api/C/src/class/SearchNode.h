@@ -28,6 +28,9 @@ extern void SearchNode_init(SearchNode* this, Board *board, const char position)
 // comboData属性だけを初期化する関数
 extern void SearchNode_initComboData(SearchNode* this);
 
+// comboDataを除く属性を、他のオブジェクトからコピーする関数
+extern void SearchNode_copyWithoutComboData(SearchNode* this, SearchNode *other);
+
 // ノードを移動させる関数
 // nextIndex   移動先の座標
 // direction   斜め移動かどうかの判定用（4以上なら斜め移動）
