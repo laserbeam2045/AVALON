@@ -82,7 +82,7 @@ function multiplyMagnification(boardData, leader) {
     // HP80%以下で攻撃力が3倍。神タイプのHPと攻撃力が2倍。
     // 7コンボ以上でダメージを軽減、攻撃力が2.5倍。
     case METATRON:
-      boardData['maxMagnification'] *= 2;
+      boardData['maxMagnification'] *= 2
       if (boardData['maxComboCount'] >= 7) {
         boardData['maxMagnification'] *= 2.5
       }
@@ -171,7 +171,7 @@ function getBoardData(board) {
   switch (maxComboCount) {
   case 1:
     maxComboCount = 1
-    break;
+    break
   case 2:
     maxComboCount = getMaxComboOfTwoColorBoard(board.length, fewestDropCount)
     break
