@@ -156,14 +156,13 @@ static void BeamSearch_expandNodes(BeamSearch* this, double moveCost, SearchCond
 {
   BoardSettings *bsp = SearchConditions_getBoardSettings(scp);
   SearchSettings *ssp = SearchConditions_getSearchSettings(scp);
+  ExcellentNodes *enp = &this->excellentNodes;
   SearchNode *parentNode = NULL;
   SearchNode *childNode = NULL;
   ComboData *comboData = NULL;
-  uint64_t *hashValueP = NULL;
-  ExcellentNodes *enp = &this->excellentNodes;
+  uint64_t *hashValue = NULL;
   char prevIndex, currIndex, nextIndex, maxDirection;
   int i, j, threadId, baseIndex, childIndex;
-  int parentsCount = this->parentsCount;
   double evaluation;
 
   // スレッド別の子ノード数を0で初期化する
@@ -171,9 +170,9 @@ static void BeamSearch_expandNodes(BeamSearch* this, double moveCost, SearchCond
 
   // i(親ノード)のループについてOpenMPで並列化する
   #pragma omp parallel for private(j, prevIndex, currIndex, nextIndex,\
-            maxDirection, hashValueP, parentNode, childNode, comboData,\
+            maxDirection, parentNode, childNode, comboData, hashValue,\
             evaluation, threadId, baseIndex, childIndex) num_threads(this->maxThreads)
-  for (i = 0; i < parentsCount; i++) {
+  for (i = 0; i < this->parentsCount; i++) {
     parentNode = this->parentsP[i];                       // 親ノード
     prevIndex = SearchNode_getPreviousIndex(parentNode);  // 直前の座標
     currIndex = SearchNode_getCurrentIndex(parentNode);   // 現在の座標
@@ -198,10 +197,10 @@ static void BeamSearch_expandNodes(BeamSearch* this, double moveCost, SearchCond
       SearchNode_copyWithoutComboData(childNode, parentNode);
 
       // 子ノードを移動させる
-      hashValueP = SearchNode_moveTo(childNode, nextIndex, j);
+      hashValue = SearchNode_moveTo(childNode, nextIndex, j);
 
       // 調査済みの局面なら展開しない
-      if (!HashNode_makeTree(this->rootHashNode, hashValueP)) continue;
+      if (!HashNode_makeTree(this->rootHashNode, hashValue)) continue;
 
       // 子ノード数を加算する（ここで初めて展開が確定）
       this->childrenCounts[threadId]++;
