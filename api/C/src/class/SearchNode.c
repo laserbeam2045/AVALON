@@ -21,6 +21,17 @@ void SearchNode_initComboData(SearchNode* this)
 }
 
 
+// comboDataを除く属性を、他のオブジェクトからコピーする関数
+void SearchNode_copyWithoutComboData(SearchNode* this, SearchNode *other)
+{
+  this->board = other->board;
+  this->movedCount = other->movedCount;
+  this->movedCountDiagonally = other->movedCountDiagonally;
+  this->hashValue = other->hashValue;
+  memcpy(this->process, other->process, this->movedCount + 1);
+}
+
+
 // ノードを移動させる関数
 uint64_t* SearchNode_moveTo(SearchNode* this, const char nextIndex, const int direction)
 {

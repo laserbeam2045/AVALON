@@ -162,7 +162,7 @@ static void BeamSearch_expandNodes(BeamSearch* this, double moveCost, SearchCond
   uint64_t *hashValueP = NULL;
   ExcellentNodes *enp = &this->excellentNodes;
   char prevIndex, currIndex, nextIndex, maxDirection;
-  int i, j, len, threadId, baseIndex, childIndex;
+  int i, j, threadId, baseIndex, childIndex;
   int parentsCount = this->parentsCount;
   double evaluation;
 
@@ -192,10 +192,10 @@ static void BeamSearch_expandNodes(BeamSearch* this, double moveCost, SearchCond
 
       // スレッドに応じて、次に使用する配列のインデックスを算出
       childIndex = baseIndex + this->childrenCounts[threadId];
+      childNode = &this->children[childIndex];
 
       // 親ノードのデータを子ノードにコピーする
-      childNode = &this->children[childIndex];
-      *childNode = *parentNode;
+      SearchNode_copyWithoutComboData(childNode, parentNode);
 
       // 子ノードを移動させる
       hashValueP = SearchNode_moveTo(childNode, nextIndex, j);
@@ -203,7 +203,7 @@ static void BeamSearch_expandNodes(BeamSearch* this, double moveCost, SearchCond
       // 調査済みの局面なら展開しない
       if (!HashNode_makeTree(this->rootHashNode, hashValueP)) continue;
 
-      // スレッド別の、子ノード数を加算する（ここで初めて展開が確定）
+      // 子ノード数を加算する（ここで初めて展開が確定）
       this->childrenCounts[threadId]++;
 
       // コンボ情報を初期化して解析し、評価関数に渡す
