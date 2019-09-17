@@ -1,6 +1,5 @@
-const http = require("http")
-const express = require("express")
 const bodyParser = require("body-parser")
+const express = require("express")
 const app = express()
 
 const DROP_TYPE_MAX = 10
@@ -15,8 +14,7 @@ const VEROAH = 6
 app.use(bodyParser.urlencoded({extended: false}))
 app.use(bodyParser.json())
 app.use(function(req, res, next){
-  res.header("Access-Control-Allow-Origin", "*");
-  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-Width, Content-Type, Accept");
+  res.header("Access-Control-Allow-Origin", "*")
   next()
 })
 
@@ -67,28 +65,28 @@ function addCombo(boardData, leader, firstTime) {
 // リーダースキルの倍率を適用する関数
 function multiplyMagnification(boardData, leader) {
   switch (leader) {
-    // 転生アヌビス：
-    // 8コンボ以上で攻撃力が上昇、最大10倍。
-    // スキル使用時、攻撃力が3倍、回復力は1.5倍。
-    case ANUBIS:
-      if (boardData['maxComboCount'] <= 7) {
-        break
-      }
-      switch (boardData['maxComboCount']) {
-        case 8: boardData['maxMagnification'] *= 5; break
-        case 9: boardData['maxMagnification'] *= 7.5; break
-        default: boardData['maxMagnification'] *= 10; break
+  // 転生アヌビス：
+  // 8コンボ以上で攻撃力が上昇、最大10倍。
+  // スキル使用時、攻撃力が3倍、回復力は1.5倍。
+  case ANUBIS:
+    if (boardData['maxComboCount'] <= 7) {
+      break
+    }
+    switch (boardData['maxComboCount']) {
+      case 8: boardData['maxMagnification'] *= 5; break
+      case 9: boardData['maxMagnification'] *= 7.5; break
+      default: boardData['maxMagnification'] *= 10; break
+    }
+    break
+    // 極醒メタトロン：
+    // HP80%以下で攻撃力が3倍。神タイプのHPと攻撃力が2倍。
+    // 7コンボ以上でダメージを軽減、攻撃力が2.5倍。
+    case METATRON:
+      boardData['maxMagnification'] *= 2;
+      if (boardData['maxComboCount'] >= 7) {
+        boardData['maxMagnification'] *= 2.5
       }
       break
-      // 極醒メタトロン：
-      // HP80%以下で攻撃力が3倍。神タイプのHPと攻撃力が2倍。
-      // 7コンボ以上でダメージを軽減、攻撃力が2.5倍。
-      case METATRON:
-        boardData['maxMagnification'] *= 2;
-        if (boardData['maxComboCount'] >= 7) {
-          boardData['maxMagnification'] *= 2.5
-        }
-        break
     // コマさんS：
     // 火と木属性のHPが1.5倍。6コンボ以上で攻撃力が5倍。
     // ドロップを5個以上つなげて消すとダメージを軽減、攻撃力が3倍。
@@ -146,13 +144,12 @@ function multiplyMagnification(boardData, leader) {
 
 // 盤面を分析してオブジェクトにする関数
 function getBoardData(board) {
+
   // 盤面に存在するドロップの数(種類別)
   const dropCountArray = (new Array(DROP_TYPE_MAX + 1)).fill(0)
 
   // 盤面を見て、その色に対応するインデックスの値をインクリメント
-  board.forEach(color => {
-    dropCountArray[color]++
-  })
+  board.forEach(color => dropCountArray[color]++)
 
   // 存在するドロップだけ残した配列
   const existDropCountArray = dropCountArray.filter(num => num)
@@ -169,9 +166,8 @@ function getBoardData(board) {
   // ドロップの種類別の、可能な最大コンボ数（３で割るだけ）
   const maxComboCountArray = dropCountArray.map(num => Math.floor(num / 3))
 
-  let maxComboCount = null
-
   // ドロップの種類数に応じて可能な最大コンボ数の和を求める
+  let maxComboCount = null
   switch (maxComboCount) {
   case 1:
     maxComboCount = 1
@@ -182,16 +178,17 @@ function getBoardData(board) {
   default:
     maxComboCount = maxComboCountArray.reduce((a, b) => a + b)
   }
+  const maxMagnification = 1
 
   return {
-    'dropCountArray': dropCountArray,
-    'existDropCountArray': existDropCountArray,
-    'dropTypeCount': dropTypeCount,
-    'mostDropCount': mostDropCount,
-    'fewestDropCount': fewestDropCount,
-    'maxComboCountArray': maxComboCountArray,
-    'maxComboCount': maxComboCount,
-    'maxMagnification': 1,
+    dropCountArray,
+    existDropCountArray,
+    dropTypeCount,
+    mostDropCount,
+    fewestDropCount,
+    maxComboCountArray,
+    maxComboCount,
+    maxMagnification,
   }
 }
 
@@ -253,10 +250,10 @@ function getMaxCrossCount(boardSize, board, leader) {
 
     switch (boardSize) {
     case "5x6":
-      if (fewDropCount <= 4)        maxCrossCount = 0
-      else if (fewDropCount <= 6)   maxCrossCount = 1
-      else if (fewDropCount <= 11)  maxCrossCount = 2
-      else                          maxCrossCount = 3
+      if (fewDropCount <= 4)       maxCrossCount = 0
+      else if (fewDropCount <= 6)  maxCrossCount = 1
+      else if (fewDropCount <= 11) maxCrossCount = 2
+      else                         maxCrossCount = 3
       break
     case "6x7":
       if (fewDropCount <= 4)       maxCrossCount = 0
