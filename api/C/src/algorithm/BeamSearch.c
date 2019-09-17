@@ -165,20 +165,20 @@ static void BeamSearch_expandNodes(BeamSearch* this, SearchConditions *scp, doub
   int i, j, threadId, baseIndex, childIndex;
   double evaluation;
 
-  // スレッド別の子ノード数を0で初期化する
+  // スレッドごとの子ノード数を0で初期化する
   memset(this->childrenCounts, 0, sizeof(int) * this->maxThreads);
 
-  // i(親ノード)のループについてOpenMPで並列化する
-  #pragma omp parallel for private(j, prevIndex, currIndex, nextIndex,\
-            maxDirection, parentNode, childNode, comboData, hashValue,\
-            evaluation, threadId, baseIndex, childIndex) num_threads(this->maxThreads)
+  // i(親ノード)のループについて並列化する指示文
+  #pragma omp parallel for num_threads(this->maxThreads)\
+          private(parentNode, childNode, comboData, hashValue, prevIndex, currIndex,\
+                  nextIndex, maxDirection, j, threadId, baseIndex, childIndex, evaluation)
   for (i = 0; i < this->parentsCount; i++) {
     parentNode = this->parentsP[i];                       // 親ノード
     prevIndex = SearchNode_getPreviousIndex(parentNode);  // 直前の座標
     currIndex = SearchNode_getCurrentIndex(parentNode);   // 現在の座標
     maxDirection = getMaxDirection(parentNode, ssp);      // 展開する方向の数
     threadId = omp_get_thread_num();                      // スレッドIDを取得
-    baseIndex = this->dividedQueueLength * threadId;      // スレッド別の使用する配列の領域
+    baseIndex = this->dividedQueueLength * threadId;      // スレッドごとの使用する配列の領域
 
     // 上下左右４方向（または８方向）へ展開する
     for (j = 0; j < maxDirection; j++) {
@@ -297,6 +297,7 @@ static void BeamSearch_selectBestNode(BeamSearch* this, SearchConditions *search
 
     BeamSearch_simulateDropFall(searchNode, searchConditions);
 
+    #pragma omp critical  // 一度に実行できるスレッドを１つに制限
     if (ExcellentNodes_getBestEvaluation(enp) < ComboData_getEvaluation(comboData)) {
       ExcellentNodes_setBestNode(enp, searchNode);
     }

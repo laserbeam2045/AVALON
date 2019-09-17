@@ -1,7 +1,6 @@
 #ifndef _MODE_H_
 #define _MODE_H_
 
-#include <time.h>
 #include "io/WinSock.h"
 #include "io/parser.h"
 #include "io/output.h"
