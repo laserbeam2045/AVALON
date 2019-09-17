@@ -29,7 +29,6 @@ export default () => {
         } else {
           this.summonDragon(options.moveTime, options.moveDuration)
         }
-
         if (options.moveFlag) {
           setTimeout(() => {
             this._moveDrops(options.moveTime)
@@ -395,33 +394,32 @@ export default () => {
 
     // 手順通りにドロップを自動で動かすメソッド
     // moveTime: １マスの移動にかける時間(ミリ秒)
-    // count: 何回目の呼び出しであるか(デフォルト値があるので渡す必要はない)
-    _moveDrops (moveTime, count = 0) {
-      // 初回呼び出し時の処理
-      if (count === 0) {
-        const firstIndex = this.process[0]
-        this.dropSprites[firstIndex].setAlpha(0.5)
-        this.dragOkFlag = false
-      // 最終呼び出し時の処理
-      } else if (count === this.process.length - 1) {
-        const lastIndex = this.process.slice(-1)[0]
-        this.dropSprites[lastIndex].setAlpha(1)
+    _moveDrops (moveTime) {
+      const firstIndex = this.process[0]
+      const grabbedDrop = this.dropSprites[firstIndex]
+
+      this.dragOkFlag = false
+      grabbedDrop.setAlpha(0.5)
+      for (let i = 0; i < this.process.length - 1; i++) {
+        const currIndex = this.process[i],
+              nextIndex = this.process[i + 1],
+              nextDrop = this.dropSprites[nextIndex],
+              [curr_x, curr_y] = this.getCoordinatesOfDrop(currIndex),
+              [next_x, next_y] = this.getCoordinatesOfDrop(nextIndex)
+
+        grabbedDrop.tweener.call(() => {
+          nextDrop.tweener.wait(moveTime / 2).moveTo(curr_x, curr_y, moveTime / 2).play()
+        })
+        .moveTo(next_x, next_y, moveTime)
+
+        this._swapDrops(currIndex, nextIndex)
+      }
+      grabbedDrop.tweener.call(() => {
+        grabbedDrop.setAlpha(1)
         this.dragOkFlag = true
         this.changeFlag = true
-        return
-      }
-      const currIndex = this.process[count],
-            nextIndex = this.process[count + 1],
-            currDrop = this.dropSprites[currIndex],
-            nextDrop = this.dropSprites[nextIndex],
-            [curr_x, curr_y] = [currDrop.x, currDrop.y],
-            [next_x, next_y] = [nextDrop.x, nextDrop.y]
-
-      currDrop.tweener.moveTo(next_x, next_y, moveTime).call(() => {
-        this._swapDrops(currIndex, nextIndex)
-        this._moveDrops(moveTime, count + 1)
-      }).play()
-      nextDrop.tweener.wait(moveTime / 2).moveTo(curr_x, curr_y, 50).play()
+      })
+      .play()
     },
 
     // MOVEボタン押下時の処理
@@ -429,7 +427,7 @@ export default () => {
       if (this.lineFlag) {
         this.moveDrops(100)
       } else {
-        this.moveDrops(180)
+        this.moveDrops(100)
       }
     },
 

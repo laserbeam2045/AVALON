@@ -67,7 +67,7 @@ export default {
       if (this.isDanger) {
         this.$playSound('sound-alert')
         this.startNewGame()
-        this.displayLine(100, 500)
+        this.displayLine(100, 0)
       } else {
         this.moveDrops(100, 0)
       }

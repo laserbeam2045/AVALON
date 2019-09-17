@@ -18,7 +18,7 @@ export default phina.define('Dragon', {
   init (options) {
     options = (options || {}).$safe({
       time: 100,
-      duration: 500,
+      duration: 0,
       easing: 'lenear',
     })
     this.superInit(options)
