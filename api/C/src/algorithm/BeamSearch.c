@@ -10,7 +10,7 @@ static void (*BeamSearch_countCombo)(SearchNode*, SearchConditions*, bool) = NUL
 // プライベート関数
 static void BeamSearch_initQueue(BeamSearch* this, BoardSettings *bsp);
 static double BeamSearch_getMoveCost(BeamSearch* this, int depth);
-static void BeamSearch_expandNodes(BeamSearch* this, double moveCost, SearchConditions *scp);
+static void BeamSearch_expandNodes(BeamSearch* this, SearchConditions *scp, double moveCost);
 static void BeamSearch_mergeNodes(BeamSearch* this);
 static void BeamSearch_cutBranch(BeamSearch* this);
 static int cmp(const void*, const void*);
@@ -84,7 +84,7 @@ SearchNode BeamSearch_run(BeamSearch* this, SearchConditions *scp)
     double moveCost = BeamSearch_getMoveCost(this, i);
 
     // キューからノードを取り出し、展開する
-    BeamSearch_expandNodes(this, moveCost, scp);
+    BeamSearch_expandNodes(this, scp, moveCost);
 
     // スレッド別に、離れたアドレス上に持たせたノードを、連続するデータ（ポインタ配列）として統合する
     BeamSearch_mergeNodes(this);
@@ -152,7 +152,7 @@ static double BeamSearch_getMoveCost(BeamSearch* this, int depth)
 // キューからノードを取り出し、展開する関数
 // moveCost 深さに応じた移動コスト
 // *scp     探索条件オブジェクトのアドレス
-static void BeamSearch_expandNodes(BeamSearch* this, double moveCost, SearchConditions *scp)
+static void BeamSearch_expandNodes(BeamSearch* this, SearchConditions *scp, double moveCost)
 {
   BoardSettings *bsp = SearchConditions_getBoardSettings(scp);
   SearchSettings *ssp = SearchConditions_getSearchSettings(scp);
