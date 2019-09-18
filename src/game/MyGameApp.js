@@ -103,8 +103,8 @@ export default phina.define('MyGameApp', {
 
   // 手順線を表示させるメソッド
   displayLine (fadeTime, duration) {
-    if ('summonDragon' in this.currentScene) {
-      this.currentScene.summonDragon(fadeTime, duration)
+    if ('createDragon' in this.currentScene) {
+      this.currentScene.createDragon(fadeTime, duration)
     }
     return this
   },
@@ -112,7 +112,7 @@ export default phina.define('MyGameApp', {
   // 手順通りにドロップを動かすメソッド
   // moveTime: １マスあたりの移動にかける時間
   // duration: メソッド呼び出しまでの待機時間
-  moveDrops (moveTime = 120, duration = 0) {
+  moveDrops (moveTime, duration) {
     if ('moveDrops' in this.currentScene) {
       this.currentScene.moveDrops(moveTime, duration)
     }

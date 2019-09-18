@@ -27,7 +27,7 @@ export default () => {
             this.dragon.setAlpha(1)
           }
         } else {
-          this.summonDragon(options.moveTime, options.moveDuration)
+          this.createDragon(options.moveTime, options.moveDuration)
         }
         if (options.moveFlag) {
           setTimeout(() => {
@@ -38,9 +38,9 @@ export default () => {
     },
 
     // 手順線を表示させるメソッド
-    summonDragon (time, duration) {
+    createDragon (fadeTime, duration) {
       this.dragon = Dragon({
-        time,
+        fadeTime,
         duration,
         process: this.process,
         dropSize: this.dropSize,
