@@ -17,7 +17,7 @@ export default phina.define('Dragon', {
 
   init (options) {
     options = (options || {}).$safe({
-      time: 100,
+      fadeTime: 100,
       duration: 0,
       easing: 'lenear',
     })
@@ -55,8 +55,8 @@ export default phina.define('Dragon', {
         object.setAlpha(0)
               .addChildTo(this)
               .tweener
-              .wait(this.time * index)
-              .to({alpha: 1}, this.time * 3, this.easing)
+              .wait(this.fadeTime * index)
+              .to({alpha: 1}, this.fadeTime * 3, this.easing)
               .play()
       })
     })
@@ -78,14 +78,14 @@ export default phina.define('Dragon', {
             [beginX, beginY, endX, endY] = this._getCoordinates(lineType)
 
       return {
-        index   : index,    // 何手目であるか
-        lineType: lineType, // 線の種類
-        beginX  : beginX,   // dropSize x dropSize の範囲内における描画開始x座標
-        beginY  : beginY,   // dropSize x dropSize の範囲内における描画開始y座標
-        endX    : endX,     // dropSize x dropSize の範囲内における描画終了x座標
-        endY    : endY,     // dropSize x dropSize の範囲内における描画終了y座標
-        x       : x,        // Group全体の中でのx座標
-        y       : y,        // Group全体の中でのy座標
+        index,    // 何手目であるか
+        lineType, // 線の種類
+        beginX,   // dropSize x dropSize の範囲内における描画開始x座標
+        beginY,   // dropSize x dropSize の範囲内における描画開始y座標
+        endX,     // dropSize x dropSize の範囲内における描画終了x座標
+        endY,     // dropSize x dropSize の範囲内における描画終了y座標
+        x,        // Group全体の中でのx座標
+        y,        // Group全体の中でのy座標
       }
     })
   },
@@ -97,14 +97,14 @@ export default phina.define('Dragon', {
     const process = this.process
 
     if (index === 0) {
-      // 最初の場合は、次の座標との差で場合分けをする
+      // 最初（尻尾部分）の場合は、次の座標との差で場合分けをする
       const diff = process[index] - process[index + 1]
-      if (diff === 1)       return 1 // 横の直線（中心から左）
-      if (diff === -1)      return 2 // 横の直線（中心から右）
-      if (diff === width)   return 3 // 縦の直線（中心から上）
-      if (diff === -width)  return 4 // 縦の直線（中心から下）
+      if (diff === 1)       return 1  // 横の直線（中心から左）
+      if (diff === -1)      return 2  // 横の直線（中心から右）
+      if (diff === width)   return 3  // 縦の直線（中心から上）
+      if (diff === -width)  return 4  // 縦の直線（中心から下）
     } else if (this._isLast(index)) {
-      // 最後の場合は、前の座標との差で場合分けをする
+      // 最後（頭部分）の場合は、前の座標との差で場合分けをする
       const diff = process[index] - process[index - 1]
       if (diff === 1)       return 5  // 横の直線（左から中心）
       if (diff === -1)      return 6  // 横の直線（右から中心）
