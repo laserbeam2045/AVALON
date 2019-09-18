@@ -3,16 +3,15 @@ import MyShape from '../MyShape'
 
 // ドラゴンの胴体クラス
 // 必須引数：
-// lineData(座標オブジェクト),
-// dropSize(ドロップの大きさ),
+// lineData(座標オブジェクト)
 // processLen(手順の長さ->グラデーションのために必要)
 export default phina.define('DragonBody', {
   superClass: MyShape,
 
-  init (lineData, dropSize, processLen) {
+  init (lineData, processLen) {
     this.superInit({
-      width: dropSize,
-      height: dropSize,
+      width: lineData.dropSize,
+      height: lineData.dropSize,
     })
     this.lineData = lineData
     this.processLen = processLen

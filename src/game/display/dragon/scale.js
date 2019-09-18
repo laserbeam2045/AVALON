@@ -3,17 +3,16 @@ import MyShape from '../MyShape'
 
 // ドラゴンの鱗クラス
 // 必須引数：
-// cdn(座標オブジェクト),
-// dropSize(ドロップの大きさ)
+// lineData(座標オブジェクト)
 export default phina.define('DragonScale', {
   superClass: MyShape,
 
-  init (cdn, dropSize) {
+  init (lineData) {
     this.superInit({
-      width: dropSize,
-      height: dropSize,
+      width: lineData.dropSize,
+      height: lineData.dropSize,
     })
-    this.moveTo(cdn.x, cdn.y)._rotate(cdn, dropSize)
+    this.moveTo(lineData.x, lineData.y)._rotate(lineData)
   },
 
   postrender () {
@@ -36,10 +35,10 @@ export default phina.define('DragonScale', {
   },
 
   // 線の種類に応じて移動・回転させるメソッド
-  _rotate (cdn, dropSize) {
-    const offset = dropSize * 0.135
+  _rotate (lineData) {
+    const offset = lineData.dropSize * 0.135
 
-    switch (cdn.lineType) {
+    switch (lineData.lineType) {
     case 2: case 5: case 9:   // 横の直線（左から右）
       this.setRotation(90)
       break

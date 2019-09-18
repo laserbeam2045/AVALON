@@ -27,21 +27,21 @@ export default phina.define('Dragon', {
     this.parts = []
     this._getLineData().forEach((data, index) => {
       // 胴体の輪郭線
-      const outline = DragonOutline(data, this.dropSize)
+      const outline = DragonOutline(data)
       // 胴体
-      const body = DragonBody(data, this.dropSize, this.process.length)
+      const body = DragonBody(data, this.process.length)
       // 胴体の鱗
-      const scale = DragonScale(data, this.dropSize)
+      const scale = DragonScale(data)
 
       this.parts[index] = [outline, body, scale]
 
       if (index === 0) {
         // 尻尾
-        const tail = DragonTail(data, this.dropSize)
+        const tail = DragonTail(data)
         this.parts[index].push(tail)
       } else if (this._isLast(index)) {
         // 頭
-        const head = DragonHead(data, this.dropSize)
+        const head = DragonHead(data)
         this.parts[index].push(head)
       }
     })
@@ -80,12 +80,13 @@ export default phina.define('Dragon', {
       return {
         index,    // 何手目であるか
         lineType, // 線の種類
+        x,        // Group全体の中でのx座標
+        y,        // Group全体の中でのy座標
         beginX,   // dropSize x dropSize の範囲内における描画開始x座標
         beginY,   // dropSize x dropSize の範囲内における描画開始y座標
         endX,     // dropSize x dropSize の範囲内における描画終了x座標
         endY,     // dropSize x dropSize の範囲内における描画終了y座標
-        x,        // Group全体の中でのx座標
-        y,        // Group全体の中でのy座標
+        dropSize: this.dropSize,
       }
     })
   },
