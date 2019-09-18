@@ -24,28 +24,25 @@ export default phina.define('Dragon', {
     this.superInit(options)
     Object.assign(this, options)
 
+    this._createParts()
+    setTimeout(this._advent.bind(this), this.duration)
+  },
+
+  // ドラゴンを構成するパーツを作成するメソッド
+  _createParts () {
     this.parts = []
     this._getLineData().forEach((data, index) => {
-      // 胴体の輪郭線
-      const outline = DragonOutline(data)
-      // 胴体
-      const body = DragonBody(data, this.process.length)
-      // 胴体の鱗
-      const scale = DragonScale(data)
+      this.parts[index] = [
+        DragonOutline(data),                          // 輪郭線
+        DragonBody(data, index, this.process.length), // 胴体
+        DragonScale(data),                            // 鱗
+      ]
+      if (index === 0)
+        this.parts[index].push(DragonTail(data))  // 尻尾
 
-      this.parts[index] = [outline, body, scale]
-
-      if (index === 0) {
-        // 尻尾
-        const tail = DragonTail(data)
-        this.parts[index].push(tail)
-      } else if (this._isLast(index)) {
-        // 頭
-        const head = DragonHead(data)
-        this.parts[index].push(head)
-      }
+      else if (this._isLast(index))
+        this.parts[index].push(DragonHead(data))  // 頭
     })
-    setTimeout(this._advent.bind(this), this.duration)
   },
 
   // 初めは透明にしておいて、徐々にフェードインさせるメソッド
@@ -53,11 +50,11 @@ export default phina.define('Dragon', {
     this.parts.forEach((part, index) => {
       part.forEach(object => {
         object.setAlpha(0)
-              .addChildTo(this)
-              .tweener
-              .wait(this.fadeTime * index)
-              .to({alpha: 1}, this.fadeTime * 3, this.easing)
-              .play()
+          .addChildTo(this)
+          .tweener
+          .wait(this.fadeTime * index)
+          .to({alpha: 1}, this.fadeTime * 3, this.easing)
+          .play()
       })
     })
   },
@@ -74,18 +71,12 @@ export default phina.define('Dragon', {
             Y = Math.floor(Z / this.boardWidth),
             x = this.dropSize * (X + 0.5),
             y = this.dropSize * (Y + 0.5),
-            lineType = this._getLineType(index),
-            [beginX, beginY, endX, endY] = this._getCoordinates(lineType)
+            lineType = this._getLineType(index)
 
       return {
-        index,    // 何手目であるか
-        lineType, // 線の種類
         x,        // Group全体の中でのx座標
         y,        // Group全体の中でのy座標
-        beginX,   // dropSize x dropSize の範囲内における描画開始x座標
-        beginY,   // dropSize x dropSize の範囲内における描画開始y座標
-        endX,     // dropSize x dropSize の範囲内における描画終了x座標
-        endY,     // dropSize x dropSize の範囲内における描画終了y座標
+        lineType, // 線の種類
         dropSize: this.dropSize,
       }
     })
@@ -129,35 +120,5 @@ export default phina.define('Dragon', {
       else if (diff1 === -1     && diff2 === -width)  return 20  // 円弧の左上（右から下）
     }
     return 0 // TODO: 前後との位置関係が斜めの場合は0が返る（場合分けが必要）
-  },
-
-  // 線の種類に応じて、始点(x, y)と終点(x, y)の座標を返すメソッド
-  // 戻り値：要素数４の数値配列
-  _getCoordinates (lineType) {
-    const half = this.dropSize / 2
-
-    switch (lineType) {
-      case  1: return [0, 0, -half, 0]
-      case  2: return [0, 0, half, 0]
-      case  3: return [0, 0, 0, -half]
-      case  4: return [0, 0, 0, half]
-      case  5: return [-half, 0, 0, 0]
-      case  6: return [half, 0, 0, 0]
-      case  7: return [0, -half, 0, 0]
-      case  8: return [0, half, 0, 0]
-      case  9: return [-half, 0, half, 0]
-      case 10: return [half, 0, -half, 0]
-      case 11: return [0, -half, 0, half]
-      case 12: return [0, half, 0, -half]
-      case 13: return [-half, 0, 0, half]
-      case 14: return [0, half, -half, 0]
-      case 15: return [0, -half, -half, 0]
-      case 16: return [-half, 0, 0, -half]
-      case 17: return [half, 0, 0, -half]
-      case 18: return [0, -half, half, 0]
-      case 19: return [0, half, half, 0]
-      case 20: return [half, 0, 0, half]
-      default: return [0, 0, 0, 0]
-    }
   },
 })

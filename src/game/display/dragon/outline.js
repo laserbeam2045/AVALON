@@ -8,16 +8,17 @@ export default phina.define('DragonOutline', {
   superClass: MyShape,
 
   init (lineData) {
+    const { dropSize, lineType, x, y } = lineData
     this.superInit({
-      width: lineData.dropSize,
-      height: lineData.dropSize,
+      width: dropSize,
+      height: dropSize,
     })
-    this.dropSize = lineData.dropSize
-    this.lineType = lineData.lineType
-    this.moveTo(lineData.x, lineData.y)._rotate()
+    this.dropSize = dropSize
+    this.lineType = lineType
+    this.moveTo(x, y)._rotate()
   },
 
-  postrender: function() {
+  postrender () {
     this._drawOutline(12, 12, 'rgba(255,215,0,0.7)')
     this._drawOutline(8, 12, 'rgba(255,255,255,0.5)')
     this._drawOutline(3, 12, 'black')
