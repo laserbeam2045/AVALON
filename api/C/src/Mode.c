@@ -1,7 +1,5 @@
 #include "Mode.h"
 
-static void Mode_onStart();
-static void Mode_onEnd();
 static void Mode_onHttpRequest(Mode* c, char requestBuffer[],
                                 char responseBuffer[], size_t responseBufferSize);
 
@@ -58,7 +56,7 @@ void Mode_run(Mode* c)
 
 
 // イベントハンドラ
-void Mode_onHttpRequest(Mode* c, char requestBuffer[],
+static void Mode_onHttpRequest(Mode* c, char requestBuffer[],
                           char responseBuffer[], size_t responseBufferSize)
 {
   // HTTPリクエストのBODYをパースする（成功ならtrueが返る）
