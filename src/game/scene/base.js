@@ -20,8 +20,8 @@ export default phina.define('BaseScene', {
     this._initializeSetterAndGetter()
 
     this.dragon = options.dragon
-    this.lineFlag = options.lineFlag
     this.process = options.process
+    this.lineFlag = options.lineFlag
     this.dropFall = options.dropFall
     this.activeDrops = options.activeDrops
   },
@@ -31,11 +31,13 @@ export default phina.define('BaseScene', {
     this.exit(label, Object.assign({
       boardData: this.boardData,
       screenData: this.screenData,
-      process: this.process,
       lineFlag: this.lineFlag,
       dragon: this.dragon,
+      process: this.process,
       dropFall: this.dropFall,
       activeDrops: this.activeDrops,
+      startPosition: this.startPosition,
+      immovablePositions: this.immovablePositions,
     }, options))
   },
 
@@ -213,13 +215,6 @@ export default phina.define('BaseScene', {
 
   // Setter関数とGetter関数を定義するメソッド
   _initializeSetterAndGetter () {
-    this.setter('process', newValue => {
-      this._process = Array.from(newValue)
-      this.dragon = null
-    })
-    this.getter('process', () => {
-      return Array.from(this._process)
-    })
     this.setter('dropFall', newValue => {
       this._dropFall = newValue
     })

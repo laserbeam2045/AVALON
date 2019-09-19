@@ -11,90 +11,91 @@ export default () => {
 
     init (options) {
       this.superInit(options)
-
-      this._initializeFlags()
-      this._initializeButtons()
-      this._setMoveCountLabel()
+      this._initFlags()
+      this._initButtons()
+      this._initMoveCountLabel()
       this.initializeDrops()
       this.initializeStartPosition()
       this.initializeImmovablePositions()
-
-      // 場合により手順線を表示させ、場合によりドロップを動かす
-      if (this.process && this.process.length) {
-        if (this.dragon) {
-          this.dragon.addChildTo(this)
-          if (this.lineFlag) {
-            this.dragon.setAlpha(1)
-          }
-        } else {
-          this.summonDragon(options.moveTime, options.moveDuration)
-        }
-        if (options.moveFlag) {
-          setTimeout(() => {
-            this._moveDrops(options.moveTime)
-          }, options.moveDuration)
-        }
-      }
+      this._initDragons(options)
     },
 
-    // 手順線を表示させるメソッド
-    summonDragon (time, duration) {
+    // 手順線を作成するメソッド
+    // process: 操作手順の配列
+    // fadeTime: １パーツのフェードインにかける時間
+    // duration: 実行までの待機時間
+    createDragon (process, fadeTime, duration) {
+      this.process = process
       this.dragon = Dragon({
-        time,
+        process,
+        fadeTime,
         duration,
-        process: this.process,
         dropSize: this.dropSize,
         boardWidth: this.boardWidth,
+        displayFlag: this.lineFlag,
       })
       .moveTo(this.leftMargin, this.topMargin)
       .addChildTo(this)
     },
 
     // 手順通りにドロップを自動で動かすメソッド
-    // (ゲームを初期化してから実際のメソッドを呼び出す)
-    // moveTime: １マスの移動にかける時間(ミリ秒)
-    // moveDuration: メソッド呼び出しまでの待ち時間
-    moveDrops (moveTime, moveDuration = 0) {
-      if (this.process) {
-        this.exitTo('main', {
-          moveFlag: true,
-          moveTime,
-          moveDuration,
-        })
-      }
+    // process: 操作手順の配列
+    // moveTime: １マスあたりの移動にかける時間
+    // duration: 実行までの待機時間
+    moveDrops (process, moveTime, duration = 0) {
+      this.process = process
+      setTimeout(() => {
+        this._moveDrops(moveTime)
+      }, duration)
     },
 
     // 各種フラグ、パラメータを初期化するメソッド
-    _initializeFlags () {
+    _initFlags () {
       this.dragOkFlag = true    // ドロップを動かしていいかどうか
       this.changeFlag = false   // ドロップを動かしたかどうか
       this.combo = 0            // コンボ数
     },
 
     // ボタンを配置するメソッド
-    _initializeButtons () {
+    _initButtons () {
       const buttonNum = 6
       const GridX = phina.util.Grid(this.screenPixelWidth, buttonNum)
       const buttonData = {
-        INPUT   : () => { this.exitTo('input') },
-        RESET   : () => { this.exitTo('main') },
-        SHUFFLE : () => { this.vueMethods.shuffle() },
-        SEARCH  : () => { this.vueMethods.search() },
-        MOVE    : () => { this._moveProcessing() },
-        HIDE    : () => { this._switchDisplayFlag() },
+        INPUT   : this._inputButtonProcessing,
+        RESET   : this._resetButtonProcessing,
+        SHUFFLE : this.vueMethods.shuffle,
+        SEARCH  : this.vueMethods.search,
+        MOVE    : this._moveButtonProcessing,
+        HIDE    : this._hideButtonProcessing,
       }
       Object.entries(buttonData).forEach(([name, func], index) => {
-        const x = GridX.span(index) - 4
-        StylishButton(name).setOrigin(0, 0).moveTo(x, 0)
-          .addEventListener('pointstart', func).addChildTo(this.buttonGroup)
+        const x = GridX.span(0.5 + index)
+        const y = GridX.span(0.5)
+        StylishButton(name).moveTo(x, y).addChildTo(this.buttonGroup)
+          .addEventListener('pointstart', func.bind(this))
       })
+      this._switchHideButtonName()
     },
 
     // 移動回数ラベルを配置するメソッド
-    _setMoveCountLabel () {
+    _initMoveCountLabel () {
       const x = this.screenPixelWidth - 65
       const y = this.topMargin - 185
       this.moveCountLabel = MoveCountLabel().moveTo(x, y).addChildTo(this)
+    },
+
+    // 場合によりドラゴンを表示させ、場合によりドロップを動かすメソッド
+    _initDragons (options) {
+      if (this.process) {
+        if (options.resetButtonFlag || !this.dragon) {
+          this.createDragon(options.process, 80)
+        } else {
+          this.dragon.addChildTo(this)
+        }
+        if (options.moveButtonFlag) {
+          this.moveDrops(this.process, 100)
+        }
+      }
     },
 
     // ドロップの操作を開始したときのイベント処理
@@ -395,11 +396,11 @@ export default () => {
     // 手順通りにドロップを自動で動かすメソッド
     // moveTime: １マスの移動にかける時間(ミリ秒)
     _moveDrops (moveTime) {
-      const firstIndex = this.process[0]
-      const grabbedDrop = this.dropSprites[firstIndex]
+      const grabbedDrop = this.dropSprites[this.process[0]]
 
       this.dragOkFlag = false
-      grabbedDrop.setAlpha(0.5)
+      grabbedDrop.setAlpha(0.5).addChildTo(this.dropGroup)
+
       for (let i = 0; i < this.process.length - 1; i++) {
         const currIndex = this.process[i],
               nextIndex = this.process[i + 1],
@@ -407,12 +408,14 @@ export default () => {
               [curr_x, curr_y] = this.getCoordinatesOfDrop(currIndex),
               [next_x, next_y] = this.getCoordinatesOfDrop(nextIndex)
 
+        this._swapDrops(currIndex, nextIndex)
         grabbedDrop.tweener.call(() => {
-          nextDrop.tweener.wait(moveTime / 2).moveTo(curr_x, curr_y, moveTime / 2).play()
+          nextDrop.tweener
+            .wait(moveTime / 2)
+            .moveTo(curr_x, curr_y, 100)
+            .play()
         })
         .moveTo(next_x, next_y, moveTime)
-
-        this._swapDrops(currIndex, nextIndex)
       }
       grabbedDrop.tweener.call(() => {
         grabbedDrop.setAlpha(1)
@@ -422,23 +425,34 @@ export default () => {
       .play()
     },
 
-    // MOVEボタン押下時の処理
-    _moveProcessing () {
-      if (this.lineFlag) {
-        this.moveDrops(100)
-      } else {
-        this.moveDrops(100)
-      }
+    // INPUTボタン押下時の処理
+    _inputButtonProcessing () {
+      this.exitTo('input')
     },
 
-    // ドラゴン・操作不可・開始位置指定オブジェクトの表示・非表示を切り替えるメソッド
-    _switchDisplayFlag () {
+    // RESETボタン押下時の処理
+    _resetButtonProcessing () {
+      this.exitTo('main', {
+        resetButtonFlag: true,
+      })
+    },
+
+    // MOVEボタン押下時の処理
+    _moveButtonProcessing () {
+      this.exitTo('main', {
+        moveButtonFlag: true,
+      })
+    },
+
+    // HIDEボタン押下時の処理
+    _hideButtonProcessing () {
       if (this.lineFlag) {
         this._fadeOutObjects()
       } else {
         this._fadeInObjects()
       }
       this.lineFlag = !this.lineFlag
+      this._switchHideButtonName()
     },
 
     // ドラゴン・操作不可・開始位置指定オブジェクトを非表示にするメソッド
@@ -459,6 +473,20 @@ export default () => {
       this.harassmentGroup.children.forEach(obj => {
         obj.fadeIn(duration)
       })
+    },
+
+    // lineFlagに応じてHIDE(SHOW)ボタンの表示名を変えるメソッド
+    _switchHideButtonName () {
+      if (this.lineFlag) {
+        this._setButtonName(5, 'HIDE')
+      } else {
+        this._setButtonName(5, 'SHOW')
+      }
+    },
+
+    // ボタンの表示名を変更するメソッド
+    _setButtonName (btnIndex, text) {
+      this.buttonGroup.children[btnIndex].text = text
     },
   })
 }

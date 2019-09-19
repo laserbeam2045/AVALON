@@ -70,7 +70,7 @@ export default phina.define('MyGameApp', {
   init (options) {
     const boardData = this._getBoardData(options)
     const screenData = this._getScreenData(boardData.boardSize)
-    const { dropFall, activeDrops, vueMethods } = options
+    const vueMethods = options.vueMethods
 
     options = (options || {}).$safe({
       query: options.query,
@@ -80,19 +80,14 @@ export default phina.define('MyGameApp', {
       width: SCREEN_PIXEL_WIDTH,
       height: SCREEN_PIXEL_HEIGHT,
       fit: false,
-      lineFlag: true,
       boardData,
       screenData,
-      dropFall,
-      activeDrops,
       vueMethods,
+      lineFlag: true,
     })
     this.superInit(options)
 
-    // 以下のプロパティはセッター関数を通じて直接代入できる
-    this.setter('process', newValue => {
-      this.currentScene.process = newValue
-    })
+    // 以下のプロパティは、base.jsのセッター関数を通じて直接代入できる
     this.setter('dropFall', newValue => {
       this.currentScene.dropFall = newValue
     })
@@ -102,19 +97,23 @@ export default phina.define('MyGameApp', {
   },
 
   // 手順線を表示させるメソッド
-  displayLine (fadeTime, duration) {
-    if ('summonDragon' in this.currentScene) {
-      this.currentScene.summonDragon(fadeTime, duration)
+  // process: 操作手順の配列
+  // fadeTime: １パーツのフェードインにかける時間
+  // duration: 実行までの待機時間
+  displayLine (process, fadeTime, duration) {
+    if (process && 'createDragon' in this.currentScene) {
+      this.currentScene.createDragon(process, fadeTime, duration)
     }
     return this
   },
 
-  // 手順通りにドロップを動かすメソッド
+  // 手順通りにドロップを自動で動かすメソッド
+  // process: 操作手順の配列
   // moveTime: １マスあたりの移動にかける時間
-  // duration: メソッド呼び出しまでの待機時間
-  moveDrops (moveTime = 120, duration = 0) {
-    if ('moveDrops' in this.currentScene) {
-      this.currentScene.moveDrops(moveTime, duration)
+  // duration: 実行までの待機時間
+  moveDrops (process, moveTime, duration) {
+    if (process && 'moveDrops' in this.currentScene) {
+      this.currentScene.moveDrops(process, moveTime, duration)
     }
     return this
   },
@@ -122,22 +121,27 @@ export default phina.define('MyGameApp', {
   // ゲームを新しい状態で開始するメソッド
   // options: 以下のプロパティを持つオブジェクト
   //   board: 盤面の状態を表す配列（必須）
-  //   process: 操作手順
   //   dropFall: 落ちコンの有無（真偽値）
   //   activeDrops: 落ちる可能性のある色（真偽値の配列）
   //   startPosition: 開始位置指定（-1以上の整数値）
-  //   immovablePositions: 操作不可位置（Setオブジェクト）
+  //   immovablePositions: 操作不可地点（Setオブジェクト）
   startNewGame (options) {
     const boardData = this._getBoardData(options)
     const screenData = this._getScreenData(boardData.boardSize)
 
-    this.currentScene.exitTo('main', { boardData, screenData, ...options, dragon: null })
+    this.currentScene.exitTo('main', {
+      boardData,
+      screenData,
+      ...options,
+      dragon: null,
+      process: null,
+    })
     return this
   },
 
   // 盤面に関する情報を整形してまとめるメソッド
   _getBoardData (options) {
-    let { board, startPosition, immovablePositions } = options
+    const { board, dropFall, activeDrops, startPosition, immovablePositions } = options
     let boardHeight = null
     let boardWidth = null
     let boardSize = null
@@ -156,7 +160,7 @@ export default phina.define('MyGameApp', {
     }
     return {
       board, boardHeight, boardWidth, boardSize,
-      startPosition, immovablePositions,
+      dropFall, activeDrops, startPosition, immovablePositions,
     }
   },
 

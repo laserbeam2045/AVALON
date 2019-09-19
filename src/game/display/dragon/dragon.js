@@ -9,55 +9,55 @@ import DragonHead from './head'
 // ドラゴンクラス(手順線)
 // 必須引数：
 // options(以下をプロパティに含むオブジェクト)
-//   process(手順＝座標の配列)
+//   process(操作手順の配列)
+//   fadeTime(１パーツのフェードインにかける時間)
+//   duration(表示までの待機時間)
 //   dropSize(ドロップの大きさ)
 //   boardWidth(盤面内で横に並ぶドロップの数)
+//   lineFlag(表示させるかどうか)
 export default phina.define('Dragon', {
   superClass: MyDisplayElement,
 
   init (options) {
     options = (options || {}).$safe({
-      time: 100,
+      fadeTime: 100,
       duration: 0,
       easing: 'lenear',
     })
     this.superInit(options)
     Object.assign(this, options)
 
-    this.parts = []
-    this._getLineData().forEach((data, index) => {
-      // 胴体の輪郭線
-      const outline = DragonOutline(data, this.dropSize)
-      // 胴体
-      const body = DragonBody(data, this.dropSize, this.process.length)
-      // 胴体の鱗
-      const scale = DragonScale(data, this.dropSize)
-
-      this.parts[index] = [outline, body, scale]
-
-      if (index === 0) {
-        // 尻尾
-        const tail = DragonTail(data, this.dropSize)
-        this.parts[index].push(tail)
-      } else if (this._isLast(index)) {
-        // 頭
-        const head = DragonHead(data, this.dropSize)
-        this.parts[index].push(head)
-      }
-    })
+    this._createParts()
     setTimeout(this._advent.bind(this), this.duration)
   },
 
-  // 初めは透明にしておいて、徐々にフェードインさせるメソッド
+  // ドラゴンを構成するパーツを作成するメソッド
+  _createParts () {
+    this.parts = []
+    this._getLineData().forEach((data, index) => {
+      this.parts[index] = [
+        DragonOutline(data),                          // 輪郭線
+        DragonBody(data, index, this.process.length), // 胴体
+        DragonScale(data),                            // 鱗
+      ]
+      if (index === 0)
+        this.parts[index].push(DragonTail(data))  // 尻尾
+      else if (this._isLast(index))
+        this.parts[index].push(DragonHead(data))  // 頭
+    })
+  },
+
+  // 初めは透明にしておき、徐々にフェードインさせるメソッド
   _advent () {
     this.parts.forEach((part, index) => {
       part.forEach(object => {
-        object.setAlpha(0)
-              .addChildTo(this)
-              .tweener
-              .wait(this.time * index)
-              .to({alpha: 1}, this.time * 3, this.easing)
-              .play()
+        object.setAlpha(0).addChildTo(this)
+        if (this.displayFlag) {
+          object.tweener
+          .wait(this.fadeTime * index)
+          .to({alpha: 1}, this.fadeTime * 3, this.easing)
+          .play()
+        }
       })
     })
   },
@@ -74,18 +74,13 @@ export default phina.define('Dragon', {
             Y = Math.floor(Z / this.boardWidth),
             x = this.dropSize * (X + 0.5),
             y = this.dropSize * (Y + 0.5),
-            lineType = this._getLineType(index),
-            [beginX, beginY, endX, endY] = this._getCoordinates(lineType)
+            lineType = this._getLineType(index)
 
       return {
-        index   : index,    // 何手目であるか
-        lineType: lineType, // 線の種類
-        beginX  : beginX,   // dropSize x dropSize の範囲内における描画開始x座標
-        beginY  : beginY,   // dropSize x dropSize の範囲内における描画開始y座標
-        endX    : endX,     // dropSize x dropSize の範囲内における描画終了x座標
-        endY    : endY,     // dropSize x dropSize の範囲内における描画終了y座標
-        x       : x,        // Group全体の中でのx座標
-        y       : y,        // Group全体の中でのy座標
+        x,        // Group全体の中でのx座標
+        y,        // Group全体の中でのy座標
+        lineType, // 線の種類
+        dropSize: this.dropSize,
       }
     })
   },
@@ -97,14 +92,14 @@ export default phina.define('Dragon', {
     const process = this.process
 
     if (index === 0) {
-      // 最初の場合は、次の座標との差で場合分けをする
+      // 最初（尻尾部分）の場合は、次の座標との差で場合分けをする
       const diff = process[index] - process[index + 1]
-      if (diff === 1)       return 1 // 横の直線（中心から左）
-      if (diff === -1)      return 2 // 横の直線（中心から右）
-      if (diff === width)   return 3 // 縦の直線（中心から上）
-      if (diff === -width)  return 4 // 縦の直線（中心から下）
+      if (diff === 1)       return 1  // 横の直線（中心から左）
+      if (diff === -1)      return 2  // 横の直線（中心から右）
+      if (diff === width)   return 3  // 縦の直線（中心から上）
+      if (diff === -width)  return 4  // 縦の直線（中心から下）
     } else if (this._isLast(index)) {
-      // 最後の場合は、前の座標との差で場合分けをする
+      // 最後（頭部分）の場合は、前の座標との差で場合分けをする
       const diff = process[index] - process[index - 1]
       if (diff === 1)       return 5  // 横の直線（左から中心）
       if (diff === -1)      return 6  // 横の直線（右から中心）
@@ -128,35 +123,5 @@ export default phina.define('Dragon', {
       else if (diff1 === -1     && diff2 === -width)  return 20  // 円弧の左上（右から下）
     }
     return 0 // TODO: 前後との位置関係が斜めの場合は0が返る（場合分けが必要）
-  },
-
-  // 線の種類に応じて、始点(x, y)と終点(x, y)の座標を返すメソッド
-  // 戻り値：要素数４の数値配列
-  _getCoordinates (lineType) {
-    const half = this.dropSize / 2
-
-    switch (lineType) {
-      case  1: return [0, 0, -half, 0]
-      case  2: return [0, 0, half, 0]
-      case  3: return [0, 0, 0, -half]
-      case  4: return [0, 0, 0, half]
-      case  5: return [-half, 0, 0, 0]
-      case  6: return [half, 0, 0, 0]
-      case  7: return [0, -half, 0, 0]
-      case  8: return [0, half, 0, 0]
-      case  9: return [-half, 0, half, 0]
-      case 10: return [half, 0, -half, 0]
-      case 11: return [0, -half, 0, half]
-      case 12: return [0, half, 0, -half]
-      case 13: return [-half, 0, 0, half]
-      case 14: return [0, half, -half, 0]
-      case 15: return [0, -half, -half, 0]
-      case 16: return [-half, 0, 0, -half]
-      case 17: return [half, 0, 0, -half]
-      case 18: return [0, -half, half, 0]
-      case 19: return [0, half, half, 0]
-      case 20: return [half, 0, 0, half]
-      default: return [0, 0, 0, 0]
-    }
   },
 })

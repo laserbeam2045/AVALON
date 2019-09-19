@@ -22,23 +22,10 @@ export default () => {
       // 選択アイテム・ボタン・ドロップ・ギミックを配置
       this._initializeItems()
       this._initializeStartButton()
+      this._initializeSetterAndGetter()
       this.initializeDrops()
       this.initializeStartPosition()
       this.initializeImmovablePositions()
-
-      // プライベート変数のセッター・ゲッター関数を定義
-      this.setter('selectedItem', newItem => {
-        this._selectedItem = newItem
-      })
-      this.getter('selectedItem', () => {
-        return this._selectedItem
-      })
-      this.setter('lastMoveIndex', newIndex => {
-        this._lastMoveIndex = newIndex
-      })
-      this.getter('lastMoveIndex', () => {
-        return this._lastMoveIndex
-      })
     },
 
     // アイテムを選択状態にする唯一のパブリックメソッド
@@ -93,10 +80,11 @@ export default () => {
 
     // STARTボタンを初期配置するメソッド
     _initializeStartButton () {
-      const x = this.screenPixelWidth - 129
-
+      const GridX = phina.util.Grid(this.screenPixelWidth, 6)
+      const x = GridX.span(5.5)
+      const y = GridX.span(0.5)
       StylishButton('START')
-        .setOrigin(0, 0).moveTo(x, 0)
+        .moveTo(x, y)
         .addChildTo(this.buttonGroup)
         .addEventListener('pointstart', () => {
           // Vue側のデータを更新する
@@ -192,6 +180,22 @@ export default () => {
       this.board[index] = color
       this.boardData.board[index] = color
       this.dropSprites[index].setFrameIndex(color)
+    },
+
+    // Setter関数とGetter関数を定義するメソッド
+    _initializeSetterAndGetter () {
+      this.setter('selectedItem', newItem => {
+        this._selectedItem = newItem
+      })
+      this.getter('selectedItem', () => {
+        return this._selectedItem
+      })
+      this.setter('lastMoveIndex', newIndex => {
+        this._lastMoveIndex = newIndex
+      })
+      this.getter('lastMoveIndex', () => {
+        return this._lastMoveIndex
+      })
     },
   })
 }

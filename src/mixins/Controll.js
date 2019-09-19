@@ -25,7 +25,6 @@ export default {
       const activeDrops = this.clearingSettings.activeDrops
       return {
         board: Array.from(board),
-        process: this.process,
         dropFall,
         activeDrops: Array.from(activeDrops),
         startPosition,
@@ -54,31 +53,40 @@ export default {
         return new Promise((resolve, reject) => reject())
       }
       this.$store.commit('setStateFlag', CONST.SEARCHING)
-
+      this.$store.commit('setBestNode', null)
+      this.startNewGame()
       return this.$store.dispatch('search').then(() => {
-        this.setProcess()
         this.moveOrAlert()
+        this.displayLine()
         this.$store.commit('setStateFlag', CONST.SEARCH_END)
       })
+    },
+
+    // ゲームキャンバスをリセットするメソッド
+    startNewGame () {
+      this.gameApp.startNewGame(this.gameData)
+    },
+
+    // 手順線を表示させるメソッド
+    displayLine (fadeTime = 100, duration = 0) {
+      this.gameApp.displayLine(Array.from(this.process), fadeTime, duration)
+    },
+
+    // ドロップを自動で動かすメソッド
+    moveDrops (moveTime = 100, duration = 0) {
+      if (typeof(moveTime) != 'number') {
+        moveTime = 80
+      }
+      this.gameApp.moveDrops(Array.from(this.process), moveTime, duration)
     },
 
     // 探索結果に応じて、ドロップを動かすか、警告音を発するメソッド
     moveOrAlert () {
       if (this.isDanger) {
         this.$playSound('sound-alert')
-        this.startNewGame()
-        this.displayLine(100, 0)
       } else {
-        this.moveDrops(100, 0)
+        this.moveDrops()
       }
-    },
-
-    // ドロップを自動で動かすメソッド
-    moveDrops (moveTime = 100, duration = 0) {
-      if (typeof(moveTime) != 'number') {
-        moveTime = 100
-      }
-      this.gameApp.moveDrops(moveTime, duration)
     },
 
     // ゲームインスタンスの落ちコンに関する設定を更新するメソッド
@@ -89,22 +97,6 @@ export default {
     // ゲームインスタンスの落ちコンに関する設定を更新するメソッド
     setActiveDrops (newValue) {
       this.gameApp.activeDrops = Array.from(newValue)
-    },
-
-    // ゲームインスタンスに手順を渡すメソッド
-    setProcess () {
-      this.gameApp.process = Array.from(this.process)
-    },
-
-    // 手順線を表示させるメソッド
-    displayLine (fadeTime, duration) {
-      this.setProcess()
-      this.gameApp.displayLine(fadeTime, duration)
-    },
-
-    // ゲームキャンバスをリセットするメソッド
-    startNewGame () {
-      this.gameApp.startNewGame(this.gameData)
     },
   },
 }
