@@ -56,21 +56,21 @@ export default {
       this.$store.commit('setStateFlag', CONST.SEARCHING)
 
       return this.$store.dispatch('search').then(() => {
-        this.setProcess()
+        this.startNewGame()
         this.moveOrAlert()
+        this.displayLine()
         this.$store.commit('setStateFlag', CONST.SEARCH_END)
       })
     },
 
-    // 探索結果に応じて、ドロップを動かすか、警告音を発するメソッド
-    moveOrAlert () {
-      if (this.isDanger) {
-        this.$playSound('sound-alert')
-        this.startNewGame()
-        this.displayLine(100, 0)
-      } else {
-        this.moveDrops(100, 0)
-      }
+    // ゲームキャンバスをリセットするメソッド
+    startNewGame () {
+      this.gameApp.startNewGame(this.gameData)
+    },
+
+    // 手順線を表示させるメソッド
+    displayLine (fadeTime = 100, duration = 0) {
+      this.gameApp.displayLine(Array.from(this.process), fadeTime, duration)
     },
 
     // ドロップを自動で動かすメソッド
@@ -78,7 +78,16 @@ export default {
       if (typeof(moveTime) != 'number') {
         moveTime = 100
       }
-      this.gameApp.moveDrops(moveTime, duration)
+      this.gameApp.moveDrops(Array.from(this.process), moveTime, duration)
+    },
+
+    // 探索結果に応じて、ドロップを動かすか、警告音を発するメソッド
+    moveOrAlert () {
+      if (this.isDanger) {
+        this.$playSound('sound-alert')
+      } else {
+        this.moveDrops()
+      }
     },
 
     // ゲームインスタンスの落ちコンに関する設定を更新するメソッド
@@ -89,22 +98,6 @@ export default {
     // ゲームインスタンスの落ちコンに関する設定を更新するメソッド
     setActiveDrops (newValue) {
       this.gameApp.activeDrops = Array.from(newValue)
-    },
-
-    // ゲームインスタンスに手順を渡すメソッド
-    setProcess () {
-      this.gameApp.process = Array.from(this.process)
-    },
-
-    // 手順線を表示させるメソッド
-    displayLine (fadeTime, duration) {
-      this.setProcess()
-      this.gameApp.displayLine(fadeTime, duration)
-    },
-
-    // ゲームキャンバスをリセットするメソッド
-    startNewGame () {
-      this.gameApp.startNewGame(this.gameData)
     },
   },
 }

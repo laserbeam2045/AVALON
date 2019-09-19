@@ -19,49 +19,42 @@ export default () => {
       this.initializeStartPosition()
       this.initializeImmovablePositions()
 
-      // 場合により手順線を表示させ、場合によりドロップを動かす
-      if (this.process && this.process.length) {
-        if (this.dragon) {
-          this.dragon.addChildTo(this)
-          if (this.lineFlag) {
-            this.dragon.setAlpha(1)
-          }
-        } else {
-          this.createDragon(options.moveTime, options.moveDuration)
-        }
-        if (options.moveFlag) {
-          setTimeout(() => {
-            this._moveDrops(options.moveTime)
-          }, options.moveDuration)
-        }
+      if (options.moveButtonFlag) {
+        this.moveDrops(options.process, 80)
+      }
+      if (options.process) {
+        this.createDragon(options.process, 80)
       }
     },
 
-    // 手順線を表示させるメソッド
-    createDragon (fadeTime, duration) {
+    // 手順線を作成するメソッド
+    // process: 操作手順の配列
+    // fadeTime: １パーツのフェードインにかける時間
+    // duration: 実行までの待機時間
+    createDragon (process, fadeTime, duration) {
+      this.process = process
       this.dragon = Dragon({
+        process,
         fadeTime,
         duration,
-        process: this.process,
         dropSize: this.dropSize,
         boardWidth: this.boardWidth,
       })
       .moveTo(this.leftMargin, this.topMargin)
       .addChildTo(this)
+      console.log(`createDragon: {fadeTime: ${fadeTime}, duration: ${duration}}`)
     },
 
     // 手順通りにドロップを自動で動かすメソッド
-    // (ゲームを初期化してから実際のメソッドを呼び出す)
-    // moveTime: １マスの移動にかける時間(ミリ秒)
-    // moveDuration: メソッド呼び出しまでの待ち時間
-    moveDrops (moveTime, moveDuration = 0) {
-      if (this.process) {
-        this.exitTo('main', {
-          moveFlag: true,
-          moveTime,
-          moveDuration,
-        })
-      }
+    // process: 操作手順の配列
+    // moveTime: １マスあたりの移動にかける時間
+    // duration: 実行までの待機時間
+    moveDrops (process, moveTime, duration) {
+      console.log(`moveDrops: {moveTime: ${moveTime}, duration: ${duration}}`)
+      this.process = process
+      setTimeout(() => {
+        this._moveDrops(moveTime)
+      }, duration)
     },
 
     // 各種フラグ、パラメータを初期化するメソッド
@@ -80,7 +73,7 @@ export default () => {
         RESET   : () => { this.exitTo('main') },
         SHUFFLE : () => { this.vueMethods.shuffle() },
         SEARCH  : () => { this.vueMethods.search() },
-        MOVE    : () => { this._moveProcessing() },
+        MOVE    : () => { this._moveButtonProcessing() },
         HIDE    : () => { this._switchDisplayFlag() },
       }
       Object.entries(buttonData).forEach(([name, func], index) => {
@@ -423,12 +416,10 @@ export default () => {
     },
 
     // MOVEボタン押下時の処理
-    _moveProcessing () {
-      if (this.lineFlag) {
-        this.moveDrops(100)
-      } else {
-        this.moveDrops(100)
-      }
+    _moveButtonProcessing () {
+      this.exitTo('main', {
+        moveButtonFlag: true,
+      })
     },
 
     // ドラゴン・操作不可・開始位置指定オブジェクトの表示・非表示を切り替えるメソッド
