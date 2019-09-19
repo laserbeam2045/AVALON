@@ -70,7 +70,7 @@ export default phina.define('MyGameApp', {
   init (options) {
     const boardData = this._getBoardData(options)
     const screenData = this._getScreenData(boardData.boardSize)
-    const { dropFall, activeDrops, vueMethods } = options
+    const vueMethods = options.vueMethods
 
     options = (options || {}).$safe({
       query: options.query,
@@ -80,16 +80,14 @@ export default phina.define('MyGameApp', {
       width: SCREEN_PIXEL_WIDTH,
       height: SCREEN_PIXEL_HEIGHT,
       fit: false,
-      lineFlag: true,
       boardData,
       screenData,
-      dropFall,
-      activeDrops,
       vueMethods,
+      lineFlag: true,
     })
     this.superInit(options)
 
-    // 以下のプロパティはセッター関数を通じて直接代入できる
+    // 以下のプロパティは、base.jsのセッター関数を通じて直接代入できる
     this.setter('dropFall', newValue => {
       this.currentScene.dropFall = newValue
     })
@@ -123,7 +121,6 @@ export default phina.define('MyGameApp', {
   // ゲームを新しい状態で開始するメソッド
   // options: 以下のプロパティを持つオブジェクト
   //   board: 盤面の状態を表す配列（必須）
-  //   process: 操作手順の配列
   //   dropFall: 落ちコンの有無（真偽値）
   //   activeDrops: 落ちる可能性のある色（真偽値の配列）
   //   startPosition: 開始位置指定（-1以上の整数値）
@@ -136,14 +133,15 @@ export default phina.define('MyGameApp', {
       boardData,
       screenData,
       ...options,
-      dragon: null
+      dragon: null,
+      process: null,
     })
     return this
   },
 
   // 盤面に関する情報を整形してまとめるメソッド
   _getBoardData (options) {
-    let { board, startPosition, immovablePositions } = options
+    const { board, dropFall, activeDrops, startPosition, immovablePositions } = options
     let boardHeight = null
     let boardWidth = null
     let boardSize = null
@@ -162,7 +160,7 @@ export default phina.define('MyGameApp', {
     }
     return {
       board, boardHeight, boardWidth, boardSize,
-      startPosition, immovablePositions,
+      dropFall, activeDrops, startPosition, immovablePositions,
     }
   },
 

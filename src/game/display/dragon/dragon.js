@@ -9,9 +9,12 @@ import DragonHead from './head'
 // ドラゴンクラス(手順線)
 // 必須引数：
 // options(以下をプロパティに含むオブジェクト)
-//   process(手順＝座標の配列)
+//   process(操作手順の配列)
+//   fadeTime(１パーツのフェードインにかける時間)
+//   duration(表示までの待機時間)
 //   dropSize(ドロップの大きさ)
 //   boardWidth(盤面内で横に並ぶドロップの数)
+//   lineFlag(表示させるかどうか)
 export default phina.define('Dragon', {
   superClass: MyDisplayElement,
 
@@ -39,22 +42,22 @@ export default phina.define('Dragon', {
       ]
       if (index === 0)
         this.parts[index].push(DragonTail(data))  // 尻尾
-
       else if (this._isLast(index))
         this.parts[index].push(DragonHead(data))  // 頭
     })
   },
 
-  // 初めは透明にしておいて、徐々にフェードインさせるメソッド
+  // 初めは透明にしておき、徐々にフェードインさせるメソッド
   _advent () {
     this.parts.forEach((part, index) => {
       part.forEach(object => {
-        object.setAlpha(0)
-          .addChildTo(this)
-          .tweener
+        object.setAlpha(0).addChildTo(this)
+        if (this.displayFlag) {
+          object.tweener
           .wait(this.fadeTime * index)
           .to({alpha: 1}, this.fadeTime * 3, this.easing)
           .play()
+        }
       })
     })
   },

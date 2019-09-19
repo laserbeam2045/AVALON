@@ -8,9 +8,11 @@ import controll from '../mixins/Controll'
 
 export default {
   name: 'TheGameArea',
+  
   mixins: [
     controll,
   ],
+
   computed: {
     board () {
       return Array.from(this.$store.state.boardSettings.board)
@@ -31,12 +33,14 @@ export default {
       }
     },
   },
+
   created () {
     // ゲームを初期化し、インスタンスをstoreに送る
     createGame(this.initialData)
     .then(app => this.$store.commit('setGameApp', app))  // eslint-disable-next-line
     .catch(err => console.error(err))
   },
+
   methods: {
     // 盤面をシャッフルするメソッド(ついでに設定も初期化する）
     shuffle () {

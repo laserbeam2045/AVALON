@@ -25,7 +25,6 @@ export default {
       const activeDrops = this.clearingSettings.activeDrops
       return {
         board: Array.from(board),
-        process: this.process,
         dropFall,
         activeDrops: Array.from(activeDrops),
         startPosition,
@@ -54,9 +53,9 @@ export default {
         return new Promise((resolve, reject) => reject())
       }
       this.$store.commit('setStateFlag', CONST.SEARCHING)
-
+      this.$store.commit('setBestNode', null)
+      this.startNewGame()
       return this.$store.dispatch('search').then(() => {
-        this.startNewGame()
         this.moveOrAlert()
         this.displayLine()
         this.$store.commit('setStateFlag', CONST.SEARCH_END)
@@ -76,7 +75,7 @@ export default {
     // ドロップを自動で動かすメソッド
     moveDrops (moveTime = 100, duration = 0) {
       if (typeof(moveTime) != 'number') {
-        moveTime = 100
+        moveTime = 80
       }
       this.gameApp.moveDrops(Array.from(this.process), moveTime, duration)
     },

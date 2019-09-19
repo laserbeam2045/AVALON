@@ -18,6 +18,12 @@ export default phina.define('BaseScene', {
     this._setComputedAttributes()
     this._setObjects()
     this._initializeSetterAndGetter()
+
+    this.dragon = options.dragon
+    this.process = options.process
+    this.lineFlag = options.lineFlag
+    this.dropFall = options.dropFall
+    this.activeDrops = options.activeDrops
   },
 
   // シーンを移動するメソッド
@@ -25,11 +31,13 @@ export default phina.define('BaseScene', {
     this.exit(label, Object.assign({
       boardData: this.boardData,
       screenData: this.screenData,
-      process: this.process,
       lineFlag: this.lineFlag,
       dragon: this.dragon,
+      process: this.process,
       dropFall: this.dropFall,
       activeDrops: this.activeDrops,
+      startPosition: this.startPosition,
+      immovablePositions: this.immovablePositions,
     }, options))
   },
 
