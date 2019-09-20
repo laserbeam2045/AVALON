@@ -4,6 +4,7 @@ import StylishButton from '../ui/stylishButton'
 import { GrabbedDrop } from '../display/drops'
 import Dragon from '../display/dragon/dragon'
 import MoveCountLabel from '../display/moveCountLabel'
+import ComboEffects from '../display/ComboEffects'
 
 export default () => {
   phina.define('MainScene', {
@@ -18,6 +19,7 @@ export default () => {
       this.initializeStartPosition()
       this.initializeImmovablePositions()
       this._initDragons(options)
+      this.comboEffects = ComboEffects().moveTo(this.leftMargin, this.topMargin).addChildTo(this)
     },
 
     // 手順線を作成するメソッド
@@ -183,10 +185,27 @@ export default () => {
     },
 
     // コンボ時のエフェクトを実行するメソッド
-    _playComboEffect () {
+    _playComboEffect (x, y, index) {
       this.combo++
       const soundNum = Math.min(18, this.combo)
       this.playSound(`combo_${soundNum}`)
+
+      let fontSize
+      switch (this.boardSize) {
+        case '5x6': fontSize = 23; break
+        case '6x7': fontSize = 18; break
+      }
+      this.comboEffects.addLabel({
+        text: `Combo ${this.combo}`,
+        x, y, index, fontSize,
+      })
+    },
+
+    // 与えられた配列の中央値(偶数の場合は先頭に近い方)を返すメソッド
+    _getMedian (arr) {
+      const half = (arr.length / 2) | 0
+
+      return arr.sort()[half]
     },
 
     // ドロップを消すメソッド
@@ -200,6 +219,7 @@ export default () => {
         if (this.dropFall) {
           this.dragOkFlag = true
         }
+        setTimeout (() => this.comboEffects.clear(), 1000)
         return
       }
       // コンボごとに処理の実行をずらす
@@ -210,7 +230,9 @@ export default () => {
             drop.tweener.fadeOut(FADE_TIME).call(() => drop.remove()).play()
             this.board[index] = 0
           })
-          this._playComboEffect()
+          const index = this._getMedian(clearablePlaces[i])
+          const [x, y] = this.getCoordinatesOfDrop(index)
+          this._playComboEffect(x, y, index)
         }, FADE_TIME * i)
       }
       // 全てのドロップが消えるのを待ってから、ドロップを落とすメソッドを呼び出す
