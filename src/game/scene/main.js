@@ -209,7 +209,7 @@ export default () => {
 
     // ドロップを消すメソッド
     _clearDrops () {
-      const FADE_TIME = 410   // 一つのコンボが消えるのにかかる時間（ミリ秒）
+      const FADE_TIME = 420   // 一つのコンボが消えるのにかかる時間（ミリ秒）
       const clearablePlaces = this._getClearablePlacesAsArray()
       const comboNum = clearablePlaces.length
 
@@ -239,7 +239,7 @@ export default () => {
 
     // ドロップを落とすメソッド
     _dropDrops () {
-      const FALL_TIME = 325 // ドロップが落ちるまでにかかる時間(ミリ秒)
+      const FALL_TIME = 330 // ドロップが落ちるまでにかかる時間(ミリ秒)
       const { board, dropSprites, boardWidth, boardHeight } = this
 
       // 盤面に残ったドロップを落とす
