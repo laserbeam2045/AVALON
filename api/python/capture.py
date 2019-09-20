@@ -21,7 +21,7 @@ APP_NAME = u'Apowersoft iPhone録画究極'
 #MARGIN_TOP = 360
 
 DROP_SIZE = 46
-TEMPLATE_NUM = 134
+TEMPLATE_NUM = 137
 
 # iphone 6 720*1280
 DEFAULT_APP_WIDTH = 416
@@ -44,11 +44,11 @@ def k_nn(img):
 
     # 最も距離が近い標本のインデックスから、クラスを決める
     index = distances.index(min(distances)) + 1
-    if index in [ 1,  2,  3,  4,  5,  6,  7,  8,  9, 10, 11, 12, 13, 14, 97, 98, 99, 123]: return 1
+    if index in [ 1,  2,  3,  4,  5,  6,  7,  8,  9, 10, 11, 12, 13, 14, 97, 98, 99, 123, 137]: return 1
     if index in [15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 100, 101, 102, 128, 132, 133, 134]: return 2
     if index in [29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 103, 104, 105, 106, 107, 108, 129, 130]: return 3
-    if index in [43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 109, 110, 111, 112, 118, 119, 124, 125, 126]: return 4
-    if index in [57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 113, 114, 115, 116, 117, 122]: return 5
+    if index in [43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 109, 110, 111, 112, 118, 119, 124, 125, 126, 135]: return 4
+    if index in [57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 113, 114, 115, 116, 117, 122, 136]: return 5
     if index in [71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 120, 121]: return 6
     if index in [84, 85, 86, 87, 88, 127]: return 7
     if index in [89, 90, 91, 92]: return 8
@@ -78,7 +78,7 @@ def get_board(board_height, board_width):
             box = (xmin, ymin, xmax, ymax)
             img = board_img.crop(box)
             img = img.resize((DROP_SIZE, DROP_SIZE))
-            #img.save("sample/drop_{}s.png".format(y*board_width+x+1))
+            img.save("sample/drop_{}s.png".format(y*board_width+x+1))
             color = k_nn(img)
             board.append(color)
     return board
