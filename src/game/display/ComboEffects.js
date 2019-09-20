@@ -15,14 +15,16 @@ export default phina.define('ComboEffects', {
   addLabel (options) {
     const index = options.index
     const oldLabel = this.labelMap.get(index)
+    const newLabel = ComboEffect(options).addChildTo(this)
 
     // 同じ座標に既にラベルがあるなら先に削除する
     if (oldLabel) {
       oldLabel.remove()
       this.labelMap.delete(index)
     }
-    this.labelMap.set(index, ComboEffect(options).addChildTo(this))
+    this.labelMap.set(index, newLabel)
 
+    // 負荷軽減のためにラベルが追加されてからイベントを設定する
     if (1 === this.labelMap.size) {
       this.update = this.updateColor
     }
@@ -30,26 +32,22 @@ export default phina.define('ComboEffects', {
 
   // 全てのラベルをフェードアウトさせるメソッド
   clear () {
-    this.children.forEach(label => {
-      label.clear()
-    })
-    this.labelMap.clear()
     this.update = null
+    this.labelMap.forEach(label => label.clear())
+    this.labelMap.clear()
   },
 
   // 全てのラベルの色をランダムに変更するイベントハンドラ
   updateColor (app) {
-    if ((app.frame % 1) === 0) {
+    if ((app.frame % 2) === 0) {
       let index
       do {
-        index = Math.floor(Math.random() * 8)
+        index = Math.floor(Math.random() * this.colors.length)
       } while (index === this.colorIndex)
       this.colorIndex = index
 
       const color = this.colors[index]  
-      this.children.forEach(label => {
-        label.setColor(color)
-      })
+      this.labelMap.forEach(label => label.setColor(color))
     }
   },
 

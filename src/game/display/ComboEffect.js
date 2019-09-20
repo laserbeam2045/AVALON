@@ -8,9 +8,9 @@ export default phina.define('ComboEffect', {
     const { x, y } = options
 
     options = (options || {}).$safe({
-      fontWeight: 'bold',
       fill: 'white',
       stroke: 'black',
+      fontWeight: 'bold',
     })
     this.superInit(options)
 
@@ -27,10 +27,11 @@ export default phina.define('ComboEffect', {
     this.fill = color
   },
 
-  // フェードアウトするメソッド
+  // フェードアウトして消すメソッド
   clear () {
     this.tweener
-      .to({scaleX: 2, scaleY: 2, alpha: 0, y: this.y - 50}, 100)
-      .call(() => this.remove()).play()
+      .to({scaleX: 2, scaleY: 2, alpha: 0, y: this.y - 25}, 200)
+      .call(() => this.remove())
+      .play()
   }
 })

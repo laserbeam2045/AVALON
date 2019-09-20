@@ -185,7 +185,7 @@ export default () => {
     },
 
     // コンボ時のエフェクトを実行するメソッド
-    _playComboEffect (x, y, index) {
+    _playComboEffect (index) {
       this.combo++
       const soundNum = Math.min(18, this.combo)
       this.playSound(`combo_${soundNum}`)
@@ -193,24 +193,23 @@ export default () => {
       let fontSize
       switch (this.boardSize) {
         case '5x6': fontSize = 23; break
-        case '6x7': fontSize = 18; break
+        case '6x7': fontSize = 19; break
       }
-      this.comboEffects.addLabel({
-        text: `Combo ${this.combo}`,
-        x, y, index, fontSize,
-      })
+      const text = `Combo ${this.combo}`
+      const [x, y] = this.getCoordinatesOfDrop(index)
+      this.comboEffects.addLabel({ text, x, y, index, fontSize })
     },
 
     // 与えられた配列の中央値(偶数の場合は先頭に近い方)を返すメソッド
     _getMedian (arr) {
       const half = (arr.length / 2) | 0
 
-      return arr.sort()[half]
+      return arr.sort((a, b) => a - b)[half]
     },
 
     // ドロップを消すメソッド
     _clearDrops () {
-      const FADE_TIME = 400   // 一つのコンボが消えるのにかかる時間（ミリ秒）
+      const FADE_TIME = 410   // 一つのコンボが消えるのにかかる時間（ミリ秒）
       const clearablePlaces = this._getClearablePlacesAsArray()
       const comboNum = clearablePlaces.length
 
@@ -231,8 +230,7 @@ export default () => {
             this.board[index] = 0
           })
           const index = this._getMedian(clearablePlaces[i])
-          const [x, y] = this.getCoordinatesOfDrop(index)
-          this._playComboEffect(x, y, index)
+          this._playComboEffect(index)
         }, FADE_TIME * i)
       }
       // 全てのドロップが消えるのを待ってから、ドロップを落とすメソッドを呼び出す
