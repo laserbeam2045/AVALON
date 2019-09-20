@@ -18,14 +18,12 @@ export default () => {
 
     init (options) {
       this.superInit(options)
-
-      // 選択アイテム・ボタン・ドロップ・ギミックを配置
-      this._initializeItems()
-      this._initializeStartButton()
-      this._initializeSetterAndGetter()
-      this.initializeDrops()
-      this.initializeStartPosition()
-      this.initializeImmovablePositions()
+      this._initSetterAndGetter()
+      this._initItems()
+      this._initStartButton()
+      this.initDrops()
+      this.initStartPosition()
+      this.initImmovablePositions()
     },
 
     // アイテムを選択状態にする唯一のパブリックメソッド
@@ -45,8 +43,24 @@ export default () => {
       })
     },
 
+    // Setter関数とGetter関数を定義するメソッド
+    _initSetterAndGetter () {
+      this.setter('selectedItem', newItem => {
+        this._selectedItem = newItem
+      })
+      this.getter('selectedItem', () => {
+        return this._selectedItem
+      })
+      this.setter('lastMoveIndex', newIndex => {
+        this._lastMoveIndex = newIndex
+      })
+      this.getter('lastMoveIndex', () => {
+        return this._lastMoveIndex
+      })
+    },
+
     // 選択アイテムを初期配置するメソッド
-    _initializeItems () {
+    _initItems () {
       // 選択アイテムを入れるグループを作成
       const x = 65, y = this.topMargin - 71
       this.itemGroup = phina.display.DisplayElement().moveTo(x, y).addChildTo(this)
@@ -79,10 +93,9 @@ export default () => {
     },
 
     // STARTボタンを初期配置するメソッド
-    _initializeStartButton () {
-      const GridX = phina.util.Grid(this.screenPixelWidth, 6)
-      const x = GridX.span(5.5)
-      const y = GridX.span(0.5)
+    _initStartButton () {
+      const x = this.buttonGridX.span(5.5)
+      const y = this.buttonGridX.span(0.5)
       StylishButton('START')
         .moveTo(x, y)
         .addChildTo(this.buttonGroup)
@@ -180,22 +193,6 @@ export default () => {
       this.board[index] = color
       this.boardData.board[index] = color
       this.dropSprites[index].setFrameIndex(color)
-    },
-
-    // Setter関数とGetter関数を定義するメソッド
-    _initializeSetterAndGetter () {
-      this.setter('selectedItem', newItem => {
-        this._selectedItem = newItem
-      })
-      this.getter('selectedItem', () => {
-        return this._selectedItem
-      })
-      this.setter('lastMoveIndex', newIndex => {
-        this._lastMoveIndex = newIndex
-      })
-      this.getter('lastMoveIndex', () => {
-        return this._lastMoveIndex
-      })
     },
   })
 }
