@@ -16,8 +16,8 @@ export default phina.define('BaseScene', {
     })
     this._setAttributes(options)
     this._setComputedAttributes()
-    this._setObjects()
-    this._initializeSetterAndGetter()
+    this._initObjects()
+    this._initSetterAndGetter()
 
     this.dragon = options.dragon
     this.process = options.process
@@ -42,7 +42,7 @@ export default phina.define('BaseScene', {
   },
 
   // 盤面にドロップを初期配置するメソッド
-  initializeDrops () {
+  initDrops () {
     this.dropSprites = []   // ドロップを管理するための配列
     let DropClass = null
 
@@ -66,7 +66,7 @@ export default phina.define('BaseScene', {
   },
 
   // 盤面に開始位置指定スプライトを初期配置するメソッド
-  initializeStartPosition () {
+  initStartPosition () {
     const index = this.startPosition
     if (index !== -1) {
       this.startPositionSprite = this.createStartPositionSprite(index)
@@ -81,7 +81,7 @@ export default phina.define('BaseScene', {
   },
 
   // 盤面に操作不可スプライトを初期配置するメソッド
-  initializeImmovablePositions () {
+  initImmovablePositions () {
     this.immovablePositionSprites = new Map()
 
     for (let index of this.immovablePositions) {
@@ -187,13 +187,16 @@ export default phina.define('BaseScene', {
     this.boardPixelWidth = this.screenPixelWidth - (this.leftMargin + this.rightMargin)
     // 実際に表示されるドロップのサイズ
     this.dropSize = this.boardPixelWidth / this.boardWidth
+    // ボタン領域のグリッド
+    const buttonNum = 6
+    this.buttonGridX = phina.util.Grid(this.screenPixelWidth, buttonNum)
     // 盤面領域のグリッド
     this.dropGridX = phina.util.Grid(this.boardPixelWidth, this.boardWidth)
     this.dropGridY = phina.util.Grid(this.boardPixelHeight, this.boardHeight)
   },
 
   // 基本的なオブジェクトを初期配置するメソッド
-  _setObjects () {
+  _initObjects () {
     // 市松模様のタイル画像（下部）
     const tileImgName = `tile_${this.boardSize}`
     phina.display.Sprite(tileImgName).setOrigin(0, 0).moveTo(0, this.topMargin).addChildTo(this)
@@ -214,7 +217,7 @@ export default phina.define('BaseScene', {
   },
 
   // Setter関数とGetter関数を定義するメソッド
-  _initializeSetterAndGetter () {
+  _initSetterAndGetter () {
     this.setter('dropFall', newValue => {
       this._dropFall = newValue
     })

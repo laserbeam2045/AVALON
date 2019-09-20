@@ -3,7 +3,8 @@ import BaseScene from './base'
 import StylishButton from '../ui/stylishButton'
 import { GrabbedDrop } from '../display/drops'
 import Dragon from '../display/dragon/dragon'
-import MoveCountLabel from '../display/moveCountLabel'
+import CountLabel from '../display/CountLabel'
+import ComboEffects from '../display/ComboEffects'
 
 export default () => {
   phina.define('MainScene', {
@@ -13,10 +14,11 @@ export default () => {
       this.superInit(options)
       this._initFlags()
       this._initButtons()
-      this._initMoveCountLabel()
-      this.initializeDrops()
-      this.initializeStartPosition()
-      this.initializeImmovablePositions()
+      this._initCountLabels()
+      this._initComboEffects()
+      this.initDrops()
+      this.initStartPosition()
+      this.initImmovablePositions()
       this._initDragons(options)
     },
 
@@ -56,10 +58,8 @@ export default () => {
       this.combo = 0            // コンボ数
     },
 
-    // ボタンを配置するメソッド
+    // ボタンを初期配置するメソッド
     _initButtons () {
-      const buttonNum = 6
-      const GridX = phina.util.Grid(this.screenPixelWidth, buttonNum)
       const buttonData = {
         INPUT   : this._inputButtonProcessing,
         RESET   : this._resetButtonProcessing,
@@ -69,33 +69,74 @@ export default () => {
         HIDE    : this._hideButtonProcessing,
       }
       Object.entries(buttonData).forEach(([name, func], index) => {
-        const x = GridX.span(0.5 + index)
-        const y = GridX.span(0.5)
+        const x = this.buttonGridX.span(0.5 + index)
+        const y = this.buttonGridX.span(0.5)
         StylishButton(name).moveTo(x, y).addChildTo(this.buttonGroup)
           .addEventListener('pointstart', func.bind(this))
       })
       this._switchHideButtonName()
     },
 
-    // 移動回数ラベルを配置するメソッド
-    _initMoveCountLabel () {
-      const x = this.screenPixelWidth - 65
-      const y = this.topMargin - 185
-      this.moveCountLabel = MoveCountLabel().moveTo(x, y).addChildTo(this)
+    // コンボ数・移動回数ラベルを初期配置するメソッド
+    _initCountLabels () {
+      let x = this.screenPixelWidth - 65
+      let y = this.topMargin - 185
+      this.moveCountLabel = CountLabel().moveTo(x, y).addChildTo(this)
+      x = 140
+      this.comboCountLabel = CountLabel().moveTo(x, y).addChildTo(this)
+    },
+
+    // コンボ時のエフェクトを扱うレイヤを初期配置するメソッド
+    _initComboEffects () {
+      this.comboEffects = ComboEffects()
+        .moveTo(this.leftMargin, this.topMargin).addChildTo(this)
     },
 
     // 場合によりドラゴンを表示させ、場合によりドロップを動かすメソッド
     _initDragons (options) {
       if (this.process) {
         if (options.resetButtonFlag || !this.dragon) {
-          this.createDragon(options.process, 80)
+          this.createDragon(this.process, 80)
         } else {
           this.dragon.addChildTo(this)
+          if (this.lineFlag) {
+            this.dragon.setAlpha(1)
+          }
         }
         if (options.moveButtonFlag) {
           this.moveDrops(this.process, 100)
         }
       }
+    },
+
+    // INPUTボタン押下時の処理
+    _inputButtonProcessing () {
+      this.exitTo('input')
+    },
+
+    // RESETボタン押下時の処理
+    _resetButtonProcessing () {
+      this.exitTo('main', {
+        resetButtonFlag: true,
+      })
+    },
+
+    // MOVEボタン押下時の処理
+    _moveButtonProcessing () {
+      this.exitTo('main', {
+        moveButtonFlag: true,
+      })
+    },
+
+    // HIDEボタン押下時の処理
+    _hideButtonProcessing () {
+      if (this.lineFlag) {
+        this._fadeOutObjects()
+      } else {
+        this._fadeInObjects()
+      }
+      this.lineFlag = !this.lineFlag
+      this._switchHideButtonName()
     },
 
     // ドロップの操作を開始したときのイベント処理
@@ -131,6 +172,7 @@ export default () => {
         this.changeFlag = true
         this.dragStartIndex = Z
         this.moveCountLabel.increment()
+        this.comboCountLabel.reset()
       }
     },
 
@@ -183,15 +225,31 @@ export default () => {
     },
 
     // コンボ時のエフェクトを実行するメソッド
-    _playComboEffect () {
+    _playComboEffect (index) {
       this.combo++
       const soundNum = Math.min(18, this.combo)
       this.playSound(`combo_${soundNum}`)
+
+      let fontSize
+      switch (this.boardSize) {
+        case '5x6': fontSize = 23; break
+        case '6x7': fontSize = 19; break
+      }
+      const text = `Combo ${this.combo}`
+      const [x, y] = this.getCoordinatesOfDrop(index)
+      this.comboEffects.addLabel({ text, x, y, index, fontSize })
+    },
+
+    // 与えられた配列の中央値(偶数の場合は先頭に近い方)を返すメソッド
+    _getMedian (arr) {
+      const half = (arr.length / 2) | 0
+
+      return arr.sort((a, b) => a - b)[half]
     },
 
     // ドロップを消すメソッド
     _clearDrops () {
-      const FADE_TIME = 400   // 一つのコンボが消えるのにかかる時間（ミリ秒）
+      const FADE_TIME = 420   // 一つのコンボが消えるのにかかる時間（ミリ秒）
       const clearablePlaces = this._getClearablePlacesAsArray()
       const comboNum = clearablePlaces.length
 
@@ -200,6 +258,10 @@ export default () => {
         if (this.dropFall) {
           this.dragOkFlag = true
         }
+        setTimeout (() => {
+          this.comboEffects.clear()
+          this.comboCountLabel.setAlpha(0).setText(`${this.combo}combo`).fadeIn(500)
+        }, 1000)
         return
       }
       // コンボごとに処理の実行をずらす
@@ -210,7 +272,8 @@ export default () => {
             drop.tweener.fadeOut(FADE_TIME).call(() => drop.remove()).play()
             this.board[index] = 0
           })
-          this._playComboEffect()
+          const index = this._getMedian(clearablePlaces[i])
+          this._playComboEffect(index)
         }, FADE_TIME * i)
       }
       // 全てのドロップが消えるのを待ってから、ドロップを落とすメソッドを呼び出す
@@ -219,7 +282,7 @@ export default () => {
 
     // ドロップを落とすメソッド
     _dropDrops () {
-      const FALL_TIME = 325 // ドロップが落ちるまでにかかる時間(ミリ秒)
+      const FALL_TIME = 330 // ドロップが落ちるまでにかかる時間(ミリ秒)
       const { board, dropSprites, boardWidth, boardHeight } = this
 
       // 盤面に残ったドロップを落とす
@@ -423,36 +486,6 @@ export default () => {
         this.changeFlag = true
       })
       .play()
-    },
-
-    // INPUTボタン押下時の処理
-    _inputButtonProcessing () {
-      this.exitTo('input')
-    },
-
-    // RESETボタン押下時の処理
-    _resetButtonProcessing () {
-      this.exitTo('main', {
-        resetButtonFlag: true,
-      })
-    },
-
-    // MOVEボタン押下時の処理
-    _moveButtonProcessing () {
-      this.exitTo('main', {
-        moveButtonFlag: true,
-      })
-    },
-
-    // HIDEボタン押下時の処理
-    _hideButtonProcessing () {
-      if (this.lineFlag) {
-        this._fadeOutObjects()
-      } else {
-        this._fadeInObjects()
-      }
-      this.lineFlag = !this.lineFlag
-      this._switchHideButtonName()
     },
 
     // ドラゴン・操作不可・開始位置指定オブジェクトを非表示にするメソッド
