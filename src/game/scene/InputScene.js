@@ -1,9 +1,9 @@
 import * as phina from 'phina.js'
 import BaseScene from './base'
-import StylishButton from '../ui/stylishButton'
+import FrameButton from '../ui/FrameButton'
 import { ItemDrop } from '../display/drops'
-import StartPosition from '../display/startPosition/startPosition'
-import ImmovablePosition from '../display/immovablePosition'
+import StartPosition from '../display/startPosition/StartPosition'
+import ImmovablePosition from '../display/ImmovablePosition'
 
 const COLOR_MAX = 9                 // ドロップの種類
 const MAX_PER_LINE = 6              // 横に並べるドロップの数
@@ -96,7 +96,7 @@ export default () => {
     _initStartButton () {
       const x = this.buttonGridX.span(5.5)
       const y = this.buttonGridX.span(0.5)
-      StylishButton('START')
+      FrameButton('START')
         .moveTo(x, y)
         .addChildTo(this.buttonGroup)
         .addEventListener('pointstart', () => {

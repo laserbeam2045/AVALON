@@ -1,6 +1,6 @@
 import * as phina from 'phina.js'
-import ImmovablePosition from '../display/immovablePosition'
-import StartPosition from '../display/startPosition/startPosition'
+import ImmovablePosition from '../display/ImmovablePosition'
+import StartPosition from '../display/startPosition/StartPosition'
 import { Drop, NormalDrop } from '../display/drops'
 
 phina.globalize()

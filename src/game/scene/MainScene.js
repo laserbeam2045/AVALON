@@ -1,8 +1,8 @@
 import * as phina from 'phina.js'
 import BaseScene from './base'
-import StylishButton from '../ui/stylishButton'
+import FrameButton from '../ui/FrameButton'
 import { GrabbedDrop } from '../display/drops'
-import Dragon from '../display/dragon/dragon'
+import Dragon from '../display/dragon/Dragon'
 import CountLabel from '../display/CountLabel'
 import ComboEffects from '../display/ComboEffects'
 
@@ -71,7 +71,7 @@ export default () => {
       Object.entries(buttonData).forEach(([name, func], index) => {
         const x = this.buttonGridX.span(0.5 + index)
         const y = this.buttonGridX.span(0.5)
-        StylishButton(name).moveTo(x, y).addChildTo(this.buttonGroup)
+        FrameButton(name).moveTo(x, y).addChildTo(this.buttonGroup)
           .addEventListener('pointstart', func.bind(this))
       })
       this._switchHideButtonName()

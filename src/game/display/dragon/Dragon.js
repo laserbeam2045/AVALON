@@ -1,10 +1,10 @@
 import * as phina from 'phina.js'
 import MyDisplayElement from '../MyDisplayElement'
-import DragonOutline from './outline'
-import DragonBody from './body'
-import DragonScale from './scale'
-import DragonTail from './tail'
-import DragonHead from './head'
+import Outline from './Outline'
+import Body from './Body'
+import Scale from './Scale'
+import Tail from './Tail'
+import Head from './Head'
 
 // ドラゴンクラス(手順線)
 // 必須引数：
@@ -36,14 +36,14 @@ export default phina.define('Dragon', {
     this.parts = []
     this._getLineData().forEach((data, index) => {
       this.parts[index] = [
-        DragonOutline(data),                          // 輪郭線
-        DragonBody(data, index, this.process.length), // 胴体
-        DragonScale(data),                            // 鱗
+        Outline(data),                          // 輪郭線
+        Body(data, index, this.process.length), // 胴体
+        Scale(data),                            // 鱗
       ]
       if (index === 0)
-        this.parts[index].push(DragonTail(data))  // 尻尾
+        this.parts[index].push(Tail(data))  // 尻尾
       else if (this._isLast(index))
-        this.parts[index].push(DragonHead(data))  // 頭
+        this.parts[index].push(Head(data))  // 頭
     })
   },
 

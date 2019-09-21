@@ -1,6 +1,6 @@
 import * as phina from 'phina.js'
-import defineMainScene from './scene/main'
-import defineInputScene from './scene/input'
+import defineMainScene from './scene/MainScene'
+import defineInputScene from './scene/InputScene'
 import MyGameApp from './MyGameApp'
 
 // ゲームを作成する関数

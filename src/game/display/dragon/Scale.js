@@ -4,7 +4,7 @@ import MyShape from '../MyShape'
 // ドラゴンの鱗クラス
 // 必須引数：
 // lineData(座標オブジェクト)
-export default phina.define('DragonScale', {
+export default phina.define('Scale', {
   superClass: MyShape,
 
   init (lineData) {
