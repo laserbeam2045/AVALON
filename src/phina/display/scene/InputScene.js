@@ -1,9 +1,9 @@
 import * as phina from 'phina.js'
-import BaseScene from './base'
-import FrameButton from '../ui/FrameButton'
-import { ItemDrop } from '../display/drops'
-import StartPosition from '../display/startPosition/StartPosition'
-import ImmovablePosition from '../display/ImmovablePosition'
+import BaseScene from './BaseScene'
+import FrameButton from '../../ui/FrameButton'
+import { ItemDrop } from '../drops'
+import StartPosition from '../startPosition/StartPosition'
+import ImmovablePosition from '../ImmovablePosition'
 
 const COLOR_MAX = 9                 // ドロップの種類
 const MAX_PER_LINE = 6              // 横に並べるドロップの数

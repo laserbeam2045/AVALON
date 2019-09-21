@@ -28,25 +28,25 @@ const RIGHT_MARGIN = {
 // ゲームが使用する画像データのPATH
 const ASSETS = {
   image: {
-    drops: require('../assets/img/drops.png'),
-    tile_5x6: require('../assets/img/tile_5x6.png'),
-    tile_6x7: require('../assets/img/tile_6x7.png'),
-    space_5x6: require('../assets/img/space_5x6.png'),
-    space_6x7: require('../assets/img/space_6x7.png'),
-    immovable: require('../assets/img/immovable.png'),
-    dragon_head: require('../assets/img/dragon_head_.png'),
-    dragon_tail: require('../assets/img/dragon_tail_.png'),
+    drops: require('../../assets/img/drops.png'),
+    tile_5x6: require('../../assets/img/tile_5x6.png'),
+    tile_6x7: require('../../assets/img/tile_6x7.png'),
+    space_5x6: require('../../assets/img/space_5x6.png'),
+    space_6x7: require('../../assets/img/space_6x7.png'),
+    immovable: require('../../assets/img/immovable.png'),
+    dragon_head: require('../../assets/img/dragon_head_.png'),
+    dragon_tail: require('../../assets/img/dragon_tail_.png'),
   },
   sound: {
-    move: require('../assets/sound/move.mp3'),
-    button: require('../assets/sound/button.mp3'),
-    select: require('../assets/sound/Cyber17-1.mp3'),
+    move: require('../../assets/sound/move.mp3'),
+    button: require('../../assets/sound/button.mp3'),
+    select: require('../../assets/sound/Cyber17-1.mp3'),
   },
 }
 
 // コンボ時のサウンド（数が多いのでfor文で入れる）
 for (let i = 1; i <= 18; i++) {
-  ASSETS.sound[`combo_${i}`] = require(`../assets/sound/combo_${i}.mp3`)
+  ASSETS.sound[`combo_${i}`] = require(`../../assets/sound/combo_${i}.mp3`)
 }
 
 // ゲームを構成するシーン

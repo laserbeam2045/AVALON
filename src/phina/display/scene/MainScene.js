@@ -1,10 +1,10 @@
 import * as phina from 'phina.js'
-import BaseScene from './base'
-import FrameButton from '../ui/FrameButton'
-import { GrabbedDrop } from '../display/drops'
-import Dragon from '../display/dragon/Dragon'
-import CountLabel from '../display/CountLabel'
-import ComboEffects from '../display/ComboEffects'
+import BaseScene from './BaseScene'
+import FrameButton from '../../ui/FrameButton'
+import { GrabbedDrop } from '../drops'
+import Dragon from '../dragon/Dragon'
+import CountLabel from '../CountLabel'
+import ComboEffects from '../ComboEffects'
 
 export default () => {
   phina.define('MainScene', {

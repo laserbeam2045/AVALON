@@ -3,7 +3,7 @@
 </template>
 
 <script>
-import createGame from '../game/CreateGame.js'
+import createGame from '../phina/CreateGame'
 import controll from '../mixins/Controll'
 
 export default {

@@ -1,3 +1,4 @@
+import * as phina from 'phina.js'
 import ComboEffect from './ComboEffect'
 
 phina.globalize()
