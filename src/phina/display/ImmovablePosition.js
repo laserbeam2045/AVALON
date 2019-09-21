@@ -6,7 +6,7 @@ export default phina.define('ImmovablePosition', {
   superClass: MySprite,
 
   init (baseDropSize) {
-    this.superInit('immovable', baseDropSize, baseDropSize);
+    this.superInit('immovable', baseDropSize, baseDropSize)
   },
   // アイテムを識別するための変数をセットするメソッド
   setItemIndex (index) {
@@ -20,6 +20,6 @@ export default phina.define('ImmovablePosition', {
   },
   // 所属シーンのアイテムを選択するメソッドを呼び出す
   onpointstart () {
-    this._scene.selectItem(this._itemIndex);
+    this._scene.selectItem(this._itemIndex)
   },
 })

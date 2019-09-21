@@ -1,7 +1,7 @@
 import * as phina from 'phina.js'
 
 // ボタンクラス
-export default phina.define('StylishButton', {
+export default phina.define('FrameButton', {
   superClass: 'Button',
 
   init (options) {

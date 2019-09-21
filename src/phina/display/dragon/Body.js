@@ -6,7 +6,7 @@ import MyShape from '../MyShape'
 // lineData(座標オブジェクト)
 // index(何手目であるか。グラデーションのために必要)
 // processLen(手順の長さ。グラデーションのために必要)
-export default phina.define('DragonBody', {
+export default phina.define('Body', {
   superClass: MyShape,
 
   init (lineData, index, processLen) {

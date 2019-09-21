@@ -1,8 +1,8 @@
 import * as phina from 'phina.js'
 import MyDisplayElement from '../MyDisplayElement'
-import Arc from './arc'
-import Line from './line'
-import Triangle from './triangle'
+import Arc from './Arc'
+import Line from './Line'
+import Triangle from './Triangle'
 
 // 開始位置指定アイコンクラス
 export default phina.define('StartPosition', {

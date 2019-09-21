@@ -4,7 +4,7 @@ import MySprite from '../MySprite'
 // ドラゴンの尻尾クラス
 // 必須引数：
 // lineData(座標オブジェクト)
-export default phina.define('DragonTail', {
+export default phina.define('Tail', {
   superClass: MySprite,
 
   init (lineData) {

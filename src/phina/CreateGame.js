@@ -1,7 +1,7 @@
 import * as phina from 'phina.js'
-import defineMainScene from './scene/main'
-import defineInputScene from './scene/input'
-import MyGameApp from './MyGameApp'
+import defineMainScene from './display/scene/MainScene'
+import defineInputScene from './display/scene/InputScene'
+import MyGameApp from './game/MyGameApp'
 
 // ゲームを作成する関数
 // 戻り値：Promise
