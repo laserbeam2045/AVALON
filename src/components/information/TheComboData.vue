@@ -3,7 +3,7 @@
     <table>
       <BaseTr @click="switchDisplayFlag">
         <template #default>Max</template>
-        <template #combo>{{ maximum.combo }}</template>
+        <template #combo>{{ maxCombo }}</template>
         <template #magni>{{ maxMagnification }}</template>
         <template #drops>
           <DropData v-if="displayFlag" :drops="dropTypes1"/>
@@ -46,8 +46,8 @@ export default {
   },
   computed: {
     ...mapState({
-      maximum: 'maximum',
       bestNode: 'bestNode',
+      leaderSettings: 'leaderSettings',
       board: state => state.boardSettings.board,
     }),
     // 盤面に存在するドロップの数（種類別）
@@ -114,23 +114,28 @@ export default {
       })
       .filter(drop => drop.criteria)
     },
+    // 可能な最大コンボ数
+    maxCombo () {
+      return this.leaderSettings.maxCombo
+    },
     // 可能な最大倍率（表示用に四捨五入して３桁区切り）
     maxMagnification () {
-      return this.adjust(this.maximum.magnification)
-    },
-    // 探索結果の倍率（表示用に四捨五入して3桁区切り）
-    magnification () {
-      return this.adjust(this.comboData.magnification)
+      return this.adjust(this.leaderSettings.maxMagnification)
     },
     // 探索結果のコンボ数（表示用に四捨五入）
     combo () {
       return this.adjust(this.comboData.combo[0][0], 10)
     },
+    // 探索結果の倍率（表示用に四捨五入して3桁区切り）
+    magnification () {
+      return this.adjust(this.comboData.magnification)
+    },
     // コンボ数や倍率が最大値の場合に、それぞれ「maximum」classが付与される
     maxClass () {
+      const { maxCombo, maxMagnification } = this.leaderSettings
       return {
-        'combo': {'maximum': (this.maximum.combo <= this.comboData.combo)},
-        'magni': {'maximum': (this.maximum.magnification <= this.comboData.magnification)},
+        'combo': {'maximum': (maxCombo <= this.comboData.combo)},
+        'magni': {'maximum': (maxMagnification <= this.comboData.magnification)},
       }
     },
   },

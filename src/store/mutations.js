@@ -37,12 +37,6 @@ export default {
     state.bestNode = payload
   },
 
-  // 最大コンボ数と最大倍率を更新するミューテーション
-  setMaximum (state, payload) {
-    state.maximum.combo = payload.combo
-    state.maximum.magnification = payload.magnification
-  },
-
   // リーダーを変更するミューテーション
   setLeader (state, payload) {
     const { leaderNum, newLeader } = payload
@@ -55,6 +49,16 @@ export default {
       state.leaderSettings.leader2 = newLeader
       break
     }
+  },
+
+  // 盤面で可能な最大コンボ数を更新するミューテーション
+  setMaxCombo (state, payload) {
+    state.leaderSettings.maxCombo = payload
+  },
+
+  // 盤面で可能な最大倍率を更新するミューテーション
+  setMaxMagnification (state, payload) {
+    state.leaderSettings.maxMagnification = payload
   },
 
   // boardSettingsの、嫌がらせギミックの設定を初期化するミューテーション

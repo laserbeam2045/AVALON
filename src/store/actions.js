@@ -10,10 +10,8 @@ export default {
     return fetch(address)
       .then(response => response.json())
       .then(jsonData => {
-        commit('setMaximum', {
-          combo: Number(jsonData.maxComboCount),
-          magnification: Number(jsonData.maxMagnification),
-        })
+        commit('setMaxCombo', Number(jsonData.maxComboCount))
+        commit('setMaxMagnification', Number(jsonData.maxMagnification))
         commit('setMaximumApiFlag', true)
         return true
       })

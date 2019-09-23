@@ -13,16 +13,12 @@ export default {
     search: true,
   },
 
-  // 盤面で可能な最大コンボ数と最大倍率
-  maximum: {
-    combo: 0,
-    magnification: 1,
-  },
-
   // リーダーに関する設定
   leaderSettings: {
-    leader1: LEADER.METATRON,
-    leader2: LEADER.METATRON,
+    leader1: LEADER.METATRON, // 自分のリーダー
+    leader2: LEADER.METATRON, // フレンドのリーダー
+    maxCombo: 0,              // 盤面で可能な最大コンボ数
+    maxMagnification: 1,      // 盤面で可能な最大倍率
   },
 
   // 盤面に関する設定

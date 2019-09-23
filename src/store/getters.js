@@ -1,4 +1,4 @@
-import * as CONST from '../constants'
+import { LEADER } from '../constants'
 
 export default {
   // API通信でエラーが発生している状態かどうか
@@ -42,8 +42,8 @@ export default {
   leaderIs: (state) => (name) => {
     const { leader1, leader2 } = state.leaderSettings
     return (
-      leader1 === CONST.LEADER[name] ||
-      leader2 === CONST.LEADER[name]
+      leader1 === LEADER[name] ||
+      leader2 === LEADER[name]
     )
   },
 
@@ -57,14 +57,14 @@ export default {
     return settings
   },
 
-  // 探索に関する設定を、valueだけにし、プロパティ名を一部変更したもの
+  // 探索に関する設定からvalueだけを取り出し、プロパティ名を一部変更したもの
   searchSettingsForSearch (state) {
     const { width, depth, diagonalLimit, comboLimit } = state.searchSettings
     return {
-      'beamWidth'     : width.value,
-      'beamDepth'     : depth.value,
-      'diagonalLimit' : diagonalLimit.value,
-      'comboLimit'    : comboLimit.value,
+      beamWidth     : width.value,
+      beamDepth     : depth.value,
+      diagonalLimit : diagonalLimit.value,
+      comboLimit    : comboLimit.value,
     }
   },
 
@@ -90,8 +90,6 @@ export default {
       ...getters.boardSettingsForSearch,
       ...getters.searchSettingsForSearch,
       ...getters.clearingSettingsForSearch,
-      'maxCombo'          : state.maximum.combo,
-      'maxMagnification'  : state.maximum.magnification,
     })
   },
 }
