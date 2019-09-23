@@ -134,7 +134,7 @@ export default {
     maxClass () {
       const { maxCombo, maxMagnification } = this.leaderSettings
       return {
-        'combo': {'maximum': (maxCombo <= this.comboData.combo)},
+        'combo': {'maximum': (maxCombo <= this.comboData.combo[0][0])},
         'magni': {'maximum': (maxMagnification <= this.comboData.magnification)},
       }
     },
