@@ -31,7 +31,7 @@
 import BaseTr from './BaseTr'
 import DropData from './DropData'
 import { mapState } from 'vuex'
-import * as CONST from '../../constants'
+import { DROP_TYPE_MAX } from '../../constants'
 
 export default {
   name: 'TheComboData',
@@ -52,7 +52,7 @@ export default {
     }),
     // 盤面に存在するドロップの数（種類別）
     dropCountArray () {
-      const array = (new Array(CONST.DROP_TYPE_MAX + 1)).fill(0)
+      const array = (new Array(DROP_TYPE_MAX + 1)).fill(0)
       this.board.forEach(color => array[color]++)
       return array
     },
@@ -137,7 +137,7 @@ export default {
   methods: {
     // ドロップの種類数分の０埋め配列を得るメソッド
     getZeroArray () {
-      return (new Array(CONST.DROP_TYPE_MAX)).fill(0)
+      return (new Array(DROP_TYPE_MAX)).fill(0)
     },
     // 数値を表示用に四捨五入して3桁区切りにするメソッド
     adjust (number, decimalDigit = 1) {

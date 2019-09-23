@@ -15,7 +15,7 @@
 <script>
 import SkillButton from './SkillButton'
 import { mapMutations } from 'vuex'
-import * as CONST from '../../../constants'
+import { DROP_TYPE } from '../../../constants'
 import controll from '../../../mixins/Controll'
 
 export default {
@@ -47,14 +47,14 @@ export default {
         'SARASVATI': {
           belongsTo: ['COCO', 'VEROAH'],
           common: () => {
-            this.changeBoardRight(CONST.DROP_TYPE_WATER)
+            this.changeBoardRight(DROP_TYPE.WATER)
           },
         },
         'MUT': {
           belongsTo: ['COCO', 'VEROAH'],
           common: () => {
             this.changeBoardColor([
-              [CONST.DROP_TYPE_WOOD, CONST.DROP_TYPE_WATER]
+              [DROP_TYPE.WOOD, DROP_TYPE.WATER]
             ])
           },
         },
@@ -62,28 +62,28 @@ export default {
           belongsTo: ['COCO', 'VEROAH'],
           common: () => {
             this.changeBoardColor([
-              [CONST.DROP_TYPE_WOOD, CONST.DROP_TYPE_WATER],
-              [CONST.DROP_TYPE_LIGHT, CONST.DROP_TYPE_WATER]
+              [DROP_TYPE.WOOD, DROP_TYPE.WATER],
+              [DROP_TYPE.LIGHT, DROP_TYPE.WATER]
             ])
           },
         },
         'KOMASAN': {
           belongsTo: ['KOMASAN'],
           common: () => {
-            this.changeBoardLeft(CONST.DROP_TYPE_WOOD)
+            this.changeBoardLeft(DROP_TYPE.WOOD)
           },
         },
         'EIR': {
           belongsTo: ['METATRON', 'KOMASAN'],
           common: () => {
-            this.changeBoardTop(CONST.DROP_TYPE_HEART)
+            this.changeBoardTop(DROP_TYPE.HEART)
           },
         },
         'LUCIFER': {
           belongsTo: ['METATRON'],
           common: () => {
-            this.changeBoardLeft(CONST.DROP_TYPE_DARK)
-            this.changeBoardRight(CONST.DROP_TYPE_HEART)
+            this.changeBoardLeft(DROP_TYPE.DARK)
+            this.changeBoardRight(DROP_TYPE.HEART)
             this.updateClearingSettings({
               propName: 'line',
               index: 7,

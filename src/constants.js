@@ -10,16 +10,18 @@ export const STATE = {
 export const DROP_TYPE_MAX = 9
 
 // ドロップの種類を表す定数
-export const DROP_TYPE_FIRE = 1
-export const DROP_TYPE_WATER = 2
-export const DROP_TYPE_WOOD = 3
-export const DROP_TYPE_LIGHT = 4
-export const DROP_TYPE_DARK = 5
-export const DROP_TYPE_HEART = 6
-export const DROP_TYPE_BLOCK = 7
-export const DROP_TYPE_POISON = 8
-export const DROP_TYPE_DEADLY_POISON = 9
-export const DROP_TYPE_BOMB = 10
+export const DROP_TYPE = {
+  FIRE          : 1,
+  WATER         : 2,
+  WOOD          : 3,
+  LIGHT         : 4,
+  DARK          : 5,
+  HEART         : 6,
+  BLOCK         : 7,
+  POISON        : 8,
+  DEADLY_POISON : 9,
+  BOMB          : 10,
+}
 
 // 各リーダーの表示名と識別用の値
 export const LEADER = {
