@@ -1,5 +1,5 @@
-import { mapState } from 'vuex'
-import * as CONST from '../constants'
+import { mapState, mapActions } from 'vuex'
+import { STATE } from '../constants'
 
 export default {
   computed: {
@@ -34,31 +34,46 @@ export default {
   },
 
   methods: {
+    ...mapActions({
+      captureAPI: 'capture',
+      searchAPI: 'search',
+    }),
+
     // 画面をキャプチャーして盤面を取得する処理
     // 戻り値：Promise
     capture () {
-      if (this.stateFlag === CONST.SEARCHING) {
-        return new Promise((resolve, reject) => reject())
-      }
-      return this.$store.dispatch('capture').then(() => {
-        this.$store.commit('resetSearchData')
-        this.startNewGame()
+      return new Promise((resolve, reject) => {
+        if (this.stateFlag === STATE.SEARCHING) {
+          return reject()
+        }
+        this.captureAPI().then(success => {
+          if (success) {
+            this.startNewGame()
+            resolve()
+          } else {
+            reject()
+          }
+        })
       })
     },
 
     // サーバーに探索のリクエストを送る処理
     // 戻り値：Promise
     search () {
-      if (this.stateFlag === CONST.SEARCHING) {
-        return new Promise((resolve, reject) => reject())
-      }
-      this.$store.commit('setStateFlag', CONST.SEARCHING)
-      this.$store.commit('setBestNode', null)
-      this.startNewGame()
-      return this.$store.dispatch('search').then(() => {
-        this.moveOrAlert()
-        this.displayLine()
-        this.$store.commit('setStateFlag', CONST.SEARCH_END)
+      return new Promise((resolve, reject) => {
+        if (this.stateFlag === STATE.SEARCHING) {
+          return reject()
+        }
+        this.startNewGame()
+        this.searchAPI().then(success => {
+          if (success) {
+            this.moveOrAlert()
+            this.displayLine()
+            resolve()
+          } else {
+            reject()
+          }
+        })
       })
     },
 

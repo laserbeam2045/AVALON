@@ -1,4 +1,4 @@
-import { SERVER_ADDRESS } from '../constants'
+import { STATE, SERVER_ADDRESS } from '../constants'
 
 export default {
   // 盤面で可能な最大コンボ数と、最大倍率を取得するアクション
@@ -14,16 +14,19 @@ export default {
           combo: Number(jsonData.maxComboCount),
           magnification: Number(jsonData.maxMagnification),
         })
+        commit('setMaximumApiFlag', true)
+        return true
       })
-      .catch(err => {
-        commit('setErrorMessage', err)
+      .catch(error => {
+        commit('setErrorMessage', error)
+        commit('setMaximumApiFlag', false)
+        return false
       })
   },
 
   // 画面をキャプチャーして盤面を取得するアクション
-  // 戻り値：Promise
   capture ({ commit, state }) {
-    const address = SERVER_ADDRESS['python'] + state.boardSettings.boardSize
+    const address = SERVER_ADDRESS['Python'] + state.boardSettings.boardSize
 
     return fetch(address)
       .then(response => response.json())
@@ -32,14 +35,18 @@ export default {
           propName: 'board',
           newValue: jsonData.board,
         })
+        commit('resetSearchData')
+        commit('setCaptureApiFlag', true)
+        return true
       })
-      .catch(err => {
-        commit('setErrorMessage', err)
+      .catch(error => {
+        commit('setErrorMessage', error)
+        commit('setCaptureApiFlag', false)
+        return false
       })
   },
 
   // サーバーに探索のリクエストを送るアクション
-  // 戻り値：Promise
   search ({ commit, getters }) {
     const address = SERVER_ADDRESS['C']
     const options = {
@@ -47,13 +54,22 @@ export default {
       body: getters.searchConditions,
     }
 
+    commit('setBestNode', null)
+    commit('setStateFlag', STATE.SEARCHING)
+
     return fetch(address, options)
       .then(response => response.json())
       .then(jsonData => {
         commit('setBestNode', jsonData)
+        commit('setStateFlag', STATE.SEARCH_END)
+        commit('setSearchApiFlag', true)
+        return true
       })
-      .catch(err => {
-        commit('setErrorMessage', err)
+      .catch(error => {
+        commit('setErrorMessage', error)
+        commit('setStateFlag', STATE.STANDBY)
+        commit('setSearchApiFlag', false)
+        return false
       })
   },
 }

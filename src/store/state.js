@@ -1,10 +1,17 @@
-import * as CONST from '../constants'
+import { STATE, LEADER } from '../constants'
 
 export default {
-  stateFlag: 0,     // 状態フラグ
-  errorMessage: '', // エラーメッセージ
-  gameApp: null,    // ゲームインスタンス
-  bestNode: null,   // 探索結果の最良ノード
+  stateFlag: STATE.STANDBY, // 状態フラグ
+  gameApp: null,            // ゲームインスタンス
+  bestNode: null,           // 探索結果の最良ノード
+  errorMessage: '',         // エラーメッセージ
+
+  // API通信の成功・失敗フラグ
+  apiConnectionFlag: {
+    maximum: true,
+    capture: true,
+    search: true,
+  },
 
   // 盤面で可能な最大コンボ数と最大倍率
   maximum: {
@@ -14,8 +21,8 @@ export default {
 
   // リーダーに関する設定
   leaderSettings: {
-    leader1: CONST.LEADER.METATRON,
-    leader2: CONST.LEADER.METATRON,
+    leader1: LEADER.METATRON,
+    leader2: LEADER.METATRON,
   },
 
   // 盤面に関する設定

@@ -1,8 +1,10 @@
 
 // アプリケーションの状態を表す定数
-export const STANDBY = 0        // 待機中
-export const SEARCHING = 1      // 探索中
-export const SEARCH_END = 2     // 探索終了
+export const STATE = {
+  STANDBY   : 0,  // 待機中
+  SEARCHING : 1,  // 探索中
+  SEARCH_END: 2,  // 探索終了
+}
 
 // 扱うドロップの種類数を表す定数
 export const DROP_TYPE_MAX = 9
@@ -32,7 +34,7 @@ export const LEADER = {
 
 // Ajax通信を行う際のサーバーアドレス
 export const SERVER_ADDRESS = {
-  python  : 'http://127.0.0.1:8000/api/capture/',
+  Python  : 'http://127.0.0.1:8000/api/capture/',
   Node    : 'http://127.0.0.1:1000/api/maxData/',
   C       : 'http://127.0.0.1:12345/',
 }

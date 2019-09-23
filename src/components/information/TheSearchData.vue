@@ -10,14 +10,14 @@
 
 <script>
 import { mapState } from 'vuex'
-import * as CONST from '../../constants'
+import { STATE } from '../../constants'
 
 export default {
   name: 'TheSearchData',
   computed: {
     // 探索が終了した状態かどうか
     isSearchEnd () {
-      return (this.stateFlag === CONST.SEARCH_END)
+      return (this.stateFlag === STATE.SEARCH_END)
     },
     // 探索に要した時間
     elapsedTime () {

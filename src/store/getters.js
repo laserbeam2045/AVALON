@@ -1,6 +1,15 @@
 import * as CONST from '../constants'
 
 export default {
+  // API通信でエラーが発生している状態かどうか
+  hasApiError (state) {
+    return (
+      !state.apiConnectionFlag['maximum'] ||
+      !state.apiConnectionFlag['capture'] ||
+      !state.apiConnectionFlag['search']
+    )
+  },
+
   // 盤面の高さ
   height (state) {
     return Number(state.boardSettings.boardSize.split('x')[0])

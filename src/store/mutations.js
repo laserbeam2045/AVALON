@@ -1,5 +1,5 @@
 import Vue from 'vue'
-import * as CONST from '../constants'
+import { STATE } from '../constants'
 
 export default {
   // 状態フラグを変更するミューテーション
@@ -10,6 +10,21 @@ export default {
   // エラーメッセージを変更する
   setErrorMessage (state, payload) {
     state.errorMessage = payload
+  },
+
+  // API通信エラーフラグ(maximum)を変更する
+  setMaximumApiFlag (state, payload) {
+    state.apiConnectionFlag['maximum'] = payload
+  },
+
+  // API通信エラーフラグ(capture)を変更する
+  setCaptureApiFlag (state, payload) {
+    state.apiConnectionFlag['capture'] = payload
+  },
+
+  // API通信エラーフラグ(search)を変更する
+  setSearchApiFlag (state, payload) {
+    state.apiConnectionFlag['search'] = payload
   },
 
   // ゲームインスタンスを変更するミューテーション
@@ -51,7 +66,7 @@ export default {
   // 探索データを初期化するミューテーション
   resetSearchData (state) {
     state.bestNode = null
-    state.stateFlag = CONST.STANDBY
+    state.stateFlag = STATE.STANDBY
   },
 
   // boardSettingsに変更を加えるミューテーション
