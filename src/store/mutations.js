@@ -7,6 +7,11 @@ export default {
     state.stateFlag = payload
   },
 
+  // エラーメッセージを変更する
+  setErrorMessage (state, payload) {
+    state.errorMessage = payload
+  },
+
   // ゲームインスタンスを変更するミューテーション
   setGameApp (state, payload) {
     state.gameApp = payload

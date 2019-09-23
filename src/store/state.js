@@ -2,6 +2,7 @@ import * as CONST from '../constants'
 
 export default {
   stateFlag: 0,     // 状態フラグ
+  errorMessage: '', // エラーメッセージ
   gameApp: null,    // ゲームインスタンス
   bestNode: null,   // 探索結果の最良ノード
 
