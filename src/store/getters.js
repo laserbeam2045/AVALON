@@ -1,4 +1,4 @@
-import { LEADER } from '../constants'
+import { LEADER } from './constants'
 
 export default {
   // API通信でエラーが発生している状態かどうか

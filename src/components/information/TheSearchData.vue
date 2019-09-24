@@ -10,7 +10,7 @@
 
 <script>
 import { mapState } from 'vuex'
-import { STATE } from '../../constants'
+import { STATE } from '../../store/constants'
 
 export default {
   name: 'TheSearchData',

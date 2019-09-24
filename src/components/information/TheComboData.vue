@@ -28,7 +28,7 @@
 import BaseTr from './BaseTr'
 import DropData from './DropData'
 import { mapState } from 'vuex'
-import { DROP_TYPE_MAX } from '../../constants'
+import { DROP_TYPE_MAX } from '../../store/constants'
 
 export default {
   name: 'TheComboData',

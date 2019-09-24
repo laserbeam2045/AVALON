@@ -1,5 +1,5 @@
 import { mapState, mapGetters, mapActions } from 'vuex'
-import { STATE } from '../constants'
+import { STATE } from '../store/constants'
 
 export default {
   computed: {

@@ -1,4 +1,4 @@
-import { STATE, SERVER_ADDRESS } from '../constants'
+import { STATE, SERVER_ADDRESS } from './constants'
 
 export default {
   // 盤面で可能な最大コンボ数と、最大倍率を取得するアクション

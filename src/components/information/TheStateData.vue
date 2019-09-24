@@ -7,7 +7,7 @@
 </template>
 
 <script>
-import { STATE } from '../../constants'
+import { STATE } from '../../store/constants'
 
 export default {
   name: 'TheStateData',

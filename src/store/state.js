@@ -1,4 +1,4 @@
-import { STATE, LEADER } from '../constants'
+import { STATE, LEADER } from './constants'
 
 export default {
   stateFlag: STATE.STANDBY, // 状態フラグ

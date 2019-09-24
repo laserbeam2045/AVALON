@@ -1,5 +1,5 @@
+import { STATE, DROP_TYPE_MAX } from './constants'
 import Vue from 'vue'
-import { STATE, DROP_TYPE_MAX } from '../constants'
 
 export default {
   // 状態フラグを変更するミューテーション
