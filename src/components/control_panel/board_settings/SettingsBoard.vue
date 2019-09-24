@@ -1,6 +1,6 @@
 <template>
   <div>
-    <label>{{ upperCaseLabel }}</label>
+    <label>{{ label | space | upperCase }}</label>
     <BaseRadioButton
       v-for="(setting, index) of settings"
       :key="index"
@@ -15,7 +15,7 @@
 
 <script>
 import BaseRadioButton from './BaseRadioButton'
-import UpperCaseLabel from '../../../mixins/UpperCaseLabel'
+import filters from '../../../mixins/filters'
 
 export default {
   name: 'SettingsBoard',
@@ -23,7 +23,7 @@ export default {
     BaseRadioButton,
   },
   mixins: [
-    UpperCaseLabel
+    filters,
   ],
   props: {
     label: String,

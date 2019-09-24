@@ -37,7 +37,7 @@ export default {
       return {
         ok    : !this.isDanger,
         danger: this.isDanger,
-      };
+      }
     },
     isDanger () {
       return this.$store.getters.isDanger

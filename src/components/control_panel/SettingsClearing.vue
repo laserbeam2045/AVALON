@@ -2,7 +2,7 @@
   <tr>
     <th :class="{ active: data[0] }">
       <span @click="$emit('change', {propName: label, index: 0, newValue: !data[0]})">
-        {{ upperCaseLabel }}
+        {{ label | space | upperCase }}
       </span>
     </th>
     <td>
@@ -20,7 +20,7 @@
 
 <script>
 import BaseCheckbox from './BaseCheckbox'
-import UpperCaseLabel from '../../mixins/UpperCaseLabel'
+import filters from '../../mixins/filters'
 
 export default {
   name: 'SettingsClearing',
@@ -28,7 +28,7 @@ export default {
     BaseCheckbox,
   },
   mixins: [
-    UpperCaseLabel
+    filters,
   ],
   props: {
     data: Array,

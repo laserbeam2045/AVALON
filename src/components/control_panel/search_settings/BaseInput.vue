@@ -1,6 +1,6 @@
 <template>
   <label v-on:wheel="updateNumber">
-    {{ upperCaseLabel }}
+    {{ label | space | upperCase }}
     <input
       type="number"
       v-show=false
@@ -14,13 +14,13 @@
 </template>
 
 <script>
-import UpperCaseLabel from '../../../mixins/UpperCaseLabel'
+import filters from '../../../mixins/filters'
 import {TweenLite} from 'gsap'
 
 export default {
   name: 'BaseInput',
   mixins: [
-    UpperCaseLabel
+    filters,
   ],
   props: {
     label: String,
