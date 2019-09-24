@@ -1,5 +1,5 @@
 import Vue from 'vue'
-import { STATE } from '../constants'
+import { STATE, DROP_TYPE_MAX } from '../constants'
 
 export default {
   // 状態フラグを変更するミューテーション
@@ -67,7 +67,7 @@ export default {
     state.leaderSettings.maxMagnification = payload
   },
 
-  // boardSettingsの、嫌がらせギミックの設定を初期化するミューテーション
+  // 嫌がらせギミックの設定を初期化するミューテーション
   resetHarassments (state) {
     state.boardSettings.startPosition = -1
     state.boardSettings.immovablePositions.clear()
@@ -116,6 +116,21 @@ export default {
       // 先頭をクリックした場合、残りのデータを先頭に合わせる
       setting.forEach((elm, idx) => Vue.set(setting, idx, setting[0]))
     }
+  },
+
+  // 盤面をシャッフルする
+  shuffleBoard (state) {
+    const activeDrops = state.clearingSettings.activeDrops
+    const board = state.boardSettings.board
+    const newBoard = []
+    for (let i = board.length; i--;) {
+      let color
+      do {
+        color = Math.floor(Math.random() * DROP_TYPE_MAX) + 1
+      } while (!activeDrops[color])
+      newBoard[i] = color
+    }
+    state.boardSettings.board = newBoard
   },
 
   // 特定の属性を特定の属性に変えるミューテーション

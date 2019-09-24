@@ -44,21 +44,8 @@ export default {
   methods: {
     // 盤面をシャッフルするメソッド(ついでに設定も初期化する）
     shuffle () {
-      if (!this.activeDrops[0]) {
-        return
-      }
-      const newBoard = []
-      for (let i = 0, len = this.board.length; i < len; i++) {
-        let color
-        do {
-          color = Math.floor(Math.random() * 9) + 1
-        } while (!this.activeDrops[color])
-        newBoard[i] = color
-      }
-      this.$store.commit('updateBoardSettings', {
-        propName: 'board',
-        newValue: newBoard,
-      })
+      if (!this.activeDrops[0]) return
+      this.$store.commit('shuffleBoard')
       this.$store.commit('resetHarassments')
       this.$store.commit('resetSearchData')
       this.startNewGame()
