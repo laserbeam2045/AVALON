@@ -1,25 +1,22 @@
 <template>
   <fieldset id="combo-data">
     <table>
-      <BaseTr @click="switchDisplayFlag">
+      <BaseTr>
         <template #default>Max</template>
         <template #combo>{{ maxCombo }}</template>
         <template #magni>{{ maxMagnification }}</template>
         <template #drops>
-          <DropData v-if="displayFlag" :drops="dropTypes1"/>
-          <DropData v-else             :drops="dropTypes2"/>
+          <DropData :drops="dropTypes1"/>
         </template>
       </BaseTr>
       <BaseTr
         v-if="bestNode"
         v-bind="maxClass"
-        @click="switchDisplayFlag"
       >
         <template #combo>{{ combo }}</template>
         <template #magni>{{ magnification }}</template>
         <template #drops>
-          <DropData v-if="displayFlag" :drops="dropTypes3"/>
-          <DropData v-else             :drops="dropTypes4"/>
+          <DropData :drops="dropTypes2"/>
         </template>
       </BaseTr>
       <tr v-else></tr>
@@ -38,11 +35,6 @@ export default {
   components: {
     BaseTr,
     DropData,
-  },
-  data () {
-    return {
-      displayFlag: true,  // 表示する情報（true:コンボ数 false:ドロップ数）        
-    }
   },
   computed: {
     ...mapState({
@@ -84,32 +76,12 @@ export default {
       })
       .filter(drop => drop.criteria)
     },
-    // ドロップ別の、存在するドロップ数
-    dropTypes2 () {
-      return this.getZeroArray().map((e, i) => {
-        const index = i + 1
-        const number = this.dropCountArray[index]
-        const criteria = number
-        return { index, number, criteria }
-      })
-      .filter(drop => drop.criteria)
-    },
     // ドロップ別の、探索結果のコンボ数
-    dropTypes3 () {
+    dropTypes2 () {
       return this.getZeroArray().map((e, i) => {
         const index = i + 1
         const number = this.comboCountAsResult[index]
         const criteria = this.comboCountArray[index]
-        return { index, number, criteria }
-      })
-      .filter(drop => drop.criteria)
-    },
-    // ドロップ別の、探索結果の消えるドロップ数
-    dropTypes4 () {
-      return this.getZeroArray().map((e, i) => {
-        const index = i + 1
-        const number = this.clearCountAsResult[index]
-        const criteria = this.dropCountArray[index]
         return { index, number, criteria }
       })
       .filter(drop => drop.criteria)
@@ -148,10 +120,6 @@ export default {
     adjust (number, decimalDigit = 1) {
       number = Math.round(number * decimalDigit) / decimalDigit
       return number.toLocaleString()
-    },
-    // displayFlagの値を反転させるメソッド
-    switchDisplayFlag () {
-      this.displayFlag = !this.displayFlag
     },
   }
 }
