@@ -123,8 +123,11 @@ export default {
   },
 
   // 特定の属性を特定の属性に変えるミューテーション
-  changeBoardColor (state, colors) {
+  changeBoardByColor (state, colors) {
     const board = state.boardSettings.board
+    if (!Array.isArray(colors[0])) {
+      colors = [colors]
+    }
     for (let Z = this.getters.boardLength; Z--;) {
       for (let i = colors.length; i--;) {
         const [color1, color2] = colors[i]
@@ -134,6 +137,16 @@ export default {
         }
       }
     }
+  },
+
+  // 特定の座標を特定の色に変えるミューテーション
+  changeBoardByCoordinates (state, payload) {
+    const { color, coordinates } = payload
+    const board = state.boardSettings.board
+
+    coordinates.forEach(index => {
+      Vue.set(board, index, color)
+    })
   },
 
   // 最上段横一列を引数の属性に変えるミューテーション

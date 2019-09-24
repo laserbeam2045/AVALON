@@ -21,8 +21,8 @@ export default {
   },
 
   // 盤面のドロップ数
-  boardLength (state) {
-    return state.height * state.width
+  boardLength (state, getters) {
+    return getters.height * getters.width
   },
 
   // 探索結果が危険性を伴うかどうか
