@@ -10,12 +10,12 @@
 </template>
 
 <script>
-import controll from '../mixins/Controll'
+import controller from '../mixins/controller'
 
 export default {
   name: 'TheKeyInput',
   mixins: [
-    controll,
+    controller,
   ],
   directives: {
     focus: {

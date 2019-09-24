@@ -4,13 +4,13 @@
 
 <script>
 import createGame from '../phina/CreateGame'
-import controll from '../mixins/Controll'
+import controller from '../mixins/controller'
 
 export default {
   name: 'TheGameArea',
   
   mixins: [
-    controll,
+    controller,
   ],
 
   computed: {

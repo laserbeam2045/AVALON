@@ -16,7 +16,7 @@
 import SkillButton from './SkillButton'
 import { mapMutations } from 'vuex'
 import { DROP_TYPE } from '../../../constants'
-import controll from '../../../mixins/Controll'
+import controller from '../../../mixins/controller'
 
 export default {
   name: 'TheSkillButtons',
@@ -24,7 +24,7 @@ export default {
     SkillButton,
   },
   mixins: [
-    controll,
+    controller,
   ],
   data () {
     return {

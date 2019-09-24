@@ -18,7 +18,7 @@ import TheGameArea from './components/TheGameArea'
 import TheRightContainer from './components/TheRightContainer'
 import TheSoundsData from './components/TheSoundsData'
 import TheKeyInput from './components/TheKeyInput'
-import controll from './mixins/Controll'
+import controller from './mixins/controller'
 import { mapState } from 'vuex'
 
 export default {
@@ -30,7 +30,7 @@ export default {
     TheKeyInput,
   },
   mixins: [
-    controll,
+    controller,
   ],
   data () {
     return {
