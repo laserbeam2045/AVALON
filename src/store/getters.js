@@ -38,6 +38,12 @@ export default {
     )
   },
 
+  // 探索結果の操作手順
+  process (state) {
+    const bestNode = state.bestNode
+    return bestNode ? bestNode.process.slice(0, bestNode.movedCount + 1) : null
+  },
+
   // 現在のリーダーが引数のものであるかどうか
   leaderIs: (state) => (name) => {
     const { leader1, leader2 } = state.leaderSettings

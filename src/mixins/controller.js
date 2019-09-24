@@ -1,4 +1,4 @@
-import { mapState, mapActions } from 'vuex'
+import { mapState, mapGetters, mapActions } from 'vuex'
 import { STATE } from '../constants'
 
 export default {
@@ -6,23 +6,17 @@ export default {
     ...mapState([
       'stateFlag',
       'gameApp',
-      'bestNode',
       'boardSettings',
       'clearingSettings',
     ]),
-
-    // 探索結果が危険性を伴うかどうか
-    isDanger () {
-      return this.$store.getters.isDanger
-    },
-    // 操作手順
-    process () {
-      return this.bestNode ? this.bestNode.process.slice(0, this.bestNode.movedCount + 1) : null
-    },
+    ...mapGetters([
+      'isDanger',
+      'process',
+    ]),
     // ゲームインスタンスに渡すデータ
     gameData () {
       const { board, dropFall, startPosition, immovablePositions } = this.boardSettings
-      const activeDrops = this.clearingSettings.activeDrops
+      const { activeDrops } = this.clearingSettings
       return {
         board: Array.from(board),
         dropFall,
