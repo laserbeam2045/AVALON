@@ -14,15 +14,15 @@
 </template>
 
 <script>
-import TheGameArea from './components/TheGameArea'
-import TheRightContainer from './components/TheRightContainer'
-import TheSoundsData from './components/TheSoundsData'
-import TheKeyInput from './components/TheKeyInput'
-import controller from './mixins/controller'
+import TheGameArea from './TheGameArea'
+import TheRightContainer from './TheRightContainer'
+import TheSoundsData from './TheSoundsData'
+import TheKeyInput from './TheKeyInput'
+import controller from '../mixins/controller'
 import { mapState } from 'vuex'
 
 export default {
-  name: 'app',  
+  name: 'App',  
   components: {
     TheGameArea,
     TheRightContainer,
