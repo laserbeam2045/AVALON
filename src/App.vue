@@ -57,7 +57,6 @@ export default {
     ...mapState([
       'leaderSettings',
       'boardSettings',
-      'clearingSettings'
     ]),
     // 盤面の初期配置
     initialBoard () {
@@ -82,12 +81,6 @@ export default {
     'boardSettings.board' () {
       this.$store.dispatch('updateMaxData')
     },
-    'boardSettings.dropFall' (newValue) {
-      this.setDropFall(newValue)
-    },
-    'clearingSettings.activeDrops' (newValue) {
-      this.setActiveDrops(newValue)
-    }
   },
   created () {
     this.initializeBoard()

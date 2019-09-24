@@ -3,6 +3,7 @@
 </template>
 
 <script>
+import { mapState } from 'vuex'
 import createGame from '../phina/CreateGame'
 import controller from '../mixins/controller'
 
@@ -14,23 +15,32 @@ export default {
   ],
 
   computed: {
-    board () {
-      return Array.from(this.$store.state.boardSettings.board)
-    },
-    activeDrops () {
-      return this.$store.state.clearingSettings.activeDrops
-    },
+    ...mapState([
+      'gameApp',
+      'boardSettings',
+      'clearingSettings',
+    ]),
     // ゲームコンストラクタに渡す引数（イベントハンドラとして自身のメソッドを含めている）
     initialData () {
       return {
         query: '#canvas',
         vueMethods: {
-          shuffle: this.shuffle,
           search: this.search,
-          updateBoard: this.updateBoard,
+          shuffle: this.shuffleBoard,
+          updateBoard: this.updateBoardSettings,
         },
         ...this.gameData,
       }
+    },
+  },
+
+  // Vue側の更新と同時にGameApp側のデータも更新する
+  watch: {
+    'boardSettings.dropFall' (newValue) {
+      this.gameApp.dropFall = newValue
+    },
+    'clearingSettings.activeDrops' (newValue) {
+      this.gameApp.activeDrops = Array.from(newValue)
     },
   },
 
@@ -39,32 +49,6 @@ export default {
     createGame(this.initialData)
     .then(app => this.$store.commit('setGameApp', app))  // eslint-disable-next-line
     .catch(err => console.error(err))
-  },
-
-  methods: {
-    // 盤面をシャッフルするメソッド(ついでに設定も初期化する）
-    shuffle () {
-      if (!this.activeDrops[0]) return
-      this.$store.commit('shuffleBoard')
-      this.$store.commit('resetHarassments')
-      this.$store.commit('resetSearchData')
-      this.startNewGame()
-    },
-    // 盤面の状態を更新するメソッド
-    updateBoard (boardData) {
-      this.$store.commit('updateBoardSettings', {
-        propName: 'board',
-        newValue: boardData.board,
-      })
-      this.$store.commit('updateBoardSettings', {
-        propName: 'startPosition',
-        newValue: boardData.startPosition,
-      })
-      this.$store.commit('updateBoardSettings', {
-        propName: 'immovablePositions',
-        newValue: boardData.immovablePositions,
-      })
-    },
   },
 }
 </script>
