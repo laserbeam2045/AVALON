@@ -47,8 +47,8 @@ export default {
   created () {
     // ゲームを初期化し、インスタンスをstoreに送る
     createGame(this.initialData)
-    .then(app => this.$store.commit('setGameApp', app))  // eslint-disable-next-line
-    .catch(err => console.error(err))
+      .then(app => this.$store.commit('setGameApp', app))  // eslint-disable-next-line
+      .catch(err => console.error(err))
   },
 }
 </script>
