@@ -1,5 +1,9 @@
 <template>
-  <transition-group id="button-wrapper" name="skill" tag="div">
+  <transition-group
+    tag="div"
+    name="skill"
+    id="button-wrapper"
+  >
     <SkillButton
       v-for="(skill, name, index) in filteredSkillSettings"
       :key="name"
@@ -14,9 +18,9 @@
 
 <script>
 import SkillButton from './SkillButton'
-import { mapMutations } from 'vuex'
-import * as CONST from '../../../constants'
-import controll from '../../../mixins/Controll'
+import { mapGetters, mapMutations } from 'vuex'
+import { DROP_TYPE } from '../../../store/constants'
+import controller from '../../../mixins/controller'
 
 export default {
   name: 'TheSkillButtons',
@@ -24,66 +28,23 @@ export default {
     SkillButton,
   },
   mixins: [
-    controll,
+    controller,
   ],
+  
   data () {
     return {
       // スキルに関する設定
       skillSettings: {
-        'CAPTURE': {
+        CAPTURE: {
           belongsTo: ['ALL'],
-          left: () => {
-            this.capture()
-          },
-          right: () => {
-            this.capture().then(this.search)
-          },
+          left: () => this.capture(),
+          right: () => this.capture().then(this.search),
         },
-        'COCO': {
-          belongsTo: ['COCO', 'VEROAH'],
-          common: () => {
-          },
-        },
-        'SARASVATI': {
-          belongsTo: ['COCO', 'VEROAH'],
-          common: () => {
-            this.changeBoardRight(CONST.DROP_TYPE_WATER)
-          },
-        },
-        'MUT': {
-          belongsTo: ['COCO', 'VEROAH'],
-          common: () => {
-            this.changeBoardColor([
-              [CONST.DROP_TYPE_WOOD, CONST.DROP_TYPE_WATER]
-            ])
-          },
-        },
-        'VEROAH': {
-          belongsTo: ['COCO', 'VEROAH'],
-          common: () => {
-            this.changeBoardColor([
-              [CONST.DROP_TYPE_WOOD, CONST.DROP_TYPE_WATER],
-              [CONST.DROP_TYPE_LIGHT, CONST.DROP_TYPE_WATER]
-            ])
-          },
-        },
-        'KOMASAN': {
-          belongsTo: ['KOMASAN'],
-          common: () => {
-            this.changeBoardLeft(CONST.DROP_TYPE_WOOD)
-          },
-        },
-        'EIR': {
-          belongsTo: ['METATRON', 'KOMASAN'],
-          common: () => {
-            this.changeBoardTop(CONST.DROP_TYPE_HEART)
-          },
-        },
-        'LUCIFER': {
+        LUCIFER: {
           belongsTo: ['METATRON'],
           common: () => {
-            this.changeBoardLeft(CONST.DROP_TYPE_DARK)
-            this.changeBoardRight(CONST.DROP_TYPE_HEART)
+            this.changeBoardLeft(DROP_TYPE.DARK)
+            this.changeBoardRight(DROP_TYPE.HEART)
             this.updateClearingSettings({
               propName: 'line',
               index: 7,
@@ -91,13 +52,56 @@ export default {
             })
           },
         },
+        EIR: {
+          belongsTo: ['METATRON', 'KOMASAN'],
+          common: () => this.changeBoardTop(DROP_TYPE.HEART),
+        },
+        KOMASAN: {
+          belongsTo: ['KOMASAN'],
+          common: () => this.changeBoardLeft(DROP_TYPE.WOOD),
+        },
+        COCO: {
+          belongsTo: ['COCO', 'VEROAH'],
+          common: () => {
+            const color = DROP_TYPE.WATER
+            const coordinates = this.cocoCoordinates
+            this.changeBoardByCoordinates({ color, coordinates })
+          },
+        },
+        SARASVATI: {
+          belongsTo: ['COCO', 'VEROAH'],
+          common: () => this.changeBoardRight(DROP_TYPE.WATER),
+        },
+        MUT: {
+          belongsTo: ['COCO', 'VEROAH'],
+          common: () => this.changeBoardByColor([DROP_TYPE.WOOD, DROP_TYPE.WATER]),
+        },
+        VEROAH: {
+          belongsTo: ['COCO', 'VEROAH'],
+          common: () => {
+            this.changeBoardByColor([
+              [DROP_TYPE.WOOD, DROP_TYPE.WATER],
+              [DROP_TYPE.LIGHT, DROP_TYPE.WATER]
+            ])
+          },
+        },
       },
     }
   },
+
   computed: {
-    // 現在のリーダーが引数のものであるかどうかを判定するメソッド
-    leaderIs () {
-      return this.$store.getters.leaderIs
+    ...mapGetters([
+      'boardLength',
+      'leaderIs',
+    ]),
+    // ココ・フェルケナのスキルの変換対象座標
+    cocoCoordinates () {
+      let coordinates = []
+      switch (this.boardLength) {
+        case 30: coordinates = [0, 1, 2, 6, 7, 8, 12, 13, 14]; break
+        case 42: coordinates = [0, 1, 2, 3, 7, 8, 9, 10, 14, 15, 16, 17]; break
+      }
+      return coordinates
     },
     // 現在のリーダーに属するスキル名（文字列の配列）
     activeSkillNames () {
@@ -114,10 +118,12 @@ export default {
       }, {})
     },
   },
+
   methods: {
     // スキル内で使用するミューテーションをマッピング
     ...mapMutations([
-      'changeBoardColor',
+      'changeBoardByColor',
+      'changeBoardByCoordinates',
       'changeBoardTop',
       'changeBoardLeft',
       'changeBoardRight',
@@ -126,23 +132,15 @@ export default {
     ]),
     // スキルを発動するメソッド
     useSkill ({ skill, event }) {
-      if ('common' in skill) {
-        skill.common()
-      }
+      if ('common' in skill) skill.common()
       switch (event.type) {
       case 'click':
-        if ('left' in skill) {
-          skill.left()
-        } else {
-          this.startNewGame()
-        }
+        if ('left' in skill) skill.left()
+        else this.startNewGame()
         break
       case 'contextmenu':
-        if ('right' in skill) {
-          skill.right()
-        } else {
-          this.search()
-        }
+        if ('right' in skill) skill.right()
+        else this.search()
         break
       }
     },

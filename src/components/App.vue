@@ -14,15 +14,15 @@
 </template>
 
 <script>
-import TheGameArea from './components/TheGameArea'
-import TheRightContainer from './components/TheRightContainer'
-import TheSoundsData from './components/TheSoundsData'
-import TheKeyInput from './components/TheKeyInput'
-import controll from './mixins/Controll'
+import TheGameArea from './TheGameArea'
+import TheRightContainer from './TheRightContainer'
+import TheSoundsData from './TheSoundsData'
+import TheKeyInput from './TheKeyInput'
+import controller from '../mixins/controller'
 import { mapState } from 'vuex'
 
 export default {
-  name: 'app',  
+  name: 'App',  
   components: {
     TheGameArea,
     TheRightContainer,
@@ -30,8 +30,9 @@ export default {
     TheKeyInput,
   },
   mixins: [
-    controll,
+    controller,
   ],
+
   data () {
     return {
       initialBoards: {  // 盤面の初期配置
@@ -53,20 +54,19 @@ export default {
       },
     }
   },
+
   computed: {
     ...mapState([
-      'maximum',
       'leaderSettings',
       'boardSettings',
-      'clearingSettings'
     ]),
-    // 盤面の初期配置
     initialBoard () {
       const boardSize = this.boardSettings.boardSize
-      const initialBoard = this.initialBoards[boardSize]
-      return Array.from(initialBoard)
+      const board = this.initialBoards[boardSize]
+      return Array.from(board)
     },
   },
+
   watch: {
     'leaderSettings.leader1' () {
       this.focus()
@@ -77,30 +77,22 @@ export default {
     'boardSettings.boardSize' () {
       this.$store.commit('resetHarassments')
       this.$store.commit('resetSearchData')
-      this.initializeBoard()
+      this.initBoard()
       this.startNewGame()
     },
     'boardSettings.board' () {
       this.$store.dispatch('updateMaxData')
     },
-    'maximum.combo' () {
-      this.$store.commit('updateComboLimit')
-    },
-    'boardSettings.dropFall' (newValue) {
-      this.setDropFall(newValue)
-    },
-    'clearingSettings.activeDrops' (newValue) {
-      this.setActiveDrops(newValue)
-    }
   },
+
   created () {
-    this.initializeBoard()
+    this.initBoard()
   },
+
   methods: {
     // 盤面を初期化するメソッド
-    initializeBoard () {
-      this.$store.commit({
-        type: 'updateBoardSettings',
+    initBoard () {
+      this.$store.commit('updateBoardSettings', {
         propName: 'board',
         newValue: this.initialBoard,
       })
@@ -122,29 +114,32 @@ export default {
 }
 </script>
 
-<style>
+<style lang="scss">
 html {
   height: 100%;
-}
-body {
-  height: 100%;
-  margin: 0;
-  padding: 0;
-  user-select: none;
-  -moz-user-select: none;
-  -webkit-user-select: none;
-  -ms-user-select: none;
-}
-#root {
-  width: 100%;
-  height: 100%;
-  min-width: 930px;
-  min-height: 712px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-table {
-  border-collapse: collapse;
+
+  body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    user-select: none;
+    -moz-user-select: none;
+    -webkit-user-select: none;
+    -ms-user-select: none;
+
+    #root {
+      width: 100%;
+      height: 100%;
+      min-width: 950px;
+      min-height: 750px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      table {
+        border-collapse: collapse;
+      }
+    }
+  }
 }
 </style>

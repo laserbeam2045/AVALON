@@ -17,8 +17,8 @@
 
 <script>
 import BaseSelect from './BaseSelect'
-import controll from '../../../mixins/Controll'
-import { LEADER } from '../../../constants'
+import controller from '../../../mixins/controller'
+import { LEADER } from '../../../store/constants'
 import { mapState } from 'vuex'
 
 export default {
@@ -27,7 +27,7 @@ export default {
     BaseSelect,
   },
   mixins: [
-    controll,
+    controller,
   ],
   data () {
     return {

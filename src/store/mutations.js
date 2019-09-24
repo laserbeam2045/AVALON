@@ -1,10 +1,30 @@
+import { STATE, DROP_TYPE_MAX } from './constants'
 import Vue from 'vue'
-import * as CONST from '../constants'
 
 export default {
   // 状態フラグを変更するミューテーション
   setStateFlag (state, payload) {
     state.stateFlag = payload
+  },
+
+  // エラーメッセージを変更する
+  setErrorMessage (state, payload) {
+    state.errorMessage = payload
+  },
+
+  // API通信エラーフラグ(maximum)を変更する
+  setMaximumApiFlag (state, payload) {
+    state.apiConnectionFlag['maximum'] = payload
+  },
+
+  // API通信エラーフラグ(capture)を変更する
+  setCaptureApiFlag (state, payload) {
+    state.apiConnectionFlag['capture'] = payload
+  },
+
+  // API通信エラーフラグ(search)を変更する
+  setSearchApiFlag (state, payload) {
+    state.apiConnectionFlag['search'] = payload
   },
 
   // ゲームインスタンスを変更するミューテーション
@@ -15,12 +35,6 @@ export default {
   // 最良ノードを変更するミューテーション
   setBestNode (state, payload) {
     state.bestNode = payload
-  },
-
-  // 最大コンボ数と最大倍率を更新するミューテーション
-  setMaximum (state, payload) {
-    state.maximum.combo = payload.combo
-    state.maximum.magnification = payload.magnification
   },
 
   // リーダーを変更するミューテーション
@@ -37,7 +51,23 @@ export default {
     }
   },
 
-  // boardSettingsの、嫌がらせギミックの設定を初期化するミューテーション
+  // 盤面で可能な最大コンボ数を更新するミューテーション
+  setMaxCombo (state, payload) {
+    const maxCombo = state.leaderSettings.maxCombo = payload
+    const comboLimit = state.searchSettings.comboLimit
+
+    comboLimit.max = maxCombo
+    if (comboLimit.value > maxCombo) {
+      comboLimit.value = maxCombo
+    }
+  },
+
+  // 盤面で可能な最大倍率を更新するミューテーション
+  setMaxMagnification (state, payload) {
+    state.leaderSettings.maxMagnification = payload
+  },
+
+  // 嫌がらせギミックの設定を初期化するミューテーション
   resetHarassments (state) {
     state.boardSettings.startPosition = -1
     state.boardSettings.immovablePositions.clear()
@@ -46,7 +76,7 @@ export default {
   // 探索データを初期化するミューテーション
   resetSearchData (state) {
     state.bestNode = null
-    state.stateFlag = CONST.STANDBY
+    state.stateFlag = STATE.STANDBY
   },
 
   // boardSettingsに変更を加えるミューテーション
@@ -57,16 +87,6 @@ export default {
       state.boardSettings.greedy = true
     } else if (propName === 'greedy' && !newValue) {
       state.boardSettings.dropFall = false
-    }
-  },
-
-  // コンボ数の上限を、盤面で可能な最大コンボ数に合わせるミューテーション
-  updateComboLimit (state) {
-    const maxCombo = state.maximum.combo
-    const comboLimit = state.searchSettings.comboLimit
-    comboLimit.max = maxCombo
-    if (comboLimit.value > maxCombo) {
-      comboLimit.value = maxCombo
     }
   },
 
@@ -98,9 +118,27 @@ export default {
     }
   },
 
-  // 特定の属性を特定の属性に変えるミューテーション
-  changeBoardColor (state, colors) {
+  // 盤面をシャッフルする
+  shuffleBoard (state) {
+    const activeDrops = state.clearingSettings.activeDrops
     const board = state.boardSettings.board
+    const newBoard = []
+    for (let i = board.length; i--;) {
+      let color
+      do {
+        color = Math.floor(Math.random() * DROP_TYPE_MAX) + 1
+      } while (!activeDrops[color])
+      newBoard[i] = color
+    }
+    state.boardSettings.board = newBoard
+  },
+
+  // 特定の属性を特定の属性に変えるミューテーション
+  changeBoardByColor (state, colors) {
+    const board = state.boardSettings.board
+    if (!Array.isArray(colors[0])) {
+      colors = [colors]
+    }
     for (let Z = this.getters.boardLength; Z--;) {
       for (let i = colors.length; i--;) {
         const [color1, color2] = colors[i]
@@ -110,6 +148,16 @@ export default {
         }
       }
     }
+  },
+
+  // 特定の座標を特定の色に変えるミューテーション
+  changeBoardByCoordinates (state, payload) {
+    const { color, coordinates } = payload
+    const board = state.boardSettings.board
+
+    coordinates.forEach(index => {
+      Vue.set(board, index, color)
+    })
   },
 
   // 最上段横一列を引数の属性に変えるミューテーション

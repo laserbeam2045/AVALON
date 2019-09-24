@@ -1,56 +1,73 @@
-import { SERVER_ADDRESS } from '../constants'
+import { STATE, SERVER_ADDRESS } from './constants'
 
 export default {
-  // Ajax通信を行うアクション
-  // 戻り値：Promise
-  Ajax (context, { address, options }) {
-    return fetch(address, options)
-          .then(response => response.json())
-  },
-
   // 盤面で可能な最大コンボ数と、最大倍率を取得するアクション
-  async updateMaxData ({ commit, state }) {
+  updateMaxData ({ commit, state }) {
     const { leader1, leader2 } = state.leaderSettings
     const board = JSON.stringify(state.boardSettings.board)
     const address = SERVER_ADDRESS['Node'] + `${leader1}-${leader2}-${board}`
 
-    const response = await this.dispatch('Ajax', {address})
-                                .catch(err => {
-                                  err
-                                })
-    if (response) {
-      commit('setMaximum', {
-        combo: Number(response.maxComboCount),
-        magnification: Number(response.maxMagnification),
+    return fetch(address)
+      .then(response => response.json())
+      .then(jsonData => {
+        commit('setMaxCombo', Number(jsonData.maxComboCount))
+        commit('setMaxMagnification', Number(jsonData.maxMagnification))
+        commit('setMaximumApiFlag', true)
+        return true
       })
-    }
+      .catch(error => {
+        commit('setErrorMessage', error)
+        commit('setMaximumApiFlag', false)
+        return false
+      })
   },
 
-  // 画面をキャプチャーして盤面を取得する処理
-  // 戻り値：Promise
+  // 画面をキャプチャーして盤面を取得するアクション
   capture ({ commit, state }) {
-    const address = SERVER_ADDRESS['python'] + state.boardSettings.boardSize
+    const address = SERVER_ADDRESS['Python'] + state.boardSettings.boardSize
 
-    return this.dispatch('Ajax', {address}).then(data => {
-      commit('updateBoardSettings', {
-        propName: 'board',
-        newValue: data.board,
+    return fetch(address)
+      .then(response => response.json())
+      .then(jsonData => {
+        commit('updateBoardSettings', {
+          propName: 'board',
+          newValue: jsonData.board,
+        })
+        commit('resetSearchData')
+        commit('setCaptureApiFlag', true)
+        return true
       })
-    })
+      .catch(error => {
+        commit('setErrorMessage', error)
+        commit('setCaptureApiFlag', false)
+        return false
+      })
   },
 
-  // サーバーに探索のリクエストを送る処理
-  // 戻り値：Promise
+  // サーバーに探索のリクエストを送るアクション
   search ({ commit, getters }) {
-    return this.dispatch('Ajax', {
-      address: SERVER_ADDRESS['C'],
-      options: {
-        method: 'POST',
-        body: getters.searchConditions,
-      },
-    })
-    .then(responseData => {
-      commit('setBestNode', responseData)
-    })
+    const address = SERVER_ADDRESS['C']
+    const options = {
+      method: 'POST',
+      body: getters.searchConditions,
+    }
+
+    commit('setBestNode', null)
+    commit('setStateFlag', STATE.SEARCHING)
+
+    return fetch(address, options)
+      .then(response => response.json())
+      .then(jsonData => {
+        commit('setBestNode', jsonData)
+        commit('setStateFlag', STATE.SEARCH_END)
+        commit('setSearchApiFlag', true)
+        return true
+      })
+      .catch(error => {
+        commit('setErrorMessage', error)
+        commit('setStateFlag', STATE.STANDBY)
+        commit('setSearchApiFlag', false)
+        return false
+      })
   },
 }
