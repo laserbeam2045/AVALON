@@ -53,7 +53,13 @@ export default {
 
   // 盤面で可能な最大コンボ数を更新するミューテーション
   setMaxCombo (state, payload) {
-    state.leaderSettings.maxCombo = payload
+    const maxCombo = state.leaderSettings.maxCombo = payload
+    const comboLimit = state.searchSettings.comboLimit
+
+    comboLimit.max = maxCombo
+    if (comboLimit.value > maxCombo) {
+      comboLimit.value = maxCombo
+    }
   },
 
   // 盤面で可能な最大倍率を更新するミューテーション
@@ -81,16 +87,6 @@ export default {
       state.boardSettings.greedy = true
     } else if (propName === 'greedy' && !newValue) {
       state.boardSettings.dropFall = false
-    }
-  },
-
-  // コンボ数の上限を、盤面で可能な最大コンボ数に合わせるミューテーション
-  updateComboLimit (state) {
-    const maxCombo = state.maximum.combo
-    const comboLimit = state.searchSettings.comboLimit
-    comboLimit.max = maxCombo
-    if (comboLimit.value > maxCombo) {
-      comboLimit.value = maxCombo
     }
   },
 

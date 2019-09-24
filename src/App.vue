@@ -55,7 +55,6 @@ export default {
   },
   computed: {
     ...mapState([
-      'maximum',
       'leaderSettings',
       'boardSettings',
       'clearingSettings'
@@ -82,9 +81,6 @@ export default {
     },
     'boardSettings.board' () {
       this.$store.dispatch('updateMaxData')
-    },
-    'maximum.combo' () {
-      this.$store.commit('updateComboLimit')
     },
     'boardSettings.dropFall' (newValue) {
       this.setDropFall(newValue)
