@@ -59,7 +59,7 @@ export default {
 
     settings.dropFall = Number(settings.dropFall)
     settings.greedy = Number(settings.greedy)
-    settings.immovablePositions = [...settings.immovablePositions]
+    settings.noEntryPositions = [...settings.noEntryPositions]
     return settings
   },
 

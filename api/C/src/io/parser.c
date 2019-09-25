@@ -138,12 +138,12 @@ static bool parseBoardSettings(char *body, BoardSettings *bsp)
   } else {
     return false;
   }
-  // immovablePositionsを取得
+  // noEntryPositionsを取得
   char positions[BOARD_LEN_MAX];
-  sprintf(property, format, "immovablePositions");
+  sprintf(property, format, "noEntryPositions");
   if (getValue(body, property, value)) {
     char count = getArrayFrom(value, positions);
-    BoardSettings_setImmovablePositions(bsp, positions, count);
+    BoardSettings_setNoEntryPositions(bsp, positions, count);
   } else {
     return false;
   }

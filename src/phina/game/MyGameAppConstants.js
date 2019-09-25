@@ -30,14 +30,14 @@ export const RIGHT_MARGIN = {
 // ゲームが使用する画像・音声データへのPATH
 export const ASSETS = {
   image: {
-    drops: require('../../assets/img/drops.png'),
-    tile_5x6: require('../../assets/img/tile_5x6.png'),
-    tile_6x7: require('../../assets/img/tile_6x7.png'),
-    space_5x6: require('../../assets/img/space_5x6.png'),
-    space_6x7: require('../../assets/img/space_6x7.png'),
-    immovable: require('../../assets/img/immovable.png'),
-    dragon_head: require('../../assets/img/dragon_head_.png'),
-    dragon_tail: require('../../assets/img/dragon_tail_.png'),
+    drops     : require('../../assets/img/drops.png'),
+    tile_5x6  : require('../../assets/img/tile_5x6.png'),
+    tile_6x7  : require('../../assets/img/tile_6x7.png'),
+    space_5x6 : require('../../assets/img/space_5x6.png'),
+    space_6x7 : require('../../assets/img/space_6x7.png'),
+    noEntry   : require('../../assets/img/no_entry.png'),
+    dragonTail: require('../../assets/img/dragon_tail_.png'),
+    dragonHead: require('../../assets/img/dragon_head_.png'),
   },
   sound: {
     move: require('../../assets/sound/move.mp3'),

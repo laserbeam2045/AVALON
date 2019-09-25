@@ -12,7 +12,7 @@ export default phina.define('Head', {
     const IMG_SIZE = 1000
     const scale = (dropSize / IMG_SIZE) * 1.5
 
-    this.superInit('dragon_head', IMG_SIZE, IMG_SIZE)
+    this.superInit('dragonHead', IMG_SIZE, IMG_SIZE)
     this.setScale(scale).moveTo(x, y).$_rotate(lineType)
   },
 

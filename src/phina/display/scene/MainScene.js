@@ -19,7 +19,7 @@ export default () => {
       this.$_initComboEffects()
       this.initDrops()
       this.initStartPosition()
-      this.initImmovablePositions()
+      this.initNoEntryPositions()
       this.$_initDragons(options)
     },
 

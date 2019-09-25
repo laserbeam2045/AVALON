@@ -2,11 +2,11 @@ import * as phina from 'phina.js'
 import MySprite from './MySprite'
 
 // 操作不可スプライトクラス
-export default phina.define('ImmovablePosition', {
+export default phina.define('NoEntryPosition', {
   superClass: MySprite,
 
   init (baseDropSize) {
-    this.superInit('immovable', baseDropSize, baseDropSize)
+    this.superInit('noEntry', baseDropSize, baseDropSize)
   },
   // アイテムを識別するための変数をセットするメソッド
   setItemIndex (index) {

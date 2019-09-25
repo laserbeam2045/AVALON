@@ -3,7 +3,7 @@ import BaseScene from './BaseScene'
 import FrameButton from '../../ui/FrameButton'
 import { ItemDrop } from '../drops'
 import StartPosition from '../startPosition/StartPosition'
-import ImmovablePosition from '../ImmovablePosition'
+import NoEntryPosition from '../NoEntryPosition'
 
 const COLOR_MAX = 9                 // ドロップの種類
 const MAX_PER_LINE = 6              // 横に並べるドロップの数
@@ -23,7 +23,7 @@ export default () => {
       this.$_initStartButton()
       this.initDrops()
       this.initStartPosition()
-      this.initImmovablePositions()
+      this.initNoEntryPositions()
     },
 
     // アイテムを選択状態にする唯一のパブリックメソッド
@@ -70,7 +70,7 @@ export default () => {
         ItemDrop(this.baseDropSize).setFrameIndex(i).addChildTo(this.itemGroup)
       }
       // 操作不可・開始位置指定アイコン
-      ImmovablePosition(this.baseDropSize).addChildTo(this.itemGroup)
+      NoEntryPosition(this.baseDropSize).addChildTo(this.itemGroup)
       StartPosition(this.baseDropSize).addChildTo(this.itemGroup)
 
       // イベント時にこのシーンのメソッドを呼び出せるようにするため、
@@ -135,7 +135,7 @@ export default () => {
       }
       switch (this.selectedItem) {
       case (COLOR_MAX + 1):
-        this.$_updateImmovablePosition(Z)
+        this.$_updateNoEntryPosition(Z)
         break
       case (COLOR_MAX + 2):
         this.$_updateStartPosition(Z)
@@ -146,27 +146,27 @@ export default () => {
     },
 
     // 盤面に操作不可アイコンを設置・削除するメソッド
-    $_updateImmovablePosition (index) {
+    $_updateNoEntryPosition (index) {
       // 開始位置指定とは排他的（同じ座標に存在できない）
       if (this.startPosition === index) {
         return
       }
       // 引数の座標が既に配置済みの場合
-      if (this.immovablePositions.has(index)) {
-        this.immovablePositionSprites.get(index).remove()
-        this.immovablePositions.delete(index)
+      if (this.noEntryPositions.has(index)) {
+        this.noEntryPositionSprites.get(index).remove()
+        this.noEntryPositions.delete(index)
       // 引数の座標が未配置の場合
       } else {
-        const sprite = this.createImmovablePositionSprite(index).addChildTo(this.gimmickGroup)
-        this.immovablePositionSprites.set(index, sprite)
-        this.immovablePositions.add(index)
+        const sprite = this.createNoEntryPositionSprite(index).addChildTo(this.gimmickGroup)
+        this.noEntryPositionSprites.set(index, sprite)
+        this.noEntryPositions.add(index)
       }
     },
 
     // 盤面に開始位置指定アイコンを設置・削除するメソッド
     $_updateStartPosition (index) {
       // 操作不可とは排他的（同じ座標に存在できない）
-      if (this.immovablePositions.has(index)) {
+      if (this.noEntryPositions.has(index)) {
         return
       }
       // 初めて配置する場合

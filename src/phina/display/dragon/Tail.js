@@ -12,7 +12,7 @@ export default phina.define('Tail', {
     const IMG_SIZE = 600
     const scale = (dropSize / IMG_SIZE) * 1.3
 
-    this.superInit('dragon_tail', IMG_SIZE, IMG_SIZE)
+    this.superInit('dragonTail', IMG_SIZE, IMG_SIZE)
     this.setScale(scale).moveTo(x, y).$_rotate(lineType)
   },
 

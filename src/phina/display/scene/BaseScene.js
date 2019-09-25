@@ -1,7 +1,7 @@
 import * as phina from 'phina.js'
 import MySprite from '../MySprite'
 import MyDisplayElement from '../MyDisplayElement'
-import ImmovablePosition from '../ImmovablePosition'
+import NoEntryPosition from '../NoEntryPosition'
 import StartPosition from '../startPosition/StartPosition'
 import { Drop, NormalDrop } from '../drops'
 
@@ -31,7 +31,7 @@ export default phina.define('BaseScene', {
       dropFall: this.dropFall,
       activeDrops: this.activeDrops,
       startPosition: this.startPosition,
-      immovablePositions: this.immovablePositions,
+      noEntryPositions: this.noEntryPositions,
     }, options))
   },
 
@@ -77,21 +77,21 @@ export default phina.define('BaseScene', {
   },
 
   // 盤面に操作不可スプライトを初期配置するメソッド
-  initImmovablePositions () {
-    this.immovablePositionSprites = new Map()
+  initNoEntryPositions () {
+    this.noEntryPositionSprites = new Map()
 
-    for (let index of this.immovablePositions) {
-      const sprite = this.createImmovablePositionSprite(index)
+    for (let index of this.noEntryPositions) {
+      const sprite = this.createNoEntryPositionSprite(index)
                          .addChildTo(this.gimmickGroup)
-      this.immovablePositionSprites.set(index, sprite)
+      this.noEntryPositionSprites.set(index, sprite)
     }
   },
 
   // 盤面配置用の操作不可位置スプライトを作成するメソッド
-  createImmovablePositionSprite (index) {
+  createNoEntryPositionSprite (index) {
     const [x, y] = this.getCoordinatesOfDrop(index)
 
-    return ImmovablePosition(this.baseDropSize)
+    return NoEntryPosition(this.baseDropSize)
             .moveTo(x, y).setScale(this.dropScale)
   },
 

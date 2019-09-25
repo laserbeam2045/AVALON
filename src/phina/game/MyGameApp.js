@@ -64,7 +64,7 @@ export default phina.define('MyGameApp', {
   //   dropFall: 落ちコンの有無（真偽値）
   //   activeDrops: 落ちる可能性のある色（真偽値の配列）
   //   startPosition: 開始位置指定（-1以上の整数値）
-  //   immovablePositions: 操作不可地点（Setオブジェクト）
+  //   noEntryPositions: 操作不可地点（Setオブジェクト）
   startNewGame (options) {
     const boardData = getBoardData(options)
     const screenData = getScreenData(boardData.boardSize)
@@ -95,7 +95,7 @@ export default phina.define('MyGameApp', {
 // 盤面に関する情報を抽出してまとめる関数
 // 戻り値：オブジェクト
 function getBoardData(options) {
-  const { board, dropFall, activeDrops, startPosition, immovablePositions } = options
+  const { board, dropFall, activeDrops, startPosition, noEntryPositions } = options
   let boardHeight = null
   let boardWidth = null
   let boardSize = null
@@ -113,7 +113,7 @@ function getBoardData(options) {
     break
   }
   return {
-    board, dropFall, activeDrops, startPosition, immovablePositions,
+    board, dropFall, activeDrops, startPosition, noEntryPositions,
     boardHeight, boardWidth, boardSize,
   }
 }
