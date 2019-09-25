@@ -18,12 +18,13 @@ export default () => {
 
     init (options) {
       this.superInit(options)
-      this.$_initSetterAndGetter()
+      this.initDropSprites()
+      this.initStartPositionSprite()
+      this.initNoEntryPositionSprites()
+      this.$_initSetter()
+      this.$_initGetter()
       this.$_initItems()
       this.$_initStartButton()
-      this.initDrops()
-      this.initStartPosition()
-      this.initNoEntryPositions()
     },
 
     // アイテムを選択状態にする唯一のパブリックメソッド
@@ -43,16 +44,20 @@ export default () => {
       })
     },
 
-    // Setter関数とGetter関数を定義するメソッド
-    $_initSetterAndGetter () {
-      this.setter('selectedItem', newItem => {
-        this.$_selectedItem = newItem
+    // setter関数を初期化するメソッド
+    $_initSetter () {
+      this.setter('selectedItem', item => {
+        this.$_selectedItem = item
       })
+      this.setter('lastMoveIndex', index => {
+        this.$_lastMoveIndex = index
+      })
+    },
+
+    // getter関数を初期化するメソッド
+    $_initGetter () {
       this.getter('selectedItem', () => {
         return this.$_selectedItem
-      })
-      this.setter('lastMoveIndex', newIndex => {
-        this.$_lastMoveIndex = newIndex
       })
       this.getter('lastMoveIndex', () => {
         return this.$_lastMoveIndex
@@ -110,14 +115,14 @@ export default () => {
     // 盤面の操作を開始したときのイベント処理
     onpointstart (event) {
       if (this.selectedItem !== undefined) {
-        this.$_applyChange({ ...this.getPositionOfDrop(event) })
+        this.$_applyChange({ ...this.getIndicesOfDrop(event) })
       }
     },
 
     // 盤面をドラッグしながら移動したときのイベント処理
     onpointmove (event) {
       if (this.selectedItem !== undefined) {
-        this.$_applyChange({ ...this.getPositionOfDrop(event) })
+        this.$_applyChange({ ...this.getIndicesOfDrop(event) })
       }
     },
 
@@ -157,7 +162,7 @@ export default () => {
         this.noEntryPositions.delete(index)
       // 引数の座標が未配置の場合
       } else {
-        const sprite = this.createNoEntryPositionSprite(index).addChildTo(this.gimmickGroup)
+        const sprite = this.createNoEntryPositionSprite(index)
         this.noEntryPositionSprites.set(index, sprite)
         this.noEntryPositions.add(index)
       }
@@ -172,7 +177,7 @@ export default () => {
       // 初めて配置する場合
       if (this.startPosition === -1) {
         const sprite = this.createStartPositionSprite(index)
-        this.startPositionSprite = sprite.addChildTo(this.gimmickGroup)
+        this.startPositionSprite = sprite
         this.startPosition = index
       // 配置してあるものを削除する場合
       } else if (this.startPosition === index) {

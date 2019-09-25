@@ -13,13 +13,13 @@ export default () => {
 
     init (options) {
       this.superInit(options)
+      this.initDropSprites()
+      this.initStartPositionSprite()
+      this.initNoEntryPositionSprites()
       this.$_initFlags()
       this.$_initButtons()
       this.$_initCountLabels()
       this.$_initComboEffects()
-      this.initDrops()
-      this.initStartPosition()
-      this.initNoEntryPositions()
       this.$_initDragons(options)
     },
 
@@ -144,7 +144,7 @@ export default () => {
     onpointstart (event) {
       if (!this.dragOkFlag) return
 
-      const { X, Y, Z } = this.getPositionOfDrop(event)
+      const { X, Y, Z } = this.getIndicesOfDrop(event)
       if (this.isOutOfBoard(X, Y)) return
 
       const color = this.board[Z]
@@ -162,7 +162,7 @@ export default () => {
       if (!this.dragOkFlag) return
       if (this.dragStartIndex === undefined) return
 
-      const { Z } = this.getPositionOfDrop(event, true)
+      const { Z } = this.getIndicesOfDrop(event, true)
 
       this.grabbedDrop.move(event)
 
@@ -323,14 +323,14 @@ export default () => {
           const index = this.get1dIndex(X, Y)
           if (board[index] !== 0) continue
 
-          const color = this.$_getRandomColor()             // 新しいドロップの色
-          const newDrop = this.createDrop(color, index)     // 新しいドロップ
-          const y0 = this.dropGridY.span(-dropCount - 0.5)  // 少し間引いたy座標
+          const color = this.$_getRandomColor()               // 新しいドロップの色
+          const newDrop = this.createDropSprite(index, color) // 新しいドロップ
+          const y0 = this.dropGridY.span(-dropCount - 0.5)    // 少し間引いたy座標
           const { x, y } = newDrop   // 落とす先の座標
 
           board[index] = color
           dropSprites[index] = newDrop
-          newDrop.moveTo(x, y0).addChildTo(this.dropGroup).tweenMoveTo(x, y, fallTime)
+          newDrop.moveTo(x, y0).tweenMoveTo(x, y, fallTime)
           dropCount++
         }
       }
@@ -418,7 +418,7 @@ export default () => {
     // コンボごとに座標をまとめるため、座標を格納することと、その座標を確認済みとする目的で使う
     $_pushClearablePlaces (conditions) {
       const index = conditions.index
-      const [X, Y] = this.get2dIndex(index)
+      const [X, Y] = this.get2dIndices(index)
 
       conditions.array.push(index)   // この座標を配列に追加
       conditions.checked.add(index)  // この座標を調査済みとする

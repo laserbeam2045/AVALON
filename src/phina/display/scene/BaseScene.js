@@ -14,7 +14,8 @@ export default phina.define('BaseScene', {
       width: options.width,
       height: options.height,
     })
-    this.$_initSetterAndGetter()
+    this.$_initSetter()
+    this.$_initGetter()
     this.$_initAttributes(options)
     this.$_initComputedAttributes()
     this.$_initObjects()
@@ -35,9 +36,9 @@ export default phina.define('BaseScene', {
     }, options))
   },
 
-  // 盤面にドロップを初期配置するメソッド
-  initDrops () {
-    this.dropSprites = []   // ドロップを管理するための配列
+  // 盤面にドロップスプライトを初期配置するメソッド
+  initDropSprites () {
+    this.dropSprites = []   // Spriteを管理するための配列
     let DropClass = null
 
     // sceneによって使用するクラスを変える
@@ -46,26 +47,38 @@ export default phina.define('BaseScene', {
       case 'InputScene' : DropClass = Drop; break
     }
     this.board.forEach((color, index) => {
-      const drop = this.createDrop(color, index, DropClass)
-      this.dropSprites[index] = drop.addChildTo(this.dropGroup)
+      const sprite = this.createDropSprite(index, color, DropClass)
+      this.dropSprites[index] = sprite
     })
   },
 
-  // 盤面配置用のドロップスプライトを作成するメソッド
-  createDrop (color, index, DropClass = NormalDrop) {
-    const [x, y] = this.getCoordinatesOfDrop(index)
+  // 盤面に開始位置指定スプライトを初期配置するメソッド
+  initStartPositionSprite () {
+    const index = this.startPosition
 
-    return DropClass(this.baseDropSize).moveTo(x, y)
-            .setFrameIndex(color).setScale(this.dropScale)
+    if (index !== -1) {
+      const sprite = this.createStartPositionSprite(index)
+      this.startPositionSprite = sprite
+    }
   },
 
-  // 盤面に開始位置指定スプライトを初期配置するメソッド
-  initStartPosition () {
-    const index = this.startPosition
-    if (index !== -1) {
-      this.startPositionSprite = this.createStartPositionSprite(index)
-                                      .addChildTo(this.gimmickGroup)
+  // 盤面に操作不可スプライトを初期配置するメソッド
+  initNoEntryPositionSprites () {
+    this.noEntryPositionSprites = new Map()
+
+    for (let index of this.noEntryPositions) {
+      const sprite = this.createNoEntryPositionSprite(index)
+      this.noEntryPositionSprites.set(index, sprite)
     }
+  },
+
+  // 盤面配置用のドロップスプライトを作成するメソッド
+  createDropSprite (index, color, DropClass = NormalDrop) {
+    const [x, y] = this.getCoordinatesOfDrop(index)
+
+    return DropClass(this.baseDropSize)
+            .moveTo(x, y).setScale(this.dropScale)
+            .setFrameIndex(color).addChildTo(this.dropGroup)
   },
 
   // 盤面配置用の開始位置指定スプライトを作成するメソッド
@@ -73,26 +86,17 @@ export default phina.define('BaseScene', {
     const [x, y] = this.getCoordinatesOfDrop(index)
 
     return StartPosition(this.baseDropSize)
-            .moveTo(x, y).setScale(this.dropScale * 1.3).rotate()
+            .moveTo(x, y).setScale(this.dropScale * 1.3)
+            .rotate().addChildTo(this.gimmickGroup)
   },
 
-  // 盤面に操作不可スプライトを初期配置するメソッド
-  initNoEntryPositions () {
-    this.noEntryPositionSprites = new Map()
-
-    for (let index of this.noEntryPositions) {
-      const sprite = this.createNoEntryPositionSprite(index)
-                         .addChildTo(this.gimmickGroup)
-      this.noEntryPositionSprites.set(index, sprite)
-    }
-  },
-
-  // 盤面配置用の操作不可位置スプライトを作成するメソッド
+  // 盤面配置用の操作不可スプライトを作成するメソッド
   createNoEntryPositionSprite (index) {
     const [x, y] = this.getCoordinatesOfDrop(index)
 
     return NoEntryPosition(this.baseDropSize)
             .moveTo(x, y).setScale(this.dropScale)
+            .addChildTo(this.gimmickGroup)
   },
 
   // 効果音を再生するメソッド
@@ -107,29 +111,14 @@ export default phina.define('BaseScene', {
   },
 
   // 一次元座標を二次元座標に変換して返すメソッド
-  get2dIndex (index) {
+  get2dIndices (index) {
     const X = index % this.boardWidth,
           Y = Math.floor(index / this.boardWidth)
     return [X, Y]
   },
 
-  // 二次元座標、または一次元座標から、ドロップの座標(pixel)を取得するメソッド
-  // 2つ目の引数が渡されなければ、一次元座標が渡されたものとみなす
-  getCoordinatesOfDrop (X, Y) {
-    if (typeof(X) === 'number') {
-      if (typeof(Y) !== 'number') {
-        const index = X
-        X = index % this.boardWidth
-        Y = Math.floor(index / this.boardWidth)
-      }
-    }
-    const x = this.dropGridX.span(X + 0.5)
-    const y = this.dropGridY.span(Y + 0.5)
-    return [x, y]
-  },
-
   // イベントからドロップの位置を割り出すメソッド（第二引数がtrueの場合は盤外の値を補正する）
-  getPositionOfDrop (event, adjust = false) {
+  getIndicesOfDrop (event, adjust = false) {
     let X = Math.floor((event.pointer.x - this.leftMargin) / this.dropSize),
         Y = Math.floor((event.pointer.y - this.topMargin) / this.dropSize)
 
@@ -140,6 +129,19 @@ export default phina.define('BaseScene', {
     const Z = this.boardWidth * Y + X
 
     return { X, Y, Z }
+  },
+
+  // 二次元座標、または一次元座標から、ドロップの座標(pixel)を取得するメソッド
+  // 第二引数が渡されなければ、一次元座標が渡されたものとみなす
+  getCoordinatesOfDrop (X, Y) {
+    if (typeof(Y) !== 'number') {
+      const index = X
+      X = index % this.boardWidth
+      Y = Math.floor(index / this.boardWidth)
+    }
+    const x = this.dropGridX.span(X + 0.5)
+    const y = this.dropGridY.span(Y + 0.5)
+    return [x, y]
   },
 
   // X、Yのどちらとも、盤面の内側の座標であるときにtrueを返すメソッド
@@ -166,6 +168,26 @@ export default phina.define('BaseScene', {
     } else {
       return false
     }
+  },
+
+  // setter関数を初期化するメソッド
+  $_initSetter () {
+    this.setter('dropFall', value => {
+      this.$_dropFall = value
+    })
+    this.setter('activeDrops', value => {
+      this.$_activeDrops = Array.from(value)
+    })
+  },
+
+  // getter関数を初期化するメソッド
+  $_initGetter () {
+    this.getter('dropFall', () => {
+      return this.$_dropFall
+    })
+    this.getter('activeDrops', () => {
+      return Array.from(this.$_activeDrops)
+    })
   },
 
   // 盤面に関する情報・ゲーム作成に必要な情報を、シーンのメンバ変数にセットするメソッド
@@ -196,8 +218,7 @@ export default phina.define('BaseScene', {
     // 実際に表示されるドロップのサイズ
     this.dropSize = this.boardPixelWidth / this.boardWidth
     // ボタン領域のグリッド
-    const buttonNum = 6
-    this.buttonGridX = phina.util.Grid(this.screenWidth, buttonNum)
+    this.buttonGridX = phina.util.Grid(this.screenWidth, 6)
     // 盤面領域のグリッド
     this.dropGridX = phina.util.Grid(this.boardPixelWidth, this.boardWidth)
     this.dropGridY = phina.util.Grid(this.boardPixelHeight, this.boardHeight)
@@ -205,35 +226,17 @@ export default phina.define('BaseScene', {
 
   // 基本的なオブジェクトを初期配置するメソッド
   $_initObjects () {
+    const { boardSize, topMargin, leftMargin } = this
+
     // 市松模様のタイル画像（下部）
-    MySprite(`tile_${this.boardSize}`).setOrigin(0, 0).moveTo(0, this.topMargin).addChildTo(this)
-
+    MySprite(`tile_${boardSize}`).setOrigin(0, 0).moveTo(0, topMargin).addChildTo(this)
     // ドロップのスプライトを入れるグループ
-    this.dropGroup = MyDisplayElement().moveTo(this.leftMargin, this.topMargin).addChildTo(this)
-
+    this.dropGroup = MyDisplayElement().moveTo(leftMargin, topMargin).addChildTo(this)
     // 背景画像（上部）
-    MySprite(`space_${this.boardSize}`).setOrigin(0, 0).addChildTo(this)
-
+    MySprite(`space_${boardSize}`).setOrigin(0, 0).addChildTo(this)
     // ボタンを入れるグループ
-    this.buttonGroup = MyDisplayElement().moveTo(0, this.topMargin - 136).addChildTo(this)
-    
+    this.buttonGroup = MyDisplayElement().moveTo(0, topMargin - 136).addChildTo(this)
     // 開始位置指定、操作不可地点のスプライトを入れるグループ
-    this.gimmickGroup = MyDisplayElement().moveTo(this.leftMargin, this.topMargin).addChildTo(this)
-  },
-
-  // Setter関数とGetter関数を定義するメソッド
-  $_initSetterAndGetter () {
-    this.setter('dropFall', newValue => {
-      this._dropFall = newValue
-    })
-    this.getter('dropFall', () => {
-      return this._dropFall
-    })
-    this.setter('activeDrops', newValue => {
-      this._activeDrops = Array.from(newValue)
-    })
-    this.getter('activeDrops', () => {
-      return Array.from(this._activeDrops)
-    })
+    this.gimmickGroup = MyDisplayElement().moveTo(leftMargin, topMargin).addChildTo(this)
   },
 })

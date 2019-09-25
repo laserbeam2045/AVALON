@@ -72,7 +72,6 @@ export default phina.define('MyGameApp', {
     this.currentScene.exitTo('main', {
       boardData,
       screenData,
-      ...options,
       dragon: null,
       process: null,
     })
