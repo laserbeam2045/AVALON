@@ -27,9 +27,9 @@ export default {
     state.apiConnectionFlag['search'] = payload
   },
 
-  // ゲームインスタンスを変更するミューテーション
-  setGameApp (state, payload) {
-    state.gameApp = payload
+  // ゲームインスタンスのメソッドをセットする
+  setGameMethods (state, payload) {
+    state.gameMethods = payload
   },
 
   // 最良ノードを変更するミューテーション

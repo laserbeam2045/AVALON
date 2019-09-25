@@ -16,7 +16,7 @@ export default {
 
   computed: {
     ...mapState([
-      'gameApp',
+      'gameMethods',
       'boardSettings',
       'clearingSettings',
     ]),
@@ -36,19 +36,18 @@ export default {
 
   // Vue側の更新と同時にGameApp側のデータも更新する
   watch: {
-    'boardSettings.dropFall' (newValue) {
-      this.gameApp.dropFall = newValue
+    'boardSettings.dropFall' (value) {
+      this.gameMethods.setDropFall(value)
     },
-    'clearingSettings.activeDrops' (newValue) {
-      this.gameApp.activeDrops = Array.from(newValue)
+    'clearingSettings.activeDrops' (value) {
+      this.gameMethods.setActiveDrops(Array.from(value))
     },
   },
 
   created () {
-    // ゲームを初期化し、インスタンスをstoreに送る
+    // ゲームを初期化し、インスタンスメソッドをstoreに送る
     createGame(this.initialData)
-      .then(app => this.$store.commit('setGameApp', app))  // eslint-disable-next-line
-      .catch(err => console.error(err))
+      .then(methods => this.$store.commit('setGameMethods', methods))
   },
 }
 </script>

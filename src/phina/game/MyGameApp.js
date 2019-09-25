@@ -27,6 +27,17 @@ export default phina.define('MyGameApp', {
     this.superInit(options)
   },
 
+  // 外部に公開するメソッドを取得するメソッド
+  getGameMethods () {
+    return {
+      displayLine   : this.displayLine.bind(this),
+      moveDrops     : this.moveDrops.bind(this),
+      startNewGame  : this.startNewGame.bind(this),
+      setDropFall   : this.setDropFall.bind(this),
+      setActiveDrops: this.setActiveDrops.bind(this),
+    }
+  },
+
   // 手順線を表示させるメソッド
   // process: 操作手順の配列
   // fadeTime: １パーツのフェードインにかける時間
@@ -81,7 +92,8 @@ export default phina.define('MyGameApp', {
 })
 
 
-// 盤面に関する情報を整形してまとめる関数
+// 盤面に関する情報を抽出してまとめる関数
+// 戻り値：オブジェクト
 function getBoardData(options) {
   const { board, dropFall, activeDrops, startPosition, immovablePositions } = options
   let boardHeight = null
@@ -107,6 +119,7 @@ function getBoardData(options) {
 }
 
 // ゲーム作成に必要な情報を、盤面のサイズに応じてまとめる関数
+// 戻り値：オブジェクト
 function getScreenData(boardSize) {
   return {
     screenPixelHeight : $CONST.SCREEN_PIXEL_HEIGHT,

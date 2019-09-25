@@ -12,9 +12,8 @@ export default (options) => {
     defineInputScene()
 
     phina.main(() => {
-      const app = MyGameApp(options)
-      app.run()
-      resolve(app)
+      const app = MyGameApp(options).run()
+      resolve(app.getGameMethods())
     })
   })
 }

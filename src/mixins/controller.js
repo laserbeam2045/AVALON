@@ -5,7 +5,7 @@ export default {
   computed: {
     ...mapState([
       'stateFlag',
-      'gameApp',
+      'gameMethods',
       'boardSettings',
       'clearingSettings',
     ]),
@@ -103,13 +103,13 @@ export default {
     // ゲームキャンバスをリセットするメソッド
     // MEMO: gameAppに対する命令
     startNewGame () {
-      this.gameApp.startNewGame(this.gameData)
+      this.gameMethods.startNewGame(this.gameData)
     },
 
     // 手順線を表示させるメソッド
     // MEMO: gameAppに対する命令
     displayLine (fadeTime = 100, duration = 0) {
-      this.gameApp.displayLine(Array.from(this.process), fadeTime, duration)
+      this.gameMethods.displayLine(Array.from(this.process), fadeTime, duration)
     },
 
     // ドロップを自動で動かすメソッド
@@ -118,7 +118,7 @@ export default {
       if (typeof(moveTime) != 'number') {
         moveTime = 80
       }
-      this.gameApp.moveDrops(Array.from(this.process), moveTime, duration)
+      this.gameMethods.moveDrops(Array.from(this.process), moveTime, duration)
     },
 
     // 探索結果に応じて、ドロップを動かすか、警告音を発するメソッド
