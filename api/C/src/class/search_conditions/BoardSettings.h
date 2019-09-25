@@ -7,13 +7,13 @@
 
 // 盤面に関する設定
 typedef struct {
-  Board board;                            // 初期盤面
-  bool dropFall;                          // 落ちコンの有無
-  bool greedy;                            // 最後まで探索するかどうか
-  int activeDrops;                        // 落ちてくるドロップ（ビットフラグ）
-  char startPosition;                     // 開始位置指定
-  char immovablePositions[BOARD_LEN_MAX]; // 操作不可地点
-  char immovablePositionsCount;           // 操作不可地点の数
+  Board board;                          // 初期盤面
+  bool dropFall;                        // 落ちコンの有無
+  bool greedy;                          // 最後まで探索するかどうか
+  int activeDrops;                      // 落ちてくるドロップ（ビットフラグ）
+  char startPosition;                   // 開始位置指定
+  char noEntryPositions[BOARD_LEN_MAX]; // 操作不可地点
+  char noEntryPositionsCount;           // 操作不可地点の数
 } BoardSettings;
 
 // 初期化関数
@@ -46,8 +46,8 @@ extern int BoardSettings_getActiveDrops(BoardSettings* this);
 // startPosition属性に値をセットする関数
 extern void BoardSettings_setStartPosition(BoardSettings* this, const char startPosition);
 
-// immovablePositions属性に値をセットする関数
-extern void BoardSettings_setImmovablePositions(BoardSettings* this, const char positions[], const char positionsCount);
+// noEntryPositions属性に値をセットする関数
+extern void BoardSettings_setNoEntryPositions(BoardSettings* this, const char positions[], const char positionsCount);
 
 // 与えられた引数の座標が、開始位置として選択可能かどうかを判定する関数
 // position    判定対象となる座標
@@ -57,6 +57,6 @@ extern char BoardSettings_isUnstartable(BoardSettings* this, const char position
 // 与えられた引数の座標が、操作不可地点に含まれるかどうかを判定する関数
 // position    判定対象となる座標
 // 戻り値：0（ 含まれていない）or 1（含まれている）
-extern char BoardSettings_isImmovablePosition(BoardSettings* this, const char position);
+extern char BoardSettings_isNoEntryPosition(BoardSettings* this, const char position);
 
 #endif  // _BOARD_SETTINGS_H_

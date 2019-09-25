@@ -23,12 +23,12 @@ export default {
 
   // 盤面に関する設定
   boardSettings: {
-    board: [],                      // 盤面の状態
-    boardSize: '5x6',               // 盤面のサイズ
-    dropFall: false,                // 落ちコンの有無
-    greedy: false,                  // 最後まで探索するかどうか
-    startPosition: -1,              // 開始位置指定
-    immovablePositions: new Set(),  // 操作不可地点
+    board: [],                    // 盤面の状態
+    boardSize: '5x6',             // 盤面のサイズ
+    dropFall: false,              // 落ちコンの有無
+    greedy: false,                // 最後まで探索するかどうか
+    startPosition: -1,            // 開始位置指定
+    noEntryPositions: new Set(),  // 操作不可地点
   },
 
   // 探索方法全般に関する設定

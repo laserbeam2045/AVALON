@@ -15,17 +15,17 @@ export default phina.define('Outline', {
     })
     this.dropSize = dropSize
     this.lineType = lineType
-    this.moveTo(x, y)._rotate()
+    this.moveTo(x, y).$_rotate()
   },
 
   postrender () {
-    this._drawOutline(12, 12, 'rgba(255,215,0,0.7)')
-    this._drawOutline(8, 12, 'rgba(255,255,255,0.5)')
-    this._drawOutline(3, 12, 'black')
+    this.$_drawOutline(12, 12, 'rgba(255,215,0,0.7)')
+    this.$_drawOutline(8, 12, 'rgba(255,255,255,0.5)')
+    this.$_drawOutline(3, 12, 'black')
   },
 
   // 胴体の輪郭線を描画するメソッド
-  _drawOutline (lineWidth, offset, color) {
+  $_drawOutline (lineWidth, offset, color) {
     const canvas = this.canvas,
           val_0 = -this.dropSize / 2,
           val_1 = -offset,
@@ -62,7 +62,7 @@ export default phina.define('Outline', {
   },
 
   // 線の種類に応じて回転させるメソッド
-  _rotate () {
+  $_rotate () {
     switch (this.lineType) {
     case 2: case 6: case 17: case 18:
       this.setRotation(180)

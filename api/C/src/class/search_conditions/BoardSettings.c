@@ -61,13 +61,13 @@ void BoardSettings_setStartPosition(BoardSettings* this, const char startPositio
   this->startPosition = startPosition;
 }
 
-// immovablePositions属性に値をセットする関数
-void BoardSettings_setImmovablePositions(BoardSettings* this, const char positions[], const char positionsCount)
+// noEntryPositions属性に値をセットする関数
+void BoardSettings_setNoEntryPositions(BoardSettings* this, const char positions[], const char positionsCount)
 {
   for (char i = 0; i < positionsCount; i++) {
-    this->immovablePositions[i] = positions[i];
+    this->noEntryPositions[i] = positions[i];
   }
-  this->immovablePositionsCount = positionsCount;
+  this->noEntryPositionsCount = positionsCount;
 }
 
 // 与えられた引数の座標が、開始位置として選択可能かどうかを判定する関数
@@ -83,12 +83,12 @@ char BoardSettings_isUnstartable(BoardSettings* this, const char position)
 }
 
 // 与えられた引数の座標が、操作不可地点に含まれるかどうかを判定する関数
-char BoardSettings_isImmovablePosition(BoardSettings* this, const char position)
+char BoardSettings_isNoEntryPosition(BoardSettings* this, const char position)
 {
   char flag = 0;
 
-  for (char i = 0, len = this->immovablePositionsCount; i < len; i++) {
-    if (this->immovablePositions[i] == position) {
+  for (char i = 0, len = this->noEntryPositionsCount; i < len; i++) {
+    if (this->noEntryPositions[i] == position) {
       flag = 1;
       break;
     }

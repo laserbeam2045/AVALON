@@ -70,7 +70,7 @@ export default {
   // 嫌がらせギミックの設定を初期化するミューテーション
   resetHarassments (state) {
     state.boardSettings.startPosition = -1
-    state.boardSettings.immovablePositions.clear()
+    state.boardSettings.noEntryPositions.clear()
   },
 
   // 探索データを初期化するミューテーション

@@ -121,7 +121,7 @@ static void BeamSearch_initQueue(BeamSearch* this, BoardSettings *bsp)
     if (BoardSettings_isUnstartable(bsp, position)) continue;
 
     // 操作不可地点の場合はキューに入れない
-    if (BoardSettings_isImmovablePosition(bsp, position)) continue;
+    if (BoardSettings_isNoEntryPosition(bsp, position)) continue;
 
     // ビームサーチノードを初期化する
     SearchNode_init(searchNode, board, position);
@@ -187,7 +187,7 @@ static void BeamSearch_expandNodes(BeamSearch* this, SearchConditions *scp, doub
       if (nextIndex == prevIndex) continue;     // 直前の座標に戻るのは無駄なので省く
 
       // 次の座標が操作不可地点なら展開しない
-      if (BoardSettings_isImmovablePosition(bsp, nextIndex)) continue;
+      if (BoardSettings_isNoEntryPosition(bsp, nextIndex)) continue;
 
       // スレッドに応じて、次に使用する配列のインデックスを算出
       childIndex = baseIndex + this->childrenCounts[threadId];

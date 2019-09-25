@@ -15,14 +15,14 @@ export default {
     ]),
     // ゲームインスタンスに渡すデータ
     gameData () {
-      const { board, dropFall, startPosition, immovablePositions } = this.boardSettings
+      const { board, dropFall, startPosition, noEntryPositions } = this.boardSettings
       const { activeDrops } = this.clearingSettings
       return {
         board: Array.from(board),
         dropFall,
         activeDrops: Array.from(activeDrops),
         startPosition,
-        immovablePositions: new Set(immovablePositions),
+        noEntryPositions: new Set(noEntryPositions),
       }
     },
   },
@@ -95,8 +95,8 @@ export default {
         newValue: boardData.startPosition,
       })
       this.$store.commit('updateBoardSettings', {
-        propName: 'immovablePositions',
-        newValue: boardData.immovablePositions,
+        propName: 'noEntryPositions',
+        newValue: boardData.noEntryPositions,
       })
     },
 

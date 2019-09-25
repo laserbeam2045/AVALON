@@ -3,7 +3,7 @@ import BaseScene from './BaseScene'
 import FrameButton from '../../ui/FrameButton'
 import { ItemDrop } from '../drops'
 import StartPosition from '../startPosition/StartPosition'
-import ImmovablePosition from '../ImmovablePosition'
+import NoEntryPosition from '../NoEntryPosition'
 
 const COLOR_MAX = 9                 // ドロップの種類
 const MAX_PER_LINE = 6              // 横に並べるドロップの数
@@ -18,12 +18,13 @@ export default () => {
 
     init (options) {
       this.superInit(options)
-      this._initSetterAndGetter()
-      this._initItems()
-      this._initStartButton()
-      this.initDrops()
-      this.initStartPosition()
-      this.initImmovablePositions()
+      this.initDropSprites()
+      this.initStartPositionSprite()
+      this.initNoEntryPositionSprites()
+      this.$_initSetter()
+      this.$_initGetter()
+      this.$_initItems()
+      this.$_initStartButton()
     },
 
     // アイテムを選択状態にする唯一のパブリックメソッド
@@ -43,24 +44,28 @@ export default () => {
       })
     },
 
-    // Setter関数とGetter関数を定義するメソッド
-    _initSetterAndGetter () {
-      this.setter('selectedItem', newItem => {
-        this._selectedItem = newItem
+    // setter関数を初期化するメソッド
+    $_initSetter () {
+      this.setter('selectedItem', item => {
+        this.$_selectedItem = item
       })
+      this.setter('lastMoveIndex', index => {
+        this.$_lastMoveIndex = index
+      })
+    },
+
+    // getter関数を初期化するメソッド
+    $_initGetter () {
       this.getter('selectedItem', () => {
-        return this._selectedItem
-      })
-      this.setter('lastMoveIndex', newIndex => {
-        this._lastMoveIndex = newIndex
+        return this.$_selectedItem
       })
       this.getter('lastMoveIndex', () => {
-        return this._lastMoveIndex
+        return this.$_lastMoveIndex
       })
     },
 
     // 選択アイテムを初期配置するメソッド
-    _initItems () {
+    $_initItems () {
       // 選択アイテムを入れるグループを作成
       const x = 65, y = this.topMargin - 71
       this.itemGroup = phina.display.DisplayElement().moveTo(x, y).addChildTo(this)
@@ -70,13 +75,13 @@ export default () => {
         ItemDrop(this.baseDropSize).setFrameIndex(i).addChildTo(this.itemGroup)
       }
       // 操作不可・開始位置指定アイコン
-      ImmovablePosition(this.baseDropSize).addChildTo(this.itemGroup)
+      NoEntryPosition(this.baseDropSize).addChildTo(this.itemGroup)
       StartPosition(this.baseDropSize).addChildTo(this.itemGroup)
 
       // イベント時にこのシーンのメソッドを呼び出せるようにするため、
       // 各アイテムのメンバ変数に、このシーンと、それぞれの識別用インデックスを持たせる
       this.itemGroup.children.forEach((item, index) => {
-        const [x, y] = this._getCoordinatesOfItem(index)
+        const [x, y] = this.$_getCoordinatesOfItem(index)
 
         item.setScene(this).setItemIndex(index + 1).setInteractive(true)
           .moveTo(x, y).setScale(ITEM_DROP_SCALE).setAlpha(UNSELECTED_ITEM_ALPHA)
@@ -84,7 +89,7 @@ export default () => {
     },
 
     // 選択アイテムの座標を計算するメソッド
-    _getCoordinatesOfItem (index) {
+    $_getCoordinatesOfItem (index) {
       const dropSize = this.baseDropSize * ITEM_DROP_SCALE,
             x = dropSize * (index % MAX_PER_LINE),
             y = -dropSize * Math.floor(index / MAX_PER_LINE)
@@ -93,7 +98,7 @@ export default () => {
     },
 
     // STARTボタンを初期配置するメソッド
-    _initStartButton () {
+    $_initStartButton () {
       const x = this.buttonGridX.span(5.5)
       const y = this.buttonGridX.span(0.5)
       FrameButton('START')
@@ -110,14 +115,14 @@ export default () => {
     // 盤面の操作を開始したときのイベント処理
     onpointstart (event) {
       if (this.selectedItem !== undefined) {
-        this._applyChange({ ...this.getPositionOfDrop(event) })
+        this.$_applyChange({ ...this.getIndicesOfDrop(event) })
       }
     },
 
     // 盤面をドラッグしながら移動したときのイベント処理
     onpointmove (event) {
       if (this.selectedItem !== undefined) {
-        this._applyChange({ ...this.getPositionOfDrop(event) })
+        this.$_applyChange({ ...this.getIndicesOfDrop(event) })
       }
     },
 
@@ -127,7 +132,7 @@ export default () => {
     },
 
     // アイテムの種類に応じて処理を振り分けるメソッド
-    _applyChange ({ X, Y, Z }) {
+    $_applyChange ({ X, Y, Z }) {
       if (this.isOutOfBoard(X, Y) || this.lastMoveIndex === Z) {
         return
       } else {
@@ -135,44 +140,44 @@ export default () => {
       }
       switch (this.selectedItem) {
       case (COLOR_MAX + 1):
-        this._updateImmovablePosition(Z)
+        this.$_updateNoEntryPosition(Z)
         break
       case (COLOR_MAX + 2):
-        this._updateStartPosition(Z)
+        this.$_updateStartPosition(Z)
         break
       default:
-        this._updateDrop(Z)
+        this.$_updateDrop(Z)
       }
     },
 
     // 盤面に操作不可アイコンを設置・削除するメソッド
-    _updateImmovablePosition (index) {
+    $_updateNoEntryPosition (index) {
       // 開始位置指定とは排他的（同じ座標に存在できない）
       if (this.startPosition === index) {
         return
       }
       // 引数の座標が既に配置済みの場合
-      if (this.immovablePositions.has(index)) {
-        this.immovablePositionSprites.get(index).remove()
-        this.immovablePositions.delete(index)
+      if (this.noEntryPositions.has(index)) {
+        this.noEntryPositionSprites.get(index).remove()
+        this.noEntryPositions.delete(index)
       // 引数の座標が未配置の場合
       } else {
-        const sprite = this.createImmovablePositionSprite(index).addChildTo(this.harassmentGroup)
-        this.immovablePositionSprites.set(index, sprite)
-        this.immovablePositions.add(index)
+        const sprite = this.createNoEntryPositionSprite(index)
+        this.noEntryPositionSprites.set(index, sprite)
+        this.noEntryPositions.add(index)
       }
     },
 
     // 盤面に開始位置指定アイコンを設置・削除するメソッド
-    _updateStartPosition (index) {
+    $_updateStartPosition (index) {
       // 操作不可とは排他的（同じ座標に存在できない）
-      if (this.immovablePositions.has(index)) {
+      if (this.noEntryPositions.has(index)) {
         return
       }
       // 初めて配置する場合
       if (this.startPosition === -1) {
         const sprite = this.createStartPositionSprite(index)
-        this.startPositionSprite = sprite.addChildTo(this.harassmentGroup)
+        this.startPositionSprite = sprite
         this.startPosition = index
       // 配置してあるものを削除する場合
       } else if (this.startPosition === index) {
@@ -188,7 +193,7 @@ export default () => {
     },
 
     // ドロップの色を変更するメソッド
-    _updateDrop (index) {
+    $_updateDrop (index) {
       const color = this.selectedItem
       this.board[index] = color
       this.boardData.board[index] = color
