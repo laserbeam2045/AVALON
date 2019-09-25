@@ -27,14 +27,14 @@ export default phina.define('Dragon', {
     this.superInit(options)
     Object.assign(this, options)
 
-    this._createParts()
-    setTimeout(this._advent.bind(this), this.duration)
+    this.$_createParts()
+    setTimeout(this.$_advent.bind(this), this.duration)
   },
 
   // ドラゴンを構成するパーツを作成するメソッド
-  _createParts () {
+  $_createParts () {
     this.parts = []
-    this._getLineData().forEach((data, index) => {
+    this.$_getLineData().forEach((data, index) => {
       this.parts[index] = [
         Outline(data),                          // 輪郭線
         Body(data, index, this.process.length), // 胴体
@@ -42,13 +42,13 @@ export default phina.define('Dragon', {
       ]
       if (index === 0)
         this.parts[index].push(Tail(data))  // 尻尾
-      else if (this._isLast(index))
+      else if (this.$_isLast(index))
         this.parts[index].push(Head(data))  // 頭
     })
   },
 
   // 初めは透明にしておき、徐々にフェードインさせるメソッド
-  _advent () {
+  $_advent () {
     this.parts.forEach((part, index) => {
       part.forEach(object => {
         object.setAlpha(0).addChildTo(this)
@@ -63,18 +63,18 @@ export default phina.define('Dragon', {
   },
 
   // indexが最後かどうかを返すメソッド
-  _isLast (index) {
+  $_isLast (index) {
     return (index === (this.process.length - 1))
   },
 
   // 描画する際に必要な、座標などの情報を、手順別にまとめるメソッド
-  _getLineData () {
+  $_getLineData () {
     return this.process.map((Z, index) => {
       const X = Z % this.boardWidth,
             Y = Math.floor(Z / this.boardWidth),
             x = this.dropSize * (X + 0.5),
             y = this.dropSize * (Y + 0.5),
-            lineType = this._getLineType(index)
+            lineType = this.$_getLineType(index)
 
       return {
         x,        // Group全体の中でのx座標
@@ -87,7 +87,7 @@ export default phina.define('Dragon', {
 
   // index手目として描画すべき線の種類を返すメソッド
   // 戻り値：数値(0～20)
-  _getLineType (index) {
+  $_getLineType (index) {
     const width = this.boardWidth
     const process = this.process
 
@@ -98,7 +98,7 @@ export default phina.define('Dragon', {
       if (diff === -1)      return 2  // 横の直線（中心から右）
       if (diff === width)   return 3  // 縦の直線（中心から上）
       if (diff === -width)  return 4  // 縦の直線（中心から下）
-    } else if (this._isLast(index)) {
+    } else if (this.$_isLast(index)) {
       // 最後（頭部分）の場合は、前の座標との差で場合分けをする
       const diff = process[index] - process[index - 1]
       if (diff === 1)       return 5  // 横の直線（左から中心）

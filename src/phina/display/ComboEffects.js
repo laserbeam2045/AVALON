@@ -43,16 +43,16 @@ export default phina.define('ComboEffects', {
     if ((app.frame % 2) === 0) {
       let index
       do {
-        index = Math.floor(Math.random() * this.colors.length)
+        index = Math.floor(Math.random() * this.$_colors.length)
       } while (index === this.colorIndex)
       this.colorIndex = index
 
-      const color = this.colors[index]  
+      const color = this.$_colors[index]  
       this.labelMap.forEach(label => label.setColor(color))
     }
   },
 
-  colors: [
+  $_colors: [
     'rgb(  0,   0,   0)', // black
     'rgb(255,  11,   0)', // red
     'rgb(  0, 251,   0)', // green

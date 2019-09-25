@@ -13,11 +13,11 @@ export default phina.define('Tail', {
     const scale = (dropSize / IMG_SIZE) * 1.3
 
     this.superInit('dragon_tail', IMG_SIZE, IMG_SIZE)
-    this.setScale(scale).moveTo(x, y)._rotate(lineType)
+    this.setScale(scale).moveTo(x, y).$_rotate(lineType)
   },
 
   // 線の種類に応じて回転させるメソッド
-  _rotate (lineType) {
+  $_rotate (lineType) {
     switch (lineType) {
       case 1: this.setRotation(-90); break //（中心から左に進む場合）
       case 2: this.setRotation(90);  break //（中心から右に進む場合）

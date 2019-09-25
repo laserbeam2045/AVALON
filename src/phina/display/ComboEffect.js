@@ -15,11 +15,11 @@ export default phina.define('ComboEffect', {
     this.superInit(options)
 
     this.moveTo(x, y)
-        .setScale(2)
-        .tweener
-        .to({y: y - 50}, 100)
-        .to({scaleX: 1, scaleY: 1, y}, 100)
-        .play()
+      .setScale(2)
+      .tweener
+      .to({y: y - 50}, 100)
+      .to({scaleX: 1, scaleY: 1, y}, 100)
+      .play()
   },
 
   // 色を変更するメソッド

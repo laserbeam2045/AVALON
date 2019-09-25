@@ -11,12 +11,12 @@ export default phina.define('StartPosition', {
   init (baseDropSize) {
     this.superInit()
 
-    this.setObjects(baseDropSize)
+    this.$_setObjects(baseDropSize)
     this.setSize(baseDropSize, baseDropSize)
   },
 
   // パーツを作成して配置するメソッド
-  setObjects (baseDropSize) {
+  $_setObjects (baseDropSize) {
     const BLEND_MODE = 'lighter'
     const color1 = 'blue'
     const color2 = '#FFFFFF'
@@ -62,18 +62,18 @@ export default phina.define('StartPosition', {
 
   // アイテムを識別するための変数をセットするメソッド
   setItemIndex (index) {
-    this._itemIndex = index
+    this.$_itemIndex = index
     return this
   },
 
   // 所属するシーンをセットするメソッド
   setScene (scene) {
-    this._scene = scene
+    this.$_scene = scene
     return this
   },
 
   // 所属シーンのアイテムを選択するメソッドを呼び出すイベント処理
   onpointstart () {
-    this._scene.selectItem(this._itemIndex)
+    this.$_scene.selectItem(this.$_itemIndex)
   },
 })

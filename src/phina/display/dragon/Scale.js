@@ -13,15 +13,15 @@ export default phina.define('Scale', {
       width: dropSize,
       height: dropSize,
     })
-    this.moveTo(x, y)._rotate(lineData)
+    this.moveTo(x, y).$_rotate(lineData)
   },
 
   postrender () {
-    this._drawScale()
+    this.$_drawScale()
   },
 
   // V字型の鱗の線を描画するメソッド
-  _drawScale () {
+  $_drawScale () {
     const canvas = this.canvas
     const offsetX = 13
     const offsetY = 13
@@ -39,7 +39,7 @@ export default phina.define('Scale', {
   },
 
   // 線の種類に応じて移動・回転させるメソッド
-  _rotate ({ dropSize, lineType }) {
+  $_rotate ({ dropSize, lineType }) {
     const offset = dropSize * 0.132  // 増やすほど内周寄りになる
     const offsetAngle = 4            // 増やすほど内周に傾きが増す
 

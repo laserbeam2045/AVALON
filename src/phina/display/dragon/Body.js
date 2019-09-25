@@ -18,15 +18,15 @@ export default phina.define('Body', {
     this.lineData = lineData
     this.index = index
     this.processLen = processLen
-    this.moveTo(x, y)._rotate()
+    this.moveTo(x, y).$_rotate()
   },
 
   postrender () {
-    this._drawBody()
+    this.$_drawBody()
   },
 
   // グラデーション付きの胴体を描画するメソッド
-  _drawBody () {
+  $_drawBody () {
     const { lineType, dropSize } = this.lineData
     const canvas = this.canvas
     let begin = {}, end = {}
@@ -60,14 +60,14 @@ export default phina.define('Body', {
     canvas.lineCap = 'round'
     canvas.lineJoin = 'round'
     canvas.lineWidth = 23
-    canvas.strokeStyle = this._getCanvasGradient(begin, end)
+    canvas.strokeStyle = this.$_getCanvasGradient(begin, end)
     canvas.moveTo(begin.x, begin.y).quadraticCurveTo(0, 0, end.x, end.y).stroke()
 
     return this
   },
 
   // CanvasGradientオブジェクトを生成するメソッド
-  _getCanvasGradient (begin, end) {
+  $_getCanvasGradient (begin, end) {
     const grad = this.canvas.context.createLinearGradient(begin.x, begin.y, end.x, end.y)
 
     // 色相（0～360°）の角度の値で指定。
@@ -87,7 +87,7 @@ export default phina.define('Body', {
   },
 
   // 線の種類に応じて回転・移動させるメソッド
-  _rotate () {
+  $_rotate () {
     const { lineType, dropSize } = this.lineData
 
     switch (lineType) {

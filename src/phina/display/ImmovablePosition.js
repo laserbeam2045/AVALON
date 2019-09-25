@@ -10,16 +10,16 @@ export default phina.define('ImmovablePosition', {
   },
   // アイテムを識別するための変数をセットするメソッド
   setItemIndex (index) {
-    this._itemIndex = index
+    this.$_itemIndex = index
     return this
   },
   // 所属するシーンをセットするメソッド
   setScene (scene) {
-    this._scene = scene
+    this.$_scene = scene
     return this
   },
   // 所属シーンのアイテムを選択するメソッドを呼び出す
   onpointstart () {
-    this._scene.selectItem(this._itemIndex)
+    this.$_scene.selectItem(this.$_itemIndex)
   },
 })
