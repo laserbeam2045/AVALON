@@ -7,8 +7,8 @@ export default phina.define('MyGameApp', {
   superClass: 'phina.game.GameApp',
   
   init (options) {
-    const boardData = this._getBoardData(options)
-    const screenData = this._getScreenData(boardData.boardSize)
+    const boardData = getBoardData(options)
+    const screenData = getScreenData(boardData.boardSize)
     const vueMethods = options.vueMethods
 
     options = (options || {}).$safe({
@@ -65,8 +65,8 @@ export default phina.define('MyGameApp', {
   //   startPosition: 開始位置指定（-1以上の整数値）
   //   immovablePositions: 操作不可地点（Setオブジェクト）
   startNewGame (options) {
-    const boardData = this._getBoardData(options)
-    const screenData = this._getScreenData(boardData.boardSize)
+    const boardData = getBoardData(options)
+    const screenData = getScreenData(boardData.boardSize)
 
     this.currentScene.exitTo('main', {
       boardData,
@@ -77,42 +77,43 @@ export default phina.define('MyGameApp', {
     })
     return this
   },
-
-  // 盤面に関する情報を整形してまとめるメソッド
-  _getBoardData (options) {
-    const { board, dropFall, activeDrops, startPosition, immovablePositions } = options
-    let boardHeight = null
-    let boardWidth = null
-    let boardSize = null
-
-    switch (board.length) {
-    case 30:
-      boardHeight = 5
-      boardWidth = 6
-      boardSize = '5x6'
-      break
-    case 42:
-      boardHeight = 6
-      boardWidth = 7
-      boardSize = '6x7'
-      break
-    }
-    return {
-      board, boardHeight, boardWidth, boardSize,
-      dropFall, activeDrops, startPosition, immovablePositions,
-    }
-  },
-
-  // ゲーム作成に必要な情報を、盤面のサイズに応じてまとめるメソッド
-  _getScreenData (boardSize) {
-    return {
-      screenPixelHeight : $CONST.SCREEN_PIXEL_HEIGHT,
-      screenPixelWidth  : $CONST.SCREEN_PIXEL_WIDTH,
-      baseDropSize      : $CONST.BASE_DROP_SIZE,
-      dropScale         : $CONST.DROP_SCALE[boardSize],
-      topMargin         : $CONST.TOP_MARGIN[boardSize],
-      leftMargin        : $CONST.LEFT_MARGIN[boardSize],
-      rightMargin       : $CONST.RIGHT_MARGIN[boardSize],
-    }
-  },
 })
+
+
+// 盤面に関する情報を整形してまとめる関数
+function getBoardData(options) {
+  const { board, dropFall, activeDrops, startPosition, immovablePositions } = options
+  let boardHeight = null
+  let boardWidth = null
+  let boardSize = null
+
+  switch (board.length) {
+  case 30:
+    boardHeight = 5
+    boardWidth = 6
+    boardSize = '5x6'
+    break
+  case 42:
+    boardHeight = 6
+    boardWidth = 7
+    boardSize = '6x7'
+    break
+  }
+  return {
+    board, dropFall, activeDrops, startPosition, immovablePositions,
+    boardHeight, boardWidth, boardSize,
+  }
+}
+
+// ゲーム作成に必要な情報を、盤面のサイズに応じてまとめる関数
+function getScreenData(boardSize) {
+  return {
+    screenPixelHeight : $CONST.SCREEN_PIXEL_HEIGHT,
+    screenPixelWidth  : $CONST.SCREEN_PIXEL_WIDTH,
+    baseDropSize      : $CONST.BASE_DROP_SIZE,
+    dropScale         : $CONST.DROP_SCALE[boardSize],
+    topMargin         : $CONST.TOP_MARGIN[boardSize],
+    leftMargin        : $CONST.LEFT_MARGIN[boardSize],
+    rightMargin       : $CONST.RIGHT_MARGIN[boardSize],
+  }
+}
