@@ -14,16 +14,10 @@ export default phina.define('BaseScene', {
       width: options.width,
       height: options.height,
     })
-    this._setAttributes(options)
-    this._setComputedAttributes()
-    this._initObjects()
-    this._initSetterAndGetter()
-
-    this.dragon = options.dragon
-    this.process = options.process
-    this.lineFlag = options.lineFlag
-    this.dropFall = options.dropFall
-    this.activeDrops = options.activeDrops
+    this.$_initSetterAndGetter()
+    this.$_initAttributes(options)
+    this.$_initComputedAttributes()
+    this.$_initObjects()
   },
 
   // シーンを移動するメソッド
@@ -31,9 +25,9 @@ export default phina.define('BaseScene', {
     this.exit(label, Object.assign({
       boardData: this.boardData,
       screenData: this.screenData,
-      lineFlag: this.lineFlag,
       dragon: this.dragon,
       process: this.process,
+      lineFlag: this.lineFlag,
       dropFall: this.dropFall,
       activeDrops: this.activeDrops,
       startPosition: this.startPosition,
@@ -166,7 +160,7 @@ export default phina.define('BaseScene', {
   },
 
   // 盤面に関する情報・ゲーム作成に必要な情報を、シーンのメンバ変数にセットするメソッド
-  _setAttributes (options) {
+  $_initAttributes (options) {
     const { boardData, screenData, vueMethods } = options
 
     // 各オブジェクトをシーンに持たせる
@@ -177,11 +171,16 @@ export default phina.define('BaseScene', {
     // オブジェクトの各値もシーンに持たせる(thisから直接参照できないと不便なため)
     Object.assign(this, boardData, screenData)
 
+    this.dragon = options.dragon
+    this.process = options.process
+    this.lineFlag = options.lineFlag
+    this.dropFall = options.dropFall
+    this.activeDrops = options.activeDrops
     this.board = Array.from(boardData.board)
   },
 
   // あると便利な変数を作るメソッド
-  _setComputedAttributes () {
+  $_initComputedAttributes () {
     // ゲームキャンバス全体のうち、盤面領域の高さと幅
     this.boardPixelHeight = this.screenPixelHeight - this.topMargin
     this.boardPixelWidth = this.screenPixelWidth - (this.leftMargin + this.rightMargin)
@@ -196,7 +195,7 @@ export default phina.define('BaseScene', {
   },
 
   // 基本的なオブジェクトを初期配置するメソッド
-  _initObjects () {
+  $_initObjects () {
     // 市松模様のタイル画像（下部）
     const tileImgName = `tile_${this.boardSize}`
     phina.display.Sprite(tileImgName).setOrigin(0, 0).moveTo(0, this.topMargin).addChildTo(this)
@@ -217,7 +216,7 @@ export default phina.define('BaseScene', {
   },
 
   // Setter関数とGetter関数を定義するメソッド
-  _initSetterAndGetter () {
+  $_initSetterAndGetter () {
     this.setter('dropFall', newValue => {
       this._dropFall = newValue
     })
