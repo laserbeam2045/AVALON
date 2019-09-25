@@ -25,14 +25,6 @@ export default phina.define('MyGameApp', {
       lineFlag: true,
     })
     this.superInit(options)
-
-    // 以下のプロパティは、base.jsのセッター関数を通じて直接代入できる
-    this.setter('dropFall', newValue => {
-      this.currentScene.dropFall = newValue
-    })
-    this.setter('activeDrops', newValue => {
-      this.currentScene.activeDrops = newValue
-    })
   },
 
   // 手順線を表示させるメソッド
@@ -43,7 +35,6 @@ export default phina.define('MyGameApp', {
     if (process && 'createDragon' in this.currentScene) {
       this.currentScene.createDragon(process, fadeTime, duration)
     }
-    return this
   },
 
   // 手順通りにドロップを自動で動かすメソッド
@@ -54,7 +45,6 @@ export default phina.define('MyGameApp', {
     if (process && 'moveDrops' in this.currentScene) {
       this.currentScene.moveDrops(process, moveTime, duration)
     }
-    return this
   },
 
   // ゲームを新しい状態で開始するメソッド
@@ -75,7 +65,18 @@ export default phina.define('MyGameApp', {
       dragon: null,
       process: null,
     })
-    return this
+  },
+
+  // dropFallプロパティをセットするメソッド
+  // value: 真偽値
+  setDropFall (value) {
+    this.currentScene.dropFall = value
+  },
+
+  // activeDropsプロパティをセットするメソッド
+  // value: 真偽値の配列
+  setActiveDrops (value) {
+    this.currentScene.activeDrops = value
   },
 })
 
