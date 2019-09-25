@@ -1,66 +1,5 @@
 import * as phina from 'phina.js'
-
-const SCREEN_PIXEL_HEIGHT = 1334  // ゲームキャンバス全体の高さ
-const SCREEN_PIXEL_WIDTH = 750    // ゲームキャンバス全体の幅
-const BASE_DROP_SIZE = 53         // 元となるドロップ画像のサイズ
-
-// ドロップに適用するサイズの比率
-const DROP_SCALE = {
-  '5x6': 2.32,
-  '6x7': 1.92,
-}
-// 盤面の余白（上部）
-const TOP_MARGIN = {
-  '5x6': 718,
-  '6x7': 719,
-}
-// 盤面の余白（左側）
-const LEFT_MARGIN = {
-  '5x6': 5,
-  '6x7': 17,
-}
-// 盤面の余白（右側）
-const RIGHT_MARGIN = {
-  '5x6': 6,
-  '6x7': 19,
-}
-
-// ゲームが使用する画像データのPATH
-const ASSETS = {
-  image: {
-    drops: require('../../assets/img/drops.png'),
-    tile_5x6: require('../../assets/img/tile_5x6.png'),
-    tile_6x7: require('../../assets/img/tile_6x7.png'),
-    space_5x6: require('../../assets/img/space_5x6.png'),
-    space_6x7: require('../../assets/img/space_6x7.png'),
-    immovable: require('../../assets/img/immovable.png'),
-    dragon_head: require('../../assets/img/dragon_head_.png'),
-    dragon_tail: require('../../assets/img/dragon_tail_.png'),
-  },
-  sound: {
-    move: require('../../assets/sound/move.mp3'),
-    button: require('../../assets/sound/button.mp3'),
-    select: require('../../assets/sound/Cyber17-1.mp3'),
-  },
-}
-
-// コンボ時のサウンド（数が多いのでfor文で入れる）
-for (let i = 1; i <= 18; i++) {
-  ASSETS.sound[`combo_${i}`] = require(`../../assets/sound/combo_${i}.mp3`)
-}
-
-// ゲームを構成するシーン
-const SCENES = [
-  {
-    label: 'main',
-    className: 'MainScene',
-  },
-  {
-    label: 'input',
-    className: 'InputScene',
-    nextLabel: 'main',
-  },
-]
+import * as $CONST from './MyGameAppConstants'
 
 // デフォルトのGameAppを継承してカスタム機能を持たせたクラス
 // Vueがこのクラスのインスタンスメソッドを使用することを想定している
@@ -75,10 +14,10 @@ export default phina.define('MyGameApp', {
     options = (options || {}).$safe({
       query: options.query,
       startLabel: 'main',
-      assets: ASSETS,
-      scenes: SCENES,
-      width: SCREEN_PIXEL_WIDTH,
-      height: SCREEN_PIXEL_HEIGHT,
+      assets: $CONST.ASSETS,
+      scenes: $CONST.SCENES,
+      width: $CONST.SCREEN_PIXEL_WIDTH,
+      height: $CONST.SCREEN_PIXEL_HEIGHT,
       fit: false,
       boardData,
       screenData,
@@ -167,13 +106,13 @@ export default phina.define('MyGameApp', {
   // ゲーム作成に必要な情報を、盤面のサイズに応じてまとめるメソッド
   _getScreenData (boardSize) {
     return {
-      screenPixelHeight : SCREEN_PIXEL_HEIGHT,
-      screenPixelWidth  : SCREEN_PIXEL_WIDTH,
-      baseDropSize      : BASE_DROP_SIZE,
-      dropScale         : DROP_SCALE[boardSize],
-      topMargin         : TOP_MARGIN[boardSize],
-      leftMargin        : LEFT_MARGIN[boardSize],
-      rightMargin       : RIGHT_MARGIN[boardSize],
+      screenPixelHeight : $CONST.SCREEN_PIXEL_HEIGHT,
+      screenPixelWidth  : $CONST.SCREEN_PIXEL_WIDTH,
+      baseDropSize      : $CONST.BASE_DROP_SIZE,
+      dropScale         : $CONST.DROP_SCALE[boardSize],
+      topMargin         : $CONST.TOP_MARGIN[boardSize],
+      leftMargin        : $CONST.LEFT_MARGIN[boardSize],
+      rightMargin       : $CONST.RIGHT_MARGIN[boardSize],
     }
   },
 })
