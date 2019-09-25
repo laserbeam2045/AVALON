@@ -5,7 +5,7 @@ import MyGameApp from './game/MyGameApp'
 
 // ゲームを作成する関数
 // 戻り値：Promise
-// (成功時：ゲームインスタンスをresolve)
+// (成功時：ゲームメソッドオブジェクトをresolve)
 export default (options) => {
   return new Promise(resolve => {
     defineMainScene()
@@ -13,7 +13,9 @@ export default (options) => {
 
     phina.main(() => {
       const app = MyGameApp(options).run()
-      resolve(app.getGameMethods())
+      const gameMethods = app.getGameMethods()
+
+      resolve(gameMethods)
     })
   })
 }
