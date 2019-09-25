@@ -157,7 +157,7 @@ export default () => {
         this.immovablePositions.delete(index)
       // 引数の座標が未配置の場合
       } else {
-        const sprite = this.createImmovablePositionSprite(index).addChildTo(this.harassmentGroup)
+        const sprite = this.createImmovablePositionSprite(index).addChildTo(this.gimmickGroup)
         this.immovablePositionSprites.set(index, sprite)
         this.immovablePositions.add(index)
       }
@@ -172,7 +172,7 @@ export default () => {
       // 初めて配置する場合
       if (this.startPosition === -1) {
         const sprite = this.createStartPositionSprite(index)
-        this.startPositionSprite = sprite.addChildTo(this.harassmentGroup)
+        this.startPositionSprite = sprite.addChildTo(this.gimmickGroup)
         this.startPosition = index
       // 配置してあるものを削除する場合
       } else if (this.startPosition === index) {

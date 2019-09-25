@@ -1,9 +1,9 @@
 import * as phina from 'phina.js'
+import MySprite from '../MySprite'
+import MyDisplayElement from '../MyDisplayElement'
 import ImmovablePosition from '../ImmovablePosition'
 import StartPosition from '../startPosition/StartPosition'
 import { Drop, NormalDrop } from '../drops'
-
-phina.globalize()
 
 // 共通のベースとなるシーン
 export default phina.define('BaseScene', {
@@ -64,14 +64,16 @@ export default phina.define('BaseScene', {
     const index = this.startPosition
     if (index !== -1) {
       this.startPositionSprite = this.createStartPositionSprite(index)
-                                      .addChildTo(this.harassmentGroup)
+                                      .addChildTo(this.gimmickGroup)
     }
   },
 
   // 盤面配置用の開始位置指定スプライトを作成するメソッド
   createStartPositionSprite (index) {
     const [x, y] = this.getCoordinatesOfDrop(index)
-    return StartPosition(this.baseDropSize).moveTo(x, y).setScale(this.dropScale * 1.3).rotate()
+
+    return StartPosition(this.baseDropSize)
+            .moveTo(x, y).setScale(this.dropScale * 1.3).rotate()
   },
 
   // 盤面に操作不可スプライトを初期配置するメソッド
@@ -79,7 +81,8 @@ export default phina.define('BaseScene', {
     this.immovablePositionSprites = new Map()
 
     for (let index of this.immovablePositions) {
-      const sprite = this.createImmovablePositionSprite(index).addChildTo(this.harassmentGroup)
+      const sprite = this.createImmovablePositionSprite(index)
+                         .addChildTo(this.gimmickGroup)
       this.immovablePositionSprites.set(index, sprite)
     }
   },
@@ -87,7 +90,9 @@ export default phina.define('BaseScene', {
   // 盤面配置用の操作不可位置スプライトを作成するメソッド
   createImmovablePositionSprite (index) {
     const [x, y] = this.getCoordinatesOfDrop(index)
-    return ImmovablePosition(this.baseDropSize).moveTo(x, y).setScale(this.dropScale)
+
+    return ImmovablePosition(this.baseDropSize)
+            .moveTo(x, y).setScale(this.dropScale)
   },
 
   // 効果音を再生するメソッド
@@ -104,7 +109,7 @@ export default phina.define('BaseScene', {
   // 一次元座標を二次元座標に変換して返すメソッド
   get2dIndex (index) {
     const X = index % this.boardWidth,
-          Y = Math.floor(index / this.boardWidth);
+          Y = Math.floor(index / this.boardWidth)
     return [X, Y]
   },
 
@@ -127,20 +132,23 @@ export default phina.define('BaseScene', {
   getPositionOfDrop (event, adjust = false) {
     let X = Math.floor((event.pointer.x - this.leftMargin) / this.dropSize),
         Y = Math.floor((event.pointer.y - this.topMargin) / this.dropSize)
+
     if (adjust) {
       X = Math.max(0, Math.min(X, this.boardWidth - 1))
       Y = Math.max(0, Math.min(Y, this.boardHeight - 1))
     }
     const Z = this.boardWidth * Y + X
+
     return { X, Y, Z }
   },
 
   // X、Yのどちらとも、盤面の内側の座標であるときにtrueを返すメソッド
   // 戻り値：真偽値（内側:true, 外側:false)
   isInsideOfBoard (X, Y) {
-    if (0 <= X && X < this.boardWidth &&
-        0 <= Y && Y < this.boardHeight)
-    {
+    if (
+      0 <= X && X < this.boardWidth &&
+      0 <= Y && Y < this.boardHeight
+    ) {
       return true
     } else {
       return false
@@ -150,9 +158,10 @@ export default phina.define('BaseScene', {
   // X、Yのいずれかが、盤面の外側の座標であるときにtrueを返すメソッド
   // 戻り値：真偽値（外側:true, 内側:false)
   isOutOfBoard (X, Y) {
-    if (X < 0 || this.boardWidth <= X ||
-        Y < 0 || this.boardHeight <= Y)
-    {
+    if (
+      X < 0 || this.boardWidth <= X ||
+      Y < 0 || this.boardHeight <= Y
+    ) {
       return true
     } else {
       return false
@@ -182,13 +191,13 @@ export default phina.define('BaseScene', {
   // あると便利な変数を作るメソッド
   $_initComputedAttributes () {
     // ゲームキャンバス全体のうち、盤面領域の高さと幅
-    this.boardPixelHeight = this.screenPixelHeight - this.topMargin
-    this.boardPixelWidth = this.screenPixelWidth - (this.leftMargin + this.rightMargin)
+    this.boardPixelHeight = this.screenHeight - this.topMargin
+    this.boardPixelWidth = this.screenWidth - (this.leftMargin + this.rightMargin)
     // 実際に表示されるドロップのサイズ
     this.dropSize = this.boardPixelWidth / this.boardWidth
     // ボタン領域のグリッド
     const buttonNum = 6
-    this.buttonGridX = phina.util.Grid(this.screenPixelWidth, buttonNum)
+    this.buttonGridX = phina.util.Grid(this.screenWidth, buttonNum)
     // 盤面領域のグリッド
     this.dropGridX = phina.util.Grid(this.boardPixelWidth, this.boardWidth)
     this.dropGridY = phina.util.Grid(this.boardPixelHeight, this.boardHeight)
@@ -197,22 +206,19 @@ export default phina.define('BaseScene', {
   // 基本的なオブジェクトを初期配置するメソッド
   $_initObjects () {
     // 市松模様のタイル画像（下部）
-    const tileImgName = `tile_${this.boardSize}`
-    phina.display.Sprite(tileImgName).setOrigin(0, 0).moveTo(0, this.topMargin).addChildTo(this)
+    MySprite(`tile_${this.boardSize}`).setOrigin(0, 0).moveTo(0, this.topMargin).addChildTo(this)
 
     // ドロップのスプライトを入れるグループ
-    const DisplayElement = phina.display.DisplayElement
-    this.dropGroup = DisplayElement().moveTo(this.leftMargin, this.topMargin).addChildTo(this)
+    this.dropGroup = MyDisplayElement().moveTo(this.leftMargin, this.topMargin).addChildTo(this)
 
     // 背景画像（上部）
-    const spaceImgName = `space_${this.boardSize}`
-    phina.display.Sprite(spaceImgName).setOrigin(0, 0).addChildTo(this)
+    MySprite(`space_${this.boardSize}`).setOrigin(0, 0).addChildTo(this)
 
     // ボタンを入れるグループ
-    this.buttonGroup = DisplayElement().moveTo(0, this.topMargin - 136).addChildTo(this)
+    this.buttonGroup = MyDisplayElement().moveTo(0, this.topMargin - 136).addChildTo(this)
     
     // 開始位置指定、操作不可地点のスプライトを入れるグループ
-    this.harassmentGroup = DisplayElement().moveTo(this.leftMargin, this.topMargin).addChildTo(this)
+    this.gimmickGroup = MyDisplayElement().moveTo(this.leftMargin, this.topMargin).addChildTo(this)
   },
 
   // Setter関数とGetter関数を定義するメソッド

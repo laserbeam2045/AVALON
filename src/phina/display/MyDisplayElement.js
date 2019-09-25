@@ -1,7 +1,5 @@
 import * as phina from 'phina.js'
 
-phina.globalize()
-
 // DisplayElementを継承し、alpha関係のメソッドを持たせたクラス
 export default phina.define('MyDisplayElement', {
   superClass: 'phina.display.DisplayElement',

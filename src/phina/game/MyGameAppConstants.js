@@ -2,9 +2,9 @@
   MyGameAppで使用する定数・パラメーター
 */
 
-export const SCREEN_PIXEL_HEIGHT = 1334  // ゲームキャンバス全体の高さ
-export const SCREEN_PIXEL_WIDTH = 750    // ゲームキャンバス全体の幅
-export const BASE_DROP_SIZE = 53         // 元となるドロップ画像のサイズ
+export const SCREEN_HEIGHT = 1334  // ゲームキャンバス全体の高さ
+export const SCREEN_WIDTH = 750    // ゲームキャンバス全体の幅
+export const BASE_DROP_SIZE = 53   // ドロップ画像のサイズ
 
 // ドロップに適用するサイズの比率
 export const DROP_SCALE = {

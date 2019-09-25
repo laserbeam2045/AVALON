@@ -16,8 +16,8 @@ export default phina.define('MyGameApp', {
       startLabel: 'main',
       assets: $CONST.ASSETS,
       scenes: $CONST.SCENES,
-      width: $CONST.SCREEN_PIXEL_WIDTH,
-      height: $CONST.SCREEN_PIXEL_HEIGHT,
+      width: $CONST.SCREEN_WIDTH,
+      height: $CONST.SCREEN_HEIGHT,
       fit: false,
       boardData,
       screenData,
@@ -122,12 +122,12 @@ function getBoardData(options) {
 // 戻り値：オブジェクト
 function getScreenData(boardSize) {
   return {
-    screenPixelHeight : $CONST.SCREEN_PIXEL_HEIGHT,
-    screenPixelWidth  : $CONST.SCREEN_PIXEL_WIDTH,
-    baseDropSize      : $CONST.BASE_DROP_SIZE,
-    dropScale         : $CONST.DROP_SCALE[boardSize],
-    topMargin         : $CONST.TOP_MARGIN[boardSize],
-    leftMargin        : $CONST.LEFT_MARGIN[boardSize],
-    rightMargin       : $CONST.RIGHT_MARGIN[boardSize],
+    screenHeight : $CONST.SCREEN_HEIGHT,
+    screenWidth  : $CONST.SCREEN_WIDTH,
+    baseDropSize : $CONST.BASE_DROP_SIZE,
+    dropScale    : $CONST.DROP_SCALE[boardSize],
+    topMargin    : $CONST.TOP_MARGIN[boardSize],
+    leftMargin   : $CONST.LEFT_MARGIN[boardSize],
+    rightMargin  : $CONST.RIGHT_MARGIN[boardSize],
   }
 }

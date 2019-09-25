@@ -6,6 +6,7 @@ import Dragon from '../dragon/Dragon'
 import CountLabel from '../CountLabel'
 import ComboEffects from '../ComboEffects'
 
+// メインのシーン
 export default () => {
   phina.define('MainScene', {
     superClass: BaseScene,
@@ -79,7 +80,7 @@ export default () => {
 
     // コンボ数・移動回数ラベルを初期配置するメソッド
     $_initCountLabels () {
-      let x = this.screenPixelWidth - 65
+      let x = this.screenWidth - 65
       let y = this.topMargin - 185
       this.moveCountLabel = CountLabel().moveTo(x, y).addChildTo(this)
       x = 140
@@ -493,8 +494,8 @@ export default () => {
       if (this.dragon) {
         this.dragon.fadeOut(duration)
       }
-      this.harassmentGroup.children.forEach(obj => {
-        obj.fadeOut(duration)
+      this.gimmickGroup.children.forEach(object => {
+        object.fadeOut(duration)
       })
     },
 
@@ -503,8 +504,8 @@ export default () => {
       if (this.dragon) {
         this.dragon.fadeIn(duration)
       }
-      this.harassmentGroup.children.forEach(obj => {
-        obj.fadeIn(duration)
+      this.gimmickGroup.children.forEach(object => {
+        object.fadeIn(duration)
       })
     },
 
