@@ -2,7 +2,7 @@
   <fieldset id="clearing-settings">
     <legend>CLEARING SETTINGS</legend>
     <table>
-      <SettingsClearing
+      <SettingClearing
         v-for="(value, name, index) in clearingSettings"
         :key="index"
         :data="value"
@@ -14,12 +14,12 @@
 </template>
 
 <script>
-import SettingsClearing from './SettingsClearing'
+import SettingClearing from './SettingClearing'
 
 export default {
   name: 'TheSettingsClearing',
   components: {
-    SettingsClearing,
+    SettingClearing,
   },
   computed: {
     clearingSettings () {

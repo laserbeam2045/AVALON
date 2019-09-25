@@ -12,11 +12,20 @@
 
 <script>
 export default {
-  name: 'BaseCheckbox',
+  name: 'SettingClearingCheckBox',
   props: {
-    checked: Boolean,
-    label: String,
-    index: Number,
+    label: {
+      type: String,
+      required: true,
+    },
+    index: {
+      type: Number,
+      required: true,
+    },
+    checked: {
+      type: Boolean,
+      required: true,
+    },
   },
   computed: {
     isException () {

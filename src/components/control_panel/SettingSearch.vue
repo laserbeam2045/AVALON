@@ -3,28 +3,34 @@
     {{ label | space | upperCase }}
     <input
       type="number"
-      v-show=false
-      :step=setting.step
-      :min=setting.min
-      :max=setting.max
-      :value:number=setting.value
+      v-show="false"
+      :step="setting.step"
+      :min="setting.min"
+      :max="setting.max"
+      :value:number="setting.value"
     />
     <span class="active">{{ numberToDisplay }}</span>
   </label>
 </template>
 
 <script>
-import filters from '../../../mixins/filters'
-import {TweenLite} from 'gsap'
+import filters from '../../mixins/filters'
+import { TweenLite } from 'gsap'
 
 export default {
-  name: 'BaseInput',
+  name: 'SettingSearch',
   mixins: [
     filters,
   ],
   props: {
-    label: String,
-    setting: Object,
+    label: {
+      type: String,
+      required: true,
+    },
+    setting: {
+      type: Object,
+      required: true,
+    },
   },
   data () {
     return {

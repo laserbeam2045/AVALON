@@ -17,10 +17,10 @@
 </template>
 
 <script>
-import SkillButton from './SkillButton'
 import { mapGetters, mapMutations } from 'vuex'
-import { DROP_TYPE } from '../../../store/constants'
-import controller from '../../../mixins/controller'
+import { DROP_TYPE } from '../../store/constants'
+import controller from '../../mixins/controller'
+import SkillButton from './SkillButton'
 
 export default {
   name: 'TheSkillButtons',

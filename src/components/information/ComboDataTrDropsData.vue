@@ -9,21 +9,30 @@
 
 <script>
 export default {
-  name: 'BaseDrop',
+  name: 'ComboDataTrDropsData',
   props: {
-    index: Number,
-    number: Number,
-    criteria: Number,
+    index: {
+      type: Number,
+      required: true,
+    },
+    number: {
+      type: Number,
+      required: true,
+    },
+    criteria: {
+      type: Number,
+      required: true,
+    },
   },
   computed: {
-    isMany: function() {
-      return (this.criteria >= 10);
+    isMany () {
+      return (this.criteria >= 10)
     },
-    isMultiple: function() {
-      return (this.number >= 2);
+    isMultiple () {
+      return (this.number >= 2)
     },
-    imgSrc: function() {
-      return require(`../../assets/img/drop_${this.index}.png`);
+    imgSrc () {
+      return require(`../../assets/img/drop_${this.index}.png`)
     },
   },
 }

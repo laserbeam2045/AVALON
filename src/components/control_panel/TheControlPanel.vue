@@ -1,5 +1,5 @@
 <template>
-  <fieldset id=control-panel>
+  <fieldset id="control-panel">
     <TheSkillButtons/>
     <TheSettingsLeader/>
     <TheSettingsBoard/>
@@ -9,10 +9,10 @@
 </template>
 
 <script>
-import TheSkillButtons from './skill_buttons/TheSkillButtons'
-import TheSettingsLeader from './leader_settings/TheSettingsLeader'
-import TheSettingsBoard from './board_settings/TheSettingsBoard'
-import TheSettingsSearch from './search_settings/TheSettingsSearch'
+import TheSkillButtons from './TheSkillButtons'
+import TheSettingsLeader from './TheSettingsLeader'
+import TheSettingsBoard from './TheSettingsBoard'
+import TheSettingsSearch from './TheSettingsSearch'
 import TheSettingsClearing from './TheSettingsClearing'
 
 export default {

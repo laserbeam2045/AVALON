@@ -2,23 +2,23 @@
   <fieldset>
     <legend>SEARCH SETTINGS</legend>
     <div>
-      <BaseInput
+      <SettingSearch
         v-for="(setting, name, index) in searchSettings"
-        :key=index
-        :label=name
-        :setting=setting
+        :key="index"
+        :label="name"
+        :setting="setting"
       />
     </div>
   </fieldset>
 </template>
 
 <script>
-import BaseInput from "./BaseInput"
+import SettingSearch from "./SettingSearch"
 
 export default {
   name: 'TheSettingsSearch',
   components: {
-    BaseInput,
+    SettingSearch,
   },
   computed: {
     searchSettings () {

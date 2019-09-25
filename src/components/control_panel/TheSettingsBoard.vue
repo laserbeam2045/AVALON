@@ -2,7 +2,7 @@
   <fieldset id="board-settings">
     <legend>BOARD SETTINGS</legend>
     <div>
-      <SettingsBoard
+      <SettingBoard
         v-for="(setting, name, index) in settings"
         :key="index"
         :label="name"
@@ -14,44 +14,44 @@
 </template>
 
 <script>
-import SettingsBoard from './SettingsBoard'
+import SettingBoard from './SettingBoard'
 
 export default {
   name: 'TheSettingsBoard',
   components: {
-    SettingsBoard,
+    SettingBoard,
   },
   computed: {
     settings () {
       return {
         boardSize: [
           {
-            value: '5x6',
             label: '5x6',
+            value: '5x6',
           },
           {
-            value: '6x7',
             label: '6x7',
+            value: '6x7',
           },
         ],
         dropFall: [
           {
-            value: true,
             label: 'ON',
+            value: true,
           },
           {
-            value: false,
             label: 'OFF',
+            value: false,
           },
         ],
         greedy: [
           {
-            value: true,
             label: 'ON',
+            value: true,
           },
           {
-            value: false,
             label: 'OFF',
+            value: false,
           },
         ],
       }

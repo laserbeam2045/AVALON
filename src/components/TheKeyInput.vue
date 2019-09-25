@@ -19,14 +19,14 @@ export default {
   ],
   directives: {
     focus: {
-      inserted: function (el) {
-        el.focus();
+      inserted (el) {
+        el.focus()
       },
     },
   },
   methods: {
-    focus: function() {
-      this.$refs.input.focus();
+    focus () {
+      this.$refs.input.focus()
     },
   },
 }
