@@ -1,40 +1,38 @@
 <template>
   <fieldset id="combo-data">
     <table>
-      <BaseTr>
+      <ComboDataTr>
         <template #default>Max</template>
         <template #combo>{{ maxCombo }}</template>
         <template #magni>{{ maxMagnification }}</template>
         <template #drops>
-          <DropData :drops="dropTypes1"/>
+          <ComboDataTrDrops :drops="dropTypes1"/>
         </template>
-      </BaseTr>
-      <BaseTr
-        v-if="bestNode"
-        v-bind="maxClass"
-      >
+      </ComboDataTr>
+      
+      <ComboDataTr v-if="bestNode" v-bind="maxClass">
         <template #combo>{{ combo }}</template>
         <template #magni>{{ magnification }}</template>
         <template #drops>
-          <DropData :drops="dropTypes2"/>
+          <ComboDataTrDrops :drops="dropTypes2"/>
         </template>
-      </BaseTr>
+      </ComboDataTr>
       <tr v-else></tr>
     </table>
   </fieldset>
 </template>
 
 <script>
-import BaseTr from './BaseTr'
-import DropData from './DropData'
-import { mapState } from 'vuex'
+import ComboDataTr from './ComboDataTr'
+import ComboDataTrDrops from './ComboDataTrDrops'
 import { DROP_TYPE_MAX } from '../../store/constants'
+import { mapState } from 'vuex'
 
 export default {
   name: 'TheComboData',
   components: {
-    BaseTr,
-    DropData,
+    ComboDataTr,
+    ComboDataTrDrops,
   },
   computed: {
     ...mapState({

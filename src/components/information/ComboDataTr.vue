@@ -1,18 +1,32 @@
 <template>
   <tr>
-    <td><slot></slot></td>
-    <td class="combo" :class="combo"><slot name="combo"></slot>combo</td>
-    <td class="magni" :class="magni">×<slot name="magni"></slot></td>
-    <td v-on="$listeners"><slot name="drops"></slot></td>
+    <td>
+      <slot></slot>
+    </td>
+    <td class="combo" :class="combo">
+      <slot name="combo"></slot>combo
+    </td>
+    <td class="magni" :class="magni">
+      ×<slot name="magni"></slot>
+    </td>
+    <td v-on="$listeners">
+      <slot name="drops"></slot>
+    </td>
   </tr>
 </template>
 
 <script>
 export default {
-  name: 'BaseTr',
+  name: 'ComboDataTr',
   props: {
-    combo: Object,
-    magni: Object,
+    combo: {
+      type: Object,
+      required: true,
+    },
+    magni: {
+      type: Object,
+      required: true,
+    },
   },
 }
 </script>

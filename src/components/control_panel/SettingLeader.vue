@@ -1,13 +1,12 @@
 <template>
   <select
-    class="active"
     :value="value"
     @change="$emit('change', $event.target.value)"
   >
     <option
-      v-for="(optionValue, name) in options"
-      :key="optionValue"
-      :value="optionValue"
+      v-for="(value, name) in options"
+      :key="value"
+      :value="value"
     >
       {{ name }}
     </option>
@@ -15,9 +14,8 @@
 </template>
 
 <script>
-
 export default {
-  name: 'BaseSelect',
+  name: 'SettingLeader',
   props: {
     value: {
       type: Number,

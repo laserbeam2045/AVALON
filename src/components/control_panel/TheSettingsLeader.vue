@@ -1,14 +1,16 @@
 <template>
   <div>
     <label>LEADER</label>
-    <BaseSelect
-      :value=leader1
+    <SettingLeader
+      class="active"
+      :value="leader1"
       :options="leaders"
       @change="setLeader(1, $event)"
     />
     <span>x</span>
-    <BaseSelect
-      :value=leader2
+    <SettingLeader
+      class="active"
+      :value="leader2"
       :options="leaders"
       @change="setLeader(2, $event)"
     />
@@ -16,15 +18,15 @@
 </template>
 
 <script>
-import BaseSelect from './BaseSelect'
-import controller from '../../../mixins/controller'
-import { LEADER } from '../../../store/constants'
+import SettingLeader from './SettingLeader'
+import controller from '../../mixins/controller'
+import { LEADER } from '../../store/constants'
 import { mapState } from 'vuex'
 
 export default {
   name: 'TheSettingsLeader',
   components: {
-    BaseSelect,
+    SettingLeader,
   },
   mixins: [
     controller,
@@ -42,8 +44,8 @@ export default {
     setLeader (leaderNum, newLeader) {
       newLeader = Number(newLeader)
       this.$store.commit('setLeader', { leaderNum, newLeader })
-      this.$store.dispatch('updateMaxData')
       this.$store.commit('resetSearchData')
+      this.$store.dispatch('updateMaxData')
       this.$playSound('sound-on')
       this.startNewGame()
     },

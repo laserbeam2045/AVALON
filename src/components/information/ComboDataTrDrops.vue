@@ -1,6 +1,6 @@
 <template>
   <div class="drop-wrapper">
-    <BaseDrop
+    <ComboDataTrDropsData
       v-for="drop in drops"
       :key="drop.index"
       v-bind="drop"
@@ -9,15 +9,18 @@
 </template>
 
 <script>
-import BaseDrop from "./BaseDrop"
+import ComboDataTrDropsData from "./ComboDataTrDropsData"
 
 export default {
-  name: 'DropData',
+  name: 'ComboDataTrDrops',
   props: {
-    drops: Array,
+    drops: {
+      type: Array,
+      required: true,
+    },
   },
   components: {
-    BaseDrop,
+    ComboDataTrDropsData,
   },
 }
 </script>

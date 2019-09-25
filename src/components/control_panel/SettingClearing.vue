@@ -6,12 +6,12 @@
       </span>
     </th>
     <td>
-      <BaseCheckbox
+      <SettingClearingCheckBox
         v-for="(bool, index) in filteredData"
         :key="index"
-        :checked="bool"
         :label="label"
         :index="index + 1"
+        :checked="bool"
         @change="$emit('change', $event)"
       />
     </td>
@@ -19,20 +19,26 @@
 </template>
 
 <script>
-import BaseCheckbox from './BaseCheckbox'
+import SettingClearingCheckBox from './SettingClearingCheckBox'
 import filters from '../../mixins/filters'
 
 export default {
-  name: 'SettingsClearing',
+  name: 'SettingClearing',
   components: {
-    BaseCheckbox,
+    SettingClearingCheckBox,
   },
   mixins: [
     filters,
   ],
   props: {
-    data: Array,
-    label: String,
+    label: {
+      type: String,
+      required: true,
+    },
+    data: {
+      type: Array,
+      required: true,
+    },
   },
   computed: {
     filteredData () {

@@ -1,33 +1,38 @@
 <template>
   <div>
     <label>{{ label | space | upperCase }}</label>
-    <BaseRadioButton
+    <SettingBoardRadioButton
       v-for="(setting, index) of settings"
       :key="index"
+      :label="setting.label"
       :value="setting.value"
       :checked="setting.value === value"
       @change="$emit(`change`, {propName: label, newValue: $event})"
-    >
-      {{ setting.label }}
-    </BaseRadioButton>
+    />
   </div>
 </template>
 
 <script>
-import BaseRadioButton from './BaseRadioButton'
-import filters from '../../../mixins/filters'
+import SettingBoardRadioButton from './SettingBoardRadioButton'
+import filters from '../../mixins/filters'
 
 export default {
-  name: 'SettingsBoard',
+  name: 'SettingBoard',
   components: {
-    BaseRadioButton,
+    SettingBoardRadioButton,
   },
   mixins: [
     filters,
   ],
   props: {
-    label: String,
-    settings: Array,
+    label: {
+      type: String,
+      required: true,
+    },
+    settings: {
+      type: Array,
+      required: true,
+    },
   },
   computed: {
     boardSettings () {
