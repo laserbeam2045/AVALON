@@ -92,6 +92,13 @@ const char* SearchNode_getBoardState(SearchNode* this)
 }
 
 
+// process属性のアドレスを取得する関数
+const char* SearchNode_getProcess(SearchNode* this)
+{
+  return this->process;
+}
+
+
 // comboData属性のアドレスを取得する関数
 ComboData* SearchNode_getComboData(SearchNode* this)
 {
