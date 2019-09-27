@@ -51,13 +51,16 @@ export default phina.define('Dragon', {
   $_advent () {
     this.parts.forEach((part, index) => {
       part.forEach(object => {
-        object.setAlpha(0).addChildTo(this)
-        if (this.displayFlag) {
-          object.tweener
-          .wait(this.fadeTime * index)
-          .to({alpha: 1}, this.fadeTime * 3, this.easing)
-          .play()
+        if (!this.displayFlag || this.fadeTime) {
+          object.setAlpha(0)
+          if (this.displayFlag) {
+            object.tweener
+            .wait(this.fadeTime * index)
+            .to({alpha: 1}, this.fadeTime * 3, this.easing)
+            .play()
+          }
         }
+        object.addChildTo(this)
       })
     })
   },

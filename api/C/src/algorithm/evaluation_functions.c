@@ -93,7 +93,7 @@ static int getClearingPoint(ComboData *cdp, ClearingSettings *csp)
     if (ClearingSettings_isActiveOf(csp, (CS_TYPE)TWO_WAY, color)) {
       comboCount = ComboData_getClearStyle(cdp, (CS_TYPE)TWO_WAY, color);
       if (comboCount)
-        point += (comboCount << 3);
+        point += (comboCount * 50);
       else
         ComboData_setFulFillConditions(cdp, false);
     }
@@ -101,7 +101,7 @@ static int getClearingPoint(ComboData *cdp, ClearingSettings *csp)
     if (ClearingSettings_isActiveOf(csp, (CS_TYPE)BREAK_THROUGH, color)) {
       comboCount = ComboData_getClearStyle(cdp, (CS_TYPE)BREAK_THROUGH, color);
       if (comboCount)
-        point += (comboCount << 3);
+        point += (comboCount * 1000);
       else
         ComboData_setFulFillConditions(cdp, false);
     }
@@ -109,7 +109,7 @@ static int getClearingPoint(ComboData *cdp, ClearingSettings *csp)
     if (ClearingSettings_isActiveOf(csp, (CS_TYPE)LINE, color)) {
       comboCount = ComboData_getClearStyle(cdp, (CS_TYPE)LINE, color);
       if (comboCount)
-        point += (comboCount << 3);
+        point += (comboCount * 200);
       else
         ComboData_setFulFillConditions(cdp, false);
     }
@@ -125,7 +125,7 @@ static int getClearingPoint(ComboData *cdp, ClearingSettings *csp)
     if (ClearingSettings_isActiveOf(csp, (CS_TYPE)L, color)) {
       comboCount = ComboData_getClearStyle(cdp, (CS_TYPE)L, color);
       if (comboCount)
-        point += (comboCount << 3);
+        point += (comboCount * 400);
       else
         ComboData_setFulFillConditions(cdp, false);
     }
@@ -134,7 +134,7 @@ static int getClearingPoint(ComboData *cdp, ClearingSettings *csp)
   if (ClearingSettings_isActiveOf(csp, (CS_TYPE)LINE, 7)) {
     comboCount = ComboData_getClearStyle(cdp, (CS_TYPE)LINE, 7);
     if (comboCount)
-      point += 100;
+      point += 300;
     else
       ComboData_setFulFillConditions(cdp, false);
   }
