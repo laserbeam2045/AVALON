@@ -22,7 +22,7 @@ void writeNodeDataStr(char buf[], size_t bufSize, SearchNode *node, double elaps
     int i;
 
     n += _snprintf(buf + n, bufSize, "{\n\"board\"\t\t\t: [");
-    for (int i = 0; i < Board_length; i++) {
+    for (i = 0; i < Board_length; i++) {
         n += _snprintf(buf + n, bufSize, "%d", node->board.state[i]);
         if (i != (Board_length - 1)) n += _snprintf(buf + n, bufSize, ", ");
     }
@@ -30,7 +30,7 @@ void writeNodeDataStr(char buf[], size_t bufSize, SearchNode *node, double elaps
 
     int processLen = sizeof(node->process) / sizeof(node->process[0]);
     n += _snprintf(buf + n, bufSize, "\"process\"\t\t: [");
-    for (int i = 0; i < processLen; i++) {
+    for (i = 0; i < processLen; i++) {
         n += _snprintf(buf + n, bufSize, "%d", node->process[i]);
         if (i != (processLen - 1)) n += _snprintf(buf + n, bufSize, ", ");
         if (i == 29) n += _snprintf(buf + n, bufSize, "\n\t\t\t   ");
