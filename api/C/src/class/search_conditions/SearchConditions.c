@@ -40,7 +40,7 @@ bool SearchConditions_isEnoughAchievement(SearchConditions* this, ComboData* com
 
   return (
     !BoardSettings_getGreedy(&this->boardSettings) &&
-    ComboData_getFulFillConditions(comboData) &&
+    ComboData_getFulfillConditions(comboData) &&
     (
       (
         LeaderSettings_isComboLeader(&this->leaderSettings) &&

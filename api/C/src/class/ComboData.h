@@ -108,9 +108,9 @@ extern char ComboData_getMaxConnection(ComboData* this);
 extern char ComboData_getLeftovers(ComboData* this, const char index);
 
 // fulfillConditions属性に引数の真偽値をセットする関数
-extern void ComboData_setFulFillConditions(ComboData* this, bool flag);
+extern void ComboData_setFulfillConditions(ComboData* this, bool flag);
 
 // fulfillConditions属性を取得する関数
-extern bool ComboData_getFulFillConditions(ComboData* this);
+extern bool ComboData_getFulfillConditions(ComboData* this);
 
 #endif //_COMBO_DATA_H_

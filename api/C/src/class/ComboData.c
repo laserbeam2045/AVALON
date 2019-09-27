@@ -161,13 +161,13 @@ char ComboData_getLeftovers(ComboData* this, const char index)
 }
 
 // fulfillConditions属性に引数の真偽値をセットする関数
-void ComboData_setFulFillConditions(ComboData* this, bool flag)
+void ComboData_setFulfillConditions(ComboData* this, bool flag)
 {
   this->fulfillConditions = flag;
 }
 
 // fulfillConditions属性を取得する関数
-bool ComboData_getFulFillConditions(ComboData* this)
+bool ComboData_getFulfillConditions(ComboData* this)
 {
   return this->fulfillConditions;
 }
