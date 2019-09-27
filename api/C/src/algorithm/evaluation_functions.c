@@ -64,7 +64,7 @@ static int getClearingPoint(ComboData *cdp, ClearingSettings *csp)
   for (char color = 1; color <= DROP_TYPE_MAX; color++) {
     // 消すことが必要である色について、消せていない場合は減点
     if (ClearingSettings_isActiveOf(csp, (CS_TYPE)REQUIRED, color)) {
-      comboCount = ComboData_getCleared(cdp, 0, color);
+      comboCount = ComboData_getComboOf(cdp, 0, color);
       if (!comboCount) {
         point -= 10;
         ComboData_setFulFillConditions(cdp, false);
@@ -80,7 +80,7 @@ static int getClearingPoint(ComboData *cdp, ClearingSettings *csp)
     }
     // 消してはいけない色について、消している場合は減点
     if (ClearingSettings_isActiveOf(csp, (CS_TYPE)CLEAR_ZERO, color)) {
-      comboCount = ComboData_getCleared(cdp, 0, color);
+      comboCount = ComboData_getComboOf(cdp, 0, color);
       if (comboCount) {
         point -= (comboCount << 3);
         ComboData_setFulFillConditions(cdp, false);

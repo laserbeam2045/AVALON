@@ -70,10 +70,10 @@ extern void ComboData_incrementClearStyle(ComboData* this, const int style, cons
 extern char ComboData_getClearStyle(ComboData* this, const int style, const char color);
 
 
-// cleared属性を取得する関数
+// combo属性の指定されたインデックスの値を取得する関数
 // index0    1つ目の添え字に指定する値
 // index1    2つ目の添え字に指定する値
-extern char ComboData_getCleared(ComboData* this, const char index0, const char index1);
+extern char ComboData_getComboOf(ComboData* this, const char index0, const char index1);
 
 
 // 倍率属性に、指定された数を「セット」する関数

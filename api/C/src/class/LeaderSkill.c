@@ -23,9 +23,9 @@ char LeaderSkill_getAdditionalCombo(char leader, ComboData *comboData)
   switch (leader) {
   case (LEADER)HYLEN:
     for (int i = 0; i < COUNT_COMBO_MAX; i++) {
-      if (7 <= ComboData_getCleared(comboData, (DROP_TYPE)FIRE, i))
+      if (7 <= ComboData_getComboOf(comboData, (DROP_TYPE)FIRE, i))
         flag1 = 1;
-      if (7 <= ComboData_getCleared(comboData, (DROP_TYPE)WATER, i))
+      if (7 <= ComboData_getComboOf(comboData, (DROP_TYPE)WATER, i))
         flag2 = 1;
     }
     if (flag1 && flag2) {
@@ -34,7 +34,7 @@ char LeaderSkill_getAdditionalCombo(char leader, ComboData *comboData)
     break;
   case (LEADER)VEROAH:
     for (int i = 0; i < COUNT_COMBO_MAX; i++) {
-      if (9 <= ComboData_getCleared(comboData, (DROP_TYPE)WATER, i)) {
+      if (9 <= ComboData_getComboOf(comboData, (DROP_TYPE)WATER, i)) {
         return 3;
       }
     }
@@ -144,7 +144,7 @@ static double LeaderSkill_getMagnificationCoco(ComboData *comboData)
   double magnification = 4;
 
   for (char i = 0; i <= COUNT_COMBO_MAX; i++) {
-    char clearedNum = ComboData_getCleared(comboData, (DROP_TYPE)WATER, i);
+    char clearedNum = ComboData_getComboOf(comboData, (DROP_TYPE)WATER, i);
     if (6 <= clearedNum) {
       magnification *= 4;
       break;
@@ -161,7 +161,7 @@ static double LeaderSkill_getMagnificationVeroah(ComboData *comboData)
   double magnification = 6;
 
   for (char i = 0; i <= COUNT_COMBO_MAX; i++) {
-    char clearedNum = ComboData_getCleared(comboData, (DROP_TYPE)WATER, i);
+    char clearedNum = ComboData_getComboOf(comboData, (DROP_TYPE)WATER, i);
     if (9 <= clearedNum) {
       magnification *= 3;
       break;

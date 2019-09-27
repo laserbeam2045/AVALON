@@ -103,8 +103,8 @@ char ComboData_getClearStyle(ComboData* this, const int style, const char color)
   }
 }
 
-// cleared属性を取得する関数
-char ComboData_getCleared(ComboData* this, const char index0, const char index1)
+// combo属性の指定されたインデックスの値を取得する関数
+char ComboData_getComboOf(ComboData* this, const char index0, const char index1)
 {
   return this->combo[index0][index1];
 }

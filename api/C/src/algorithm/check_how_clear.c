@@ -102,7 +102,7 @@ int getNearestClearedNum(ComboData *comboData, const char number, const char col
   int clearedNum, diff, min = 999;
 
   for (char i = 0; i < COUNT_COMBO_MAX; i++) {
-    clearedNum = ComboData_getCleared(comboData, color, i);
+    clearedNum = ComboData_getComboOf(comboData, color, i);
     if (0 == clearedNum) {
       break;
     }
