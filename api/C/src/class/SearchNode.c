@@ -99,6 +99,20 @@ const char* SearchNode_getProcess(SearchNode* this)
 }
 
 
+// movedCount属性を取得する関数
+char SearchNode_getMovedCount(SearchNode* this)
+{
+  return this->movedCount;
+}
+
+
+// movedCountDiagonally属性を取得する関数
+char SearchNode_getMovedCountDiagonally(SearchNode* this)
+{
+  return this->movedCountDiagonally;
+}
+
+
 // comboData属性のアドレスを取得する関数
 ComboData* SearchNode_getComboData(SearchNode* this)
 {

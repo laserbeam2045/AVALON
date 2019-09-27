@@ -58,6 +58,12 @@ extern const char* SearchNode_getBoardState(SearchNode* this);
 // process属性のアドレスを取得する関数
 extern const char* SearchNode_getProcess(SearchNode* this);
 
+// movedCount属性を取得する関数
+extern char SearchNode_getMovedCount(SearchNode* this);
+
+// movedCountDiagonally属性を取得する関数
+extern char SearchNode_getMovedCountDiagonally(SearchNode* this);
+
 // comboData属性のアドレスを取得する関数
 extern ComboData* SearchNode_getComboData(SearchNode* this);
 
