@@ -71,13 +71,6 @@ char SearchNode_getCurrentIndex(SearchNode* this)
 }
 
 
-// ハッシュ値（アドレス）を取得する関数
-uint64_t* SearchNode_getHashValue(SearchNode* this)
-{
-  return &this->hashValue;
-}
-
-
 // board属性のアドレスを取得する関数
 Board* SearchNode_getBoard(SearchNode* this)
 {
@@ -110,6 +103,13 @@ char SearchNode_getMovedCount(SearchNode* this)
 char SearchNode_getMovedCountDiagonally(SearchNode* this)
 {
   return this->movedCountDiagonally;
+}
+
+
+// ハッシュ値（アドレス）を取得する関数
+uint64_t* SearchNode_getHashValue(SearchNode* this)
+{
+  return &this->hashValue;
 }
 
 
