@@ -78,14 +78,21 @@ uint64_t* SearchNode_getHashValue(SearchNode* this)
 }
 
 
-// board属性が持つ、state属性を返す関数
+// board属性のアドレスを取得する関数
+Board* SearchNode_getBoard(SearchNode* this)
+{
+  return &this->board;
+}
+
+
+// board属性が持つ、state属性を取得する関数
 const char* SearchNode_getBoardState(SearchNode* this)
 {
   return Board_getState(&this->board);
 }
 
 
-// comboData属性のアドレスを返す関数
+// comboData属性のアドレスを取得する関数
 ComboData* SearchNode_getComboData(SearchNode* this)
 {
   return &this->comboData;

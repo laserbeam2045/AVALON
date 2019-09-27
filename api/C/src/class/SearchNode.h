@@ -49,10 +49,13 @@ extern char SearchNode_getCurrentIndex(SearchNode* this);
 // 戻り値：ハッシュ値のアドレス
 extern uint64_t* SearchNode_getHashValue(SearchNode* this);
 
-// board属性が持つ、state属性を返す関数
+// board属性のアドレスを取得する関数
+extern Board* SearchNode_getBoard(SearchNode* this);
+
+// board属性が持つ、state属性を取得する関数
 extern const char* SearchNode_getBoardState(SearchNode* this);
 
-// comboData属性のアドレスを返す関数
+// comboData属性のアドレスを取得する関数
 extern ComboData* SearchNode_getComboData(SearchNode* this);
 
 #endif  // _SEARCH_NODE_H_
