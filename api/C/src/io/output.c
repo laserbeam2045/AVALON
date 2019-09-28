@@ -46,7 +46,7 @@ void writeNodeDataStr(char buf[], size_t bufSize, SearchNode *node, double elaps
   n += _snprintf(buf + n, bufSize,
     "\"movedCount\"\t\t: %d,\n"
     "\"movedCountDiagonally\"\t: %d,\n"
-    "\"hashValue\"\t\t: \"%08x%08x\",\n",
+    "\"hashValue\"\t\t: \"%08x%08x\",\n"
     "\"elapsedTime\"\t\t: %3.2lf,\n",
     SearchNode_getMovedCount(node),
     SearchNode_getMovedCountDiagonally(node),
@@ -54,7 +54,7 @@ void writeNodeDataStr(char buf[], size_t bufSize, SearchNode *node, double elaps
     (int)(*SearchNode_getHashValue(node)),
     elapsedTime
   );
-  
+
   writeComboDataStr(buf, bufSize, n, SearchNode_getComboData(node));
   _snprintf(buf + strlen(buf), bufSize, "}\n");
 }
