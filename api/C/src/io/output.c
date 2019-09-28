@@ -2,6 +2,7 @@
 #include "output.h"
 
 static void writeComboDataStr(char buf[], size_t bufSize, size_t n, ComboData *data);
+static void writeClearingDataStr(char buf[], size_t bufSize, size_t *n, ComboData *data, CS_TYPE type);
 
 
 // ビームサーチノードの中身を出力する関数
@@ -25,7 +26,9 @@ void writeNodeDataStr(char buf[], size_t bufSize, SearchNode *node, double elaps
   n += _snprintf(buf + n, bufSize, "{\n\"board\"\t\t\t: [");
   for (i = 0; i < Board_length; i++) {
     n += _snprintf(buf + n, bufSize, "%d", Board_getColor(board, i));
-    if (i != (Board_length - 1)) n += _snprintf(buf + n, bufSize, ", ");
+    if (i != (Board_length - 1)) {
+      n += _snprintf(buf + n, bufSize, ", ");
+    }
   }
   n += _snprintf(buf + n, bufSize, "],\n");
 
@@ -33,7 +36,9 @@ void writeNodeDataStr(char buf[], size_t bufSize, SearchNode *node, double elaps
   n += _snprintf(buf + n, bufSize, "\"process\"\t\t: [");
   for (i = 0; i < PROCESS_LEN_MAX; i++) {
     n += _snprintf(buf + n, bufSize, "%d", process[i]);
-    if (i != (PROCESS_LEN_MAX - 1)) n += _snprintf(buf + n, bufSize, ", ");
+    if (i != (PROCESS_LEN_MAX - 1)) {
+      n += _snprintf(buf + n, bufSize, ", ");
+    }
     if (i == 29) n += _snprintf(buf + n, bufSize, "\n\t\t\t   ");
   }
   n += _snprintf(buf + n, bufSize, "],\n");
@@ -42,14 +47,13 @@ void writeNodeDataStr(char buf[], size_t bufSize, SearchNode *node, double elaps
     "\"movedCount\"\t\t: %d,\n"
     "\"movedCountDiagonally\"\t: %d,\n"
     "\"hashValue\"\t\t: \"%08x%08x\",\n",
+    "\"elapsedTime\"\t\t: %3.2lf,\n",
     SearchNode_getMovedCount(node),
     SearchNode_getMovedCountDiagonally(node),
     (int)(*SearchNode_getHashValue(node) >> 32),
-    (int)(*SearchNode_getHashValue(node))
+    (int)(*SearchNode_getHashValue(node)),
+    elapsedTime
   );
-
-  n += _snprintf(buf + n, bufSize,
-        "\"elapsedTime\"\t\t: %3.2lf,\n", elapsedTime);
   
   writeComboDataStr(buf, bufSize, n, SearchNode_getComboData(node));
   _snprintf(buf + strlen(buf), bufSize, "}\n");
@@ -68,49 +72,19 @@ static void writeComboDataStr(char buf[], size_t bufSize, size_t n, ComboData *d
   );
 
   n += _snprintf(buf + n, bufSize, "\t\"twoWay\"\t: [");
-  for (i = 0; i < 8; i++) {
-    n += _snprintf(buf + n, bufSize, "%d",
-      ComboData_getClearStyle(data, (CS_TYPE)TWO_WAY, i)
-    );
-    if (i != 7) n += _snprintf(buf + n, bufSize, ", ");
-  }
-  n += _snprintf(buf + n, bufSize, "],\n");
+  writeClearingDataStr(buf, bufSize, &n, data, (CS_TYPE)TWO_WAY);
 
   n += _snprintf(buf + n, bufSize, "\t\"breakThrough\"\t: [");
-  for (i = 0; i < 8; i++) {
-    n += _snprintf(buf + n, bufSize, "%d",
-      ComboData_getClearStyle(data, (CS_TYPE)BREAK_THROUGH, i)
-    );
-    if (i != 7) n += _snprintf(buf + n, bufSize, ", ");
-  }
-  n += _snprintf(buf + n, bufSize, "],\n");
+  writeClearingDataStr(buf, bufSize, &n, data, (CS_TYPE)BREAK_THROUGH);
 
   n += _snprintf(buf + n, bufSize, "\t\"line\"\t\t: [");
-  for (i = 0; i < 8; i++) {
-    n += _snprintf(buf + n, bufSize, "%d",
-      ComboData_getClearStyle(data, (CS_TYPE)LINE, i)
-    );
-    if (i != 7) n += _snprintf(buf + n, bufSize, ", ");
-  }
-  n += _snprintf(buf + n, bufSize, "],\n");
+  writeClearingDataStr(buf, bufSize, &n, data, (CS_TYPE)LINE);
 
   n += _snprintf(buf + n, bufSize, "\t\"cross\"\t\t: [");
-  for (i = 0; i < 8; i++) {
-    n += _snprintf(buf + n, bufSize, "%d",
-      ComboData_getClearStyle(data, (CS_TYPE)CROSS, i)
-    );
-    if (i != 7) n += _snprintf(buf + n, bufSize, ", ");
-  }
-  n += _snprintf(buf + n, bufSize, "],\n");
+  writeClearingDataStr(buf, bufSize, &n, data, (CS_TYPE)CROSS);
 
   n += _snprintf(buf + n, bufSize, "\t\"L\"\t\t: [");
-  for (i = 0; i < 8; i++) {
-    n += _snprintf(buf + n, bufSize, "%d",
-      ComboData_getClearStyle(data, (CS_TYPE)L, i)
-    );
-    if (i != 7) n += _snprintf(buf + n, bufSize, ", ");
-  }
-  n += _snprintf(buf + n, bufSize, "],\n");
+  writeClearingDataStr(buf, bufSize, &n, data, (CS_TYPE)L);
 
   n += _snprintf(buf + n, bufSize, "\t\"combo\"\t: [\n");
   for (i = 0; i < DROP_TYPE_MAX + 1; i++) {
@@ -147,4 +121,17 @@ static void writeComboDataStr(char buf[], size_t bufSize, size_t n, ComboData *d
     ComboData_getEvaluation(data),
     ComboData_getFulfillConditions(data)
   );
+}
+
+
+// 消し方に関する情報を書き込む関数
+static void writeClearingDataStr(char buf[], size_t bufSize, size_t *n, ComboData *data, CS_TYPE type)
+{
+  for (int i = 0; i < 8; i++) {
+    *n += _snprintf(buf + *n, bufSize, "%d",
+      ComboData_getClearStyle(data, type, i)
+    );
+    if (i != 7) *n += _snprintf(buf + *n, bufSize, ", ");
+  }
+  *n += _snprintf(buf + *n, bufSize, "],\n");
 }
