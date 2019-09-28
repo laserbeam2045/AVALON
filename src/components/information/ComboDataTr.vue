@@ -21,11 +21,11 @@ export default {
   props: {
     combo: {
       type: Object,
-      required: true,
+      required: false,
     },
     magni: {
       type: Object,
-      required: true,
+      required: false,
     },
   },
 }
