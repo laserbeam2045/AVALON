@@ -2,9 +2,9 @@
 #define _COUNT_COMBO_H_
 
 #include <stdbool.h>
-#include "../class/Adjacent.h"
-#include "../class/SearchNode.h"
-#include "../class/search_conditions/SearchConditions.h"
+#include "../Adjacent.h"
+#include "../SearchNode.h"
+#include "../search_conditions/SearchConditions.h"
 #include "check_how_clear.h"
 
 // コンボ数などを数える関数

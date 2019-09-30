@@ -4,12 +4,12 @@
 #include <string.h>
 #include <math.h>
 #include <omp.h>
-#include "../class/Adjacent.h"
-#include "../class/HashNode.h"
-#include "../class/Thread.h"
-#include "../class/SearchNode.h"
-#include "../class/ExcellentNodes.h"
-#include "../class/search_conditions/SearchConditions.h"
+#include "../Adjacent.h"
+#include "../HashNode.h"
+#include "../Thread.h"
+#include "../SearchNode.h"
+#include "../ExcellentNodes.h"
+#include "../search_conditions/SearchConditions.h"
 #include "count_combo.h"
 #include "evaluation_functions.h"
 

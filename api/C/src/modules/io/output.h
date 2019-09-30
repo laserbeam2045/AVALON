@@ -1,7 +1,7 @@
 #ifndef _OUTPUT_H_
 #define _OUTPUT_H_
 
-#include "../class/SearchNode.h"
+#include "../SearchNode.h"
 
 // 探索ノード構造体の中身を出力する関数（確認用）
 // SearchNode *node   対象のノード
