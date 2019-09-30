@@ -1,14 +1,14 @@
 #ifndef _MODE_H_
 #define _MODE_H_
 
-#include "io/WinSock.h"
-#include "io/parser.h"
-#include "io/output.h"
-#include "class/Adjacent.h"
-#include "class/ZobristHash.h"
-#include "class/SearchNode.h"
-#include "class/search_conditions/SearchConditions.h"
-#include "algorithm/BeamSearch.h"
+#include "modules/io/WinSock.h"
+#include "modules/io/parser.h"
+#include "modules/io/output.h"
+#include "modules/Adjacent.h"
+#include "modules/ZobristHash.h"
+#include "modules/SearchNode.h"
+#include "modules/search_conditions/SearchConditions.h"
+#include "modules/algorithm/BeamSearch.h"
 
 // アプリケーション・オブジェクト
 // 実体はないが、Adjacent、ZobristHashモジュールも含む

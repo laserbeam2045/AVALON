@@ -71,6 +71,41 @@ char SearchNode_getCurrentIndex(SearchNode* this)
 }
 
 
+// board属性のアドレスを取得する関数
+Board* SearchNode_getBoard(SearchNode* this)
+{
+  return &this->board;
+}
+
+
+// board属性が持つ、state属性を取得する関数
+const char* SearchNode_getBoardState(SearchNode* this)
+{
+  return Board_getState(&this->board);
+}
+
+
+// process属性のアドレスを取得する関数
+const char* SearchNode_getProcess(SearchNode* this)
+{
+  return this->process;
+}
+
+
+// movedCount属性を取得する関数
+char SearchNode_getMovedCount(SearchNode* this)
+{
+  return this->movedCount;
+}
+
+
+// movedCountDiagonally属性を取得する関数
+char SearchNode_getMovedCountDiagonally(SearchNode* this)
+{
+  return this->movedCountDiagonally;
+}
+
+
 // ハッシュ値（アドレス）を取得する関数
 uint64_t* SearchNode_getHashValue(SearchNode* this)
 {
@@ -78,14 +113,7 @@ uint64_t* SearchNode_getHashValue(SearchNode* this)
 }
 
 
-// board属性が持つ、state属性を返す関数
-const char* SearchNode_getBoardState(SearchNode* this)
-{
-  return Board_getState(&this->board);
-}
-
-
-// comboData属性のアドレスを返す関数
+// comboData属性のアドレスを取得する関数
 ComboData* SearchNode_getComboData(SearchNode* this)
 {
   return &this->comboData;

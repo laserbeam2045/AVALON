@@ -103,8 +103,8 @@ char ComboData_getClearStyle(ComboData* this, const int style, const char color)
   }
 }
 
-// cleared属性を取得する関数
-char ComboData_getCleared(ComboData* this, const char index0, const char index1)
+// combo属性の指定されたインデックスの値を取得する関数
+char ComboData_getComboOf(ComboData* this, const char index0, const char index1)
 {
   return this->combo[index0][index1];
 }
@@ -161,13 +161,13 @@ char ComboData_getLeftovers(ComboData* this, const char index)
 }
 
 // fulfillConditions属性に引数の真偽値をセットする関数
-void ComboData_setFulFillConditions(ComboData* this, bool flag)
+void ComboData_setFulfillConditions(ComboData* this, bool flag)
 {
   this->fulfillConditions = flag;
 }
 
 // fulfillConditions属性を取得する関数
-bool ComboData_getFulFillConditions(ComboData* this)
+bool ComboData_getFulfillConditions(ComboData* this)
 {
   return this->fulfillConditions;
 }

@@ -1,7 +1,7 @@
 #ifndef _PARSER_H_
 #define _PARSER_H_
 
-#include "../class/search_conditions/SearchConditions.h"
+#include "../search_conditions/SearchConditions.h"
 
 // HTTPリクエストをパースする関数
 // requestBuffer[]     パース対象の文字列

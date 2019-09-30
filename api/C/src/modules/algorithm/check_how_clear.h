@@ -3,7 +3,7 @@
 
 #include <stdlib.h>
 #include <math.h>
-#include "../class/ComboData.h"
+#include "../ComboData.h"
 
 // 消え方に関する判定を行う関数
 extern char isHLine(char clearIndices[], char clearCount);

@@ -40,7 +40,7 @@ double evaluate(ComboData *cdp, SearchConditions *scp, double moveCost)
   char comboCount = ComboData_getCombo(cdp);
   if (comboLimit && comboLimit != comboCount) {
     point -= abs(comboLimit - comboCount) << 1;
-    ComboData_setFulFillConditions(cdp, false);
+    ComboData_setFulfillConditions(cdp, false);
   }
 
   // 消し方に関する設定をどれだけ満たしているか
@@ -64,10 +64,10 @@ static int getClearingPoint(ComboData *cdp, ClearingSettings *csp)
   for (char color = 1; color <= DROP_TYPE_MAX; color++) {
     // 消すことが必要である色について、消せていない場合は減点
     if (ClearingSettings_isActiveOf(csp, (CS_TYPE)REQUIRED, color)) {
-      comboCount = ComboData_getCleared(cdp, 0, color);
+      comboCount = ComboData_getComboOf(cdp, 0, color);
       if (!comboCount) {
         point -= 10;
-        ComboData_setFulFillConditions(cdp, false);
+        ComboData_setFulfillConditions(cdp, false);
       }
     }
     // 全て消すことが必要である色について、盤面に残っている場合は減点
@@ -75,15 +75,15 @@ static int getClearingPoint(ComboData *cdp, ClearingSettings *csp)
       char leftoversCount = ComboData_getLeftovers(cdp, color);
       if (leftoversCount) {
         point -= (leftoversCount << 3);
-        ComboData_setFulFillConditions(cdp, false);
+        ComboData_setFulfillConditions(cdp, false);
       }
     }
     // 消してはいけない色について、消している場合は減点
     if (ClearingSettings_isActiveOf(csp, (CS_TYPE)CLEAR_ZERO, color)) {
-      comboCount = ComboData_getCleared(cdp, 0, color);
+      comboCount = ComboData_getComboOf(cdp, 0, color);
       if (comboCount) {
         point -= (comboCount << 3);
-        ComboData_setFulFillConditions(cdp, false);
+        ComboData_setFulfillConditions(cdp, false);
       }
     }
     if ((DROP_TYPE)HEART < color) {
@@ -95,7 +95,7 @@ static int getClearingPoint(ComboData *cdp, ClearingSettings *csp)
       if (comboCount)
         point += (comboCount * 50);
       else
-        ComboData_setFulFillConditions(cdp, false);
+        ComboData_setFulfillConditions(cdp, false);
     }
     // 無効貫通が必要である色について、無効貫通の数に応じて加点
     if (ClearingSettings_isActiveOf(csp, (CS_TYPE)BREAK_THROUGH, color)) {
@@ -103,7 +103,7 @@ static int getClearingPoint(ComboData *cdp, ClearingSettings *csp)
       if (comboCount)
         point += (comboCount * 1000);
       else
-        ComboData_setFulFillConditions(cdp, false);
+        ComboData_setFulfillConditions(cdp, false);
     }
     // 列消しが必要である色について、列消しの数に応じて加点
     if (ClearingSettings_isActiveOf(csp, (CS_TYPE)LINE, color)) {
@@ -111,7 +111,7 @@ static int getClearingPoint(ComboData *cdp, ClearingSettings *csp)
       if (comboCount)
         point += (comboCount * 200);
       else
-        ComboData_setFulFillConditions(cdp, false);
+        ComboData_setFulfillConditions(cdp, false);
     }
     // 十字消しが必要である色について、十字消しの数に応じて加点
     if (ClearingSettings_isActiveOf(csp, (CS_TYPE)CROSS, color)) {
@@ -119,7 +119,7 @@ static int getClearingPoint(ComboData *cdp, ClearingSettings *csp)
       if (comboCount)
         point += (comboCount << 3);
       else
-        ComboData_setFulFillConditions(cdp, false);
+        ComboData_setFulfillConditions(cdp, false);
     }
     // L字消しが必要である色について、L字消しの数に応じて加点
     if (ClearingSettings_isActiveOf(csp, (CS_TYPE)L, color)) {
@@ -127,7 +127,7 @@ static int getClearingPoint(ComboData *cdp, ClearingSettings *csp)
       if (comboCount)
         point += (comboCount * 400);
       else
-        ComboData_setFulFillConditions(cdp, false);
+        ComboData_setFulfillConditions(cdp, false);
     }
   }
   // 回復の縦一列消しが必要である場合、できていれば加点
@@ -136,7 +136,7 @@ static int getClearingPoint(ComboData *cdp, ClearingSettings *csp)
     if (comboCount)
       point += 300;
     else
-      ComboData_setFulFillConditions(cdp, false);
+      ComboData_setFulfillConditions(cdp, false);
   }
   return point;
 }

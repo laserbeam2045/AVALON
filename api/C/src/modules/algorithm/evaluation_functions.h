@@ -2,9 +2,9 @@
 #define _EVALUATION_FUNCTIONS_H_
 
 #include <stdlib.h>
-#include "../class/ComboData.h"
-#include "../class/LeaderSkill.h"
-#include "../class/search_conditions/SearchConditions.h"
+#include "../ComboData.h"
+#include "../LeaderSkill.h"
+#include "../search_conditions/SearchConditions.h"
 #include "check_how_clear.h"
 
 // 共通の評価関数
