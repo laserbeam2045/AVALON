@@ -31,14 +31,16 @@ void BeamSearch_init(BeamSearch* this, SearchConditions *searchConditions)
   this->beamWidth = SearchSettings_getBeamWidth(ssp);
   this->beamDepth = SearchSettings_getBeamDepth(ssp);
   this->maxThreads = omp_get_max_threads();
-  this->queueLength = this->beamWidth * ratioQueue;
-  this->dividedQueueLength = this->queueLength / this->maxThreads;
+
+  // １つのキューが保持できるノード数
+  int queueLength = this->beamWidth * ratioQueue;
+  this->dividedQueueLength = queueLength / this->maxThreads;
   this->childrenCounts = malloc(sizeof(int) * this->maxThreads);
   this->rootHashNode = malloc(sizeof(HashNode));
-  this->parents = malloc(sizeof(SearchNode) * this->queueLength);
-  this->children = malloc(sizeof(SearchNode) * this->queueLength);
-  this->parentsP = malloc(sizeof(int) * this->queueLength);
-  this->childrenP = malloc(sizeof(int) * this->queueLength);
+  this->parents = malloc(sizeof(SearchNode) * queueLength);
+  this->children = malloc(sizeof(SearchNode) * queueLength);
+  this->parentsP = malloc(sizeof(int) * queueLength);
+  this->childrenP = malloc(sizeof(int) * queueLength);
 
   // 二分木のルートを初期化
   uint64_t rootHashValue = 0;
@@ -73,41 +75,32 @@ void BeamSearch_finish(BeamSearch* this)
 // ビームサーチを実行する関数
 SearchNode BeamSearch_run(BeamSearch* this, SearchConditions *scp)
 {
-  BoardSettings *bsp = SearchConditions_getBoardSettings(scp);
-  SearchSettings *ssp = SearchConditions_getSearchSettings(scp);
-
   // 指定された深さまでビーム探索を行う
   for (int i = 0; i < this->beamDepth; i++) {
     if (this->endFlag) break;
 
     // 深さに応じた移動コストを求める
     double moveCost = BeamSearch_getMoveCost(this, i);
-
     // キューからノードを取り出し、展開する
     BeamSearch_expandNodes(this, scp, moveCost);
-
     // スレッド別に、離れたアドレス上に持たせたノードを、連続するデータ（ポインタ配列）として統合する
     BeamSearch_mergeNodes(this);
-
     // ノード数がビーム幅に達していたら、評価値について降順に並べ、ビーム幅を次回の反復回数の上限とする
     BeamSearch_cutBranch(this);
-
     // 親のキューと子のキューを入れ替える（次のループでは子のキューを親として展開する）
     BeamSearch_swapQueues(this);
   }
- 
   // 落ちコンありの設定なら、落ちコンをシミュレートした上で最良ノードを決める
   if (this->dropFall) {
     BeamSearch_selectBestNode(this, scp);
   }
- 
   // 最良ノードを返す
   return ExcellentNodes_getBestNode(&this->excellentNodes);
 }
 
 
 // キューを初期化する関数
-// *searchConditions     探索に関する設定
+// *bsp   盤面に関する設定のポインタ
 static void BeamSearch_initQueue(BeamSearch* this, BoardSettings *bsp)
 {
   Board *board = BoardSettings_getBoard(bsp);
@@ -117,15 +110,12 @@ static void BeamSearch_initQueue(BeamSearch* this, BoardSettings *bsp)
   for (char position = 0; position < Board_length; position++) {
     SearchNode *searchNode = &this->parents[this->parentsCount];
 
-    // 開始位置指定がある場合、指定された座標以外はキューに入れない
+    // 開始位置指定があり、かつ異なる座標の場合はキューに入れない
     if (BoardSettings_isUnstartable(bsp, position)) continue;
-
     // 操作不可地点の場合はキューに入れない
     if (BoardSettings_isNoEntryPosition(bsp, position)) continue;
-
     // ビームサーチノードを初期化する
     SearchNode_init(searchNode, board, position);
-
     // 局面のハッシュ値を二分木に登録する
     HashNode_makeTree(this->rootHashNode, SearchNode_getHashValue(searchNode));
 

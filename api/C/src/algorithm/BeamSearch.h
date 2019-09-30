@@ -19,7 +19,6 @@ typedef struct {
   int beamWidth;                  // 探索のビーム幅
   int beamDepth;                  // 探索の深さ
   int maxThreads;                 // 使用可能なスレッド数
-  int queueLength;                // １つのキューが保持できるノード数
   int dividedQueueLength;         // １つのスレッドが保持できるノード数
   int *childrenCounts;            // スレッドごとの、展開した子ノード数
   HashNode *rootHashNode;         // ハッシュ値の２分探索木のルートノード
