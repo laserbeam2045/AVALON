@@ -6,6 +6,7 @@
 #include <omp.h>
 #include "../class/Adjacent.h"
 #include "../class/HashNode.h"
+#include "../class/Thread.h"
 #include "../class/SearchNode.h"
 #include "../class/ExcellentNodes.h"
 #include "../class/search_conditions/SearchConditions.h"
@@ -19,16 +20,15 @@ typedef struct {
   int beamWidth;                  // 探索のビーム幅
   int beamDepth;                  // 探索の深さ
   int maxThreads;                 // 使用可能なスレッド数
-  int dividedQueueLength;         // １つのスレッドが保持できるノード数
-  int *childrenCounts;            // スレッドごとの、展開した子ノード数
-  HashNode *rootHashNode;         // ハッシュ値の２分探索木のルートノード
+  int parentsCount;               // 親となるノードの数
+  int childrenCount;              // 展開したノード数の総和
+  HashNode *rootHashNode;         // ２分探索木のルートノード
+  Thread *threads;                // スレッドオブジェクト
   SearchNode *parents;            // 親ノードの実データを入れるキュー
   SearchNode *children;           // 子ノードの実データを入れるキュー
   SearchNode **parentsP;          // 親ノードのポインタを保持するポインタ
   SearchNode **childrenP;         // 子ノードのポインタを保持するポインタ
   ExcellentNodes excellentNodes;  // 良質ノード集積オブジェクト
-  int parentsCount;               // 親となるノードの数
-  int childrenCount;              // 展開したノード数の総和
 } BeamSearch;
 
 // 初期化関数
