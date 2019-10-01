@@ -2,15 +2,24 @@
 
 
 // 初期化関数
-void BoardSettings_init(BoardSettings* this, const char height, const char width)
+void BoardSettings_init(BoardSettings* this, char request[])
 {
-  Board_initClass(&this->board, height, width);
-}
+  char boardState[BOARD_LEN_MAX];
+  char boardSize[6];
+  char height, width;
 
-// board属性を初期化する関数
-void BoardSettings_initBoard(BoardSettings* this, const char state[])
-{
-  Board_init(&this->board, state);
+  Parser_getIntArray(request, "board", boardState);
+  Parser_getString(request, "boardSize", boardSize);
+  height = boardSize[1] - '0';
+  width = boardSize[3] - '0';
+  
+  Board_initClass(&this->board, height, width);
+  Board_init(&this->board, boardState);
+  this->dropFall = Parser_getInt(request, "dropFall");
+  this->greedy = Parser_getInt(request, "greedy");
+  this->activeDrops = Parser_getInt(request, "activeDrops");
+  this->startPosition = Parser_getInt(request, "startPosition");
+  this->noEntryPositionsCount = Parser_getIntArray(request, "noEntryPositions", this->noEntryPositions);
 }
 
 // board属性の先頭ポインタを返す関数
@@ -19,22 +28,10 @@ Board* BoardSettings_getBoard(BoardSettings* this)
   return &this->board;
 }
 
-// dropFall属性に値をセットする関数
-void BoardSettings_setDropFall(BoardSettings* this, bool dropFall)
-{
-  this->dropFall = dropFall;
-}
-
 // dropFall属性を返す関数
 bool BoardSettings_getDropFall(BoardSettings* this)
 {
   return this->dropFall;
-}
-
-// greedy属性に値をセットする関数
-void BoardSettings_setGreedy(BoardSettings* this, bool greedy)
-{
-  this->greedy = greedy;
 }
 
 // greedy属性を返す関数
@@ -43,55 +40,32 @@ bool BoardSettings_getGreedy(BoardSettings* this)
   return this->greedy;
 }
 
-// activeDrops属性に値をセットする関数
-void BoardSettings_setActiveDrops(BoardSettings* this, const int activeDrops)
-{
-  this->activeDrops = activeDrops;
-}
-
 // activeDrops属性を返す関数
 int BoardSettings_getActiveDrops(BoardSettings* this)
 {
   return this->activeDrops;
 }
 
-// startPosition属性に値をセットする関数
-void BoardSettings_setStartPosition(BoardSettings* this, const char startPosition)
-{
-  this->startPosition = startPosition;
-}
-
-// noEntryPositions属性に値をセットする関数
-void BoardSettings_setNoEntryPositions(BoardSettings* this, const char positions[], const char positionsCount)
-{
-  for (char i = 0; i < positionsCount; i++) {
-    this->noEntryPositions[i] = positions[i];
-  }
-  this->noEntryPositionsCount = positionsCount;
-}
-
 // 与えられた引数の座標が、開始位置として選択可能かどうかを判定する関数
-char BoardSettings_isUnstartable(BoardSettings* this, const char position)
+bool BoardSettings_isUnstartable(BoardSettings* this, const char position)
 {
-  if (this->startPosition != -1 &&
-      this->startPosition != position)
-  {
-    return 1;
+  if (
+    this->startPosition != -1 &&
+    this->startPosition != position
+  ) {
+    return true;
   } else {
-    return 0;
+    return false;
   }
 }
 
 // 与えられた引数の座標が、操作不可地点に含まれるかどうかを判定する関数
-char BoardSettings_isNoEntryPosition(BoardSettings* this, const char position)
+bool BoardSettings_isNoEntryPosition(BoardSettings* this, const char position)
 {
-  char flag = 0;
-
-  for (char i = 0, len = this->noEntryPositionsCount; i < len; i++) {
-    if (this->noEntryPositions[i] == position) {
-      flag = 1;
-      break;
+  for (char i = 0; i < this->noEntryPositionsCount; i++) {
+    if (position == this->noEntryPositions[i]) {
+      return true;
     }
   }
-  return flag;
+  return false;
 }

@@ -2,6 +2,7 @@
 #define _CLEARING_SETTINGS_H_
 
 #include <stdbool.h>
+#include "../io/Parser.h"
 
 // 各設定項目を表す定数
 typedef enum {
@@ -29,11 +30,8 @@ typedef struct {
   bool active;          // １つでも設定項目があるかどうか
 } ClearingSettings;
 
-// 初期化関数（active以外はセット済みの前提）
-extern void ClearingSettings_init(ClearingSettings* this);
-
-// 各設定項目に値をセットする関数
-extern void ClearingSettings_setFlag(ClearingSettings* this, const char type, const int value);
+// 初期化関数
+extern void ClearingSettings_init(ClearingSettings* this, char request[]);
 
 // 1つでも設定された項目があるかどうかを返す関数
 extern bool ClearingSettings_isActive(ClearingSettings* this);

@@ -1,10 +1,12 @@
 #include "SearchConditions.h"
 
-
 // 初期化関数
-void SearchConditions_init(SearchConditions* this)
+void SearchConditions_init(SearchConditions* this, char request[])
 {
-  ClearingSettings_init(&this->clearingSettings);
+  LeaderSettings_init(&this->leaderSettings, request);
+  BoardSettings_init(&this->boardSettings, request);
+  SearchSettings_init(&this->searchSettings, request);
+  ClearingSettings_init(&this->clearingSettings, request);
 }
 
 // leaderSettingsのポインタを返す関数
@@ -32,7 +34,6 @@ ClearingSettings* SearchConditions_getClearingSettings(SearchConditions* this)
 }
 
 // 探索を打ち切る条件を満たしているかどうかを判定する関数
-// 戻り値：0（条件を満たしていない）or 1（条件を満たしている）
 bool SearchConditions_isEnoughAchievement(SearchConditions* this, ComboData* comboData)
 {
   char combo = ComboData_getCombo(comboData);

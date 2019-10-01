@@ -1,11 +1,12 @@
 #ifndef _SEARCH_CONDITIONS_H_
 #define _SEARCH_CONDITIONS_H_
 
+#include "../io/Parser.h"
+#include "../ComboData.h"
 #include "LeaderSettings.h"
 #include "BoardSettings.h"
 #include "SearchSettings.h"
 #include "ClearingSettings.h"
-#include "../ComboData.h"
 
 // 探索全般に関する設定のクラス
 typedef struct {
@@ -16,8 +17,8 @@ typedef struct {
 } SearchConditions;
 
 
-/* 初期化関数 */
-extern void SearchConditions_init(SearchConditions* this);
+// 初期化関数
+extern void SearchConditions_init(SearchConditions* this, char request[]);
 
 // leaderSettingsのポインタを返す関数
 extern LeaderSettings* SearchConditions_getLeaderSettings(SearchConditions* this);
