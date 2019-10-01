@@ -59,23 +59,20 @@ void Mode_run(Mode* c)
 static void Mode_onHttpRequest(Mode* c, char requestBuffer[],
                           char responseBuffer[], size_t responseBufferSize)
 {
-  // HTTPリクエストのBODYをパースし、探索条件を初期化する（成功ならtrueが返る）
-  bool ok = SearchConditions_init(&c->searchConditions, requestBuffer);
+  // HTTPリクエストのBODYをパースし、探索条件を初期化する
+  SearchConditions_init(&c->searchConditions, requestBuffer);
+  // 使用する隣接点テーブルを設定する
+  Adjacent_initTablePointer(Board_length);
+  // 探索の前処理を行う
+  BeamSearch_init(&c->beamSearch, &c->searchConditions);
 
-  if (ok) {
-    // 使用する隣接点テーブルを設定する
-    Adjacent_initTablePointer(Board_length);
-    // 探索の前処理を行う
-    BeamSearch_init(&c->beamSearch, &c->searchConditions);
+  // ビームサーチを実行し、最良ノードを得る
+  double startTime = omp_get_wtime();
+  SearchNode bestNode = BeamSearch_run(&c->beamSearch, &c->searchConditions);
+  double elapsedTime = omp_get_wtime() - startTime;
 
-    // ビームサーチを実行し、最良ノードを得る
-    double startTime = omp_get_wtime();
-    SearchNode bestNode = BeamSearch_run(&c->beamSearch, &c->searchConditions);
-    double elapsedTime = omp_get_wtime() - startTime;
-
-    // 探索で使用したメモリを開放させる
-    BeamSearch_finish(&c->beamSearch);
-    // レスポンス用のバッファーに、JSON形式で、探索結果のデータを書き込む
-    writeNodeDataStr(responseBuffer, responseBufferSize, &bestNode, elapsedTime);
-  }
+  // 探索で使用したメモリを開放させる
+  BeamSearch_finish(&c->beamSearch);
+  // レスポンス用のバッファーに、JSON形式で、探索結果のデータを書き込む
+  writeNodeDataStr(responseBuffer, responseBufferSize, &bestNode, elapsedTime);
 }

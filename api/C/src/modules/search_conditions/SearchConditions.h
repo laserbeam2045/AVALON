@@ -17,8 +17,8 @@ typedef struct {
 } SearchConditions;
 
 
-/* 初期化関数 */
-extern bool SearchConditions_init(SearchConditions* this, char requestBuffer[]);
+// 初期化関数
+extern void SearchConditions_init(SearchConditions* this, char requestBuffer[]);
 
 // leaderSettingsのポインタを返す関数
 extern LeaderSettings* SearchConditions_getLeaderSettings(SearchConditions* this);
