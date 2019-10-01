@@ -1,13 +1,12 @@
 #include "LeaderSettings.h"
 
 // 初期化関数
-void LeaderSettings_init(LeaderSettings* this, char leader1, char leader2,
-                                      char maxCombo, double maxMagnification)
+void LeaderSettings_init(LeaderSettings* this, char *body)
 {
-  this->leader1 = leader1;
-  this->leader2 = leader2;
-  this->maxCombo = maxCombo;
-  this->maxMagnification = maxMagnification;
+  this->leader1 = Parser_getInt(body, "leader1");
+  this->leader2 = Parser_getInt(body, "leader2");
+  this->maxCombo = Parser_getInt(body, "maxCombo");
+  this->maxMagnification = Parser_getDouble(body, "maxMagnification");
   this->isComboLeader = 0;
   this->isMagniLeader = 0;
 

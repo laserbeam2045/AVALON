@@ -59,12 +59,12 @@ void Mode_run(Mode* c)
 static void Mode_onHttpRequest(Mode* c, char requestBuffer[],
                           char responseBuffer[], size_t responseBufferSize)
 {
-  // HTTPリクエストのBODYをパースする（成功ならtrueが返る）
-  if (parse(requestBuffer, &c->searchConditions)) {
+  // HTTPリクエストのBODYをパースし、探索条件を初期化する（成功ならtrueが返る）
+  bool ok = SearchConditions_init(&c->searchConditions, requestBuffer);
+
+  if (ok) {
     // 使用する隣接点テーブルを設定する
     Adjacent_initTablePointer(Board_length);
-    // 探索条件を初期化する
-    SearchConditions_init(&c->searchConditions);
     // 探索の前処理を行う
     BeamSearch_init(&c->beamSearch, &c->searchConditions);
 

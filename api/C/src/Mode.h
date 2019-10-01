@@ -2,7 +2,6 @@
 #define _MODE_H_
 
 #include "modules/io/WinSock.h"
-#include "modules/io/parser.h"
 #include "modules/io/output.h"
 #include "modules/Adjacent.h"
 #include "modules/ZobristHash.h"

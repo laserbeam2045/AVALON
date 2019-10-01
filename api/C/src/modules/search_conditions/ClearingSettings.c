@@ -1,8 +1,17 @@
 #include "ClearingSettings.h"
 
-// 初期化関数（active以外はセット済みの前提）
-void ClearingSettings_init(ClearingSettings* this)
+// 初期化関数
+void ClearingSettings_init(ClearingSettings* this, char *body)
 {
+  this->twoWay = Parser_getInt(body, "twoWay");
+  this->breakThrough = Parser_getInt(body, "breakThrough");
+  this->line = Parser_getInt(body, "line");
+  this->cross = Parser_getInt(body, "cross");
+  this->L = Parser_getInt(body, "L");
+  this->required = Parser_getInt(body, "required");
+  this->clearAll = Parser_getInt(body, "clearAll");
+  this->clearZero = Parser_getInt(body, "clearZero");
+
   if (
     this->twoWay == 0 &&
     this->breakThrough == 0 &&
@@ -16,21 +25,6 @@ void ClearingSettings_init(ClearingSettings* this)
     this->active = false;
   } else {
     this->active = true;
-  }
-}
-
-// 各設定項目に値（ビットフラグ）をセットする関数
-void ClearingSettings_setFlag(ClearingSettings* this, const char type, const int value)
-{
-  switch (type) {
-  case (CS_TYPE)TWO_WAY       : this->twoWay = value; break;
-  case (CS_TYPE)BREAK_THROUGH : this->breakThrough = value; break;
-  case (CS_TYPE)LINE          : this->line = value; break;
-  case (CS_TYPE)CROSS         : this->cross = value; break;
-  case (CS_TYPE)L             : this->L = value; break;
-  case (CS_TYPE)REQUIRED      : this->required = value; break;
-  case (CS_TYPE)CLEAR_ALL     : this->clearAll = value; break;
-  case (CS_TYPE)CLEAR_ZERO    : this->clearZero = value; break;
   }
 }
 

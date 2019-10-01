@@ -3,6 +3,7 @@
 
 #include <stdbool.h>
 #include "../../constants.h"
+#include "../io/Parser.h"
 
 // リーダーに関する設定クラス
 typedef struct {
@@ -15,8 +16,8 @@ typedef struct {
 } LeaderSettings;
 
 // 初期化関数
-extern void LeaderSettings_init(LeaderSettings* this, char leader1, char leader2,
-                                            char maxCombo, double maxMagnification);
+extern void LeaderSettings_init(LeaderSettings* this, char *body);
+
 // 自分のリーダーを取得する関数
 extern char LeaderSettings_getLeader1(LeaderSettings* this);
 

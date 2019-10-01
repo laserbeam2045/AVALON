@@ -1,10 +1,15 @@
 #include "SearchConditions.h"
 
-
 // 初期化関数
-void SearchConditions_init(SearchConditions* this)
+bool SearchConditions_init(SearchConditions* this, char requestBuffer[])
 {
-  ClearingSettings_init(&this->clearingSettings);
+  char *body = Parser_getBody(requestBuffer);
+
+  LeaderSettings_init(&this->leaderSettings, body);
+  BoardSettings_init(&this->boardSettings, body);
+  SearchSettings_init(&this->searchSettings, body);
+  ClearingSettings_init(&this->clearingSettings, body);
+  return true;
 }
 
 // leaderSettingsのポインタを返す関数

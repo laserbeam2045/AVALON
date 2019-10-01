@@ -1,6 +1,7 @@
 #ifndef _SEARCH_CONDITIONS_H_
 #define _SEARCH_CONDITIONS_H_
 
+#include "../io/Parser.h"
 #include "LeaderSettings.h"
 #include "BoardSettings.h"
 #include "SearchSettings.h"
@@ -17,7 +18,7 @@ typedef struct {
 
 
 /* 初期化関数 */
-extern void SearchConditions_init(SearchConditions* this);
+extern bool SearchConditions_init(SearchConditions* this, char requestBuffer[]);
 
 // leaderSettingsのポインタを返す関数
 extern LeaderSettings* SearchConditions_getLeaderSettings(SearchConditions* this);
