@@ -12,7 +12,7 @@ typedef struct {
 } SearchSettings;
 
 // 初期化関数
-extern void SearchSettings_init(SearchSettings* this, char *body);
+extern void SearchSettings_init(SearchSettings* this, char request[]);
 
 // beamWidth属性を取得する関数
 extern int SearchSettings_getBeamWidth(SearchSettings* this);

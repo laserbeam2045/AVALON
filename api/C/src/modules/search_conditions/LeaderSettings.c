@@ -1,15 +1,15 @@
 #include "LeaderSettings.h"
 
 // 初期化関数
-void LeaderSettings_init(LeaderSettings* this, char *body)
+void LeaderSettings_init(LeaderSettings* this, char request[])
 {
-  this->leader1 = Parser_getInt(body, "leader1");
-  this->leader2 = Parser_getInt(body, "leader2");
-  this->maxCombo = Parser_getInt(body, "maxCombo");
-  this->maxMagnification = Parser_getDouble(body, "maxMagnification");
+  this->leader1 = Parser_getInt(request, "leader1");
+  this->leader2 = Parser_getInt(request, "leader2");
+  this->maxCombo = Parser_getInt(request, "maxCombo");
+  this->maxMagnification = Parser_getDouble(request, "maxMagnification");
   this->isComboLeader = 0;
   this->isMagniLeader = 0;
-
+  
   if (
     (
       this->leader1 == (LEADER)ANUBIS &&

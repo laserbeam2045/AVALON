@@ -1,16 +1,16 @@
 #include "ClearingSettings.h"
 
 // 初期化関数
-void ClearingSettings_init(ClearingSettings* this, char *body)
+void ClearingSettings_init(ClearingSettings* this, char request[])
 {
-  this->twoWay = Parser_getInt(body, "twoWay");
-  this->breakThrough = Parser_getInt(body, "breakThrough");
-  this->line = Parser_getInt(body, "line");
-  this->cross = Parser_getInt(body, "cross");
-  this->L = Parser_getInt(body, "L");
-  this->required = Parser_getInt(body, "required");
-  this->clearAll = Parser_getInt(body, "clearAll");
-  this->clearZero = Parser_getInt(body, "clearZero");
+  this->twoWay = Parser_getInt(request, "twoWay");
+  this->breakThrough = Parser_getInt(request, "breakThrough");
+  this->line = Parser_getInt(request, "line");
+  this->cross = Parser_getInt(request, "cross");
+  this->L = Parser_getInt(request, "L");
+  this->required = Parser_getInt(request, "required");
+  this->clearAll = Parser_getInt(request, "clearAll");
+  this->clearZero = Parser_getInt(request, "clearZero");
 
   if (
     this->twoWay == 0 &&

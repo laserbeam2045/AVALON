@@ -1,12 +1,12 @@
 #include "SearchSettings.h"
 
 // 初期化関数
-void SearchSettings_init(SearchSettings* this, char *body)
+void SearchSettings_init(SearchSettings* this, char request[])
 {
-  this->beamWidth = Parser_getInt(body, "beamWidth");
-  this->beamDepth = Parser_getInt(body, "beamDepth");
-  this->diagonalLimit = Parser_getInt(body, "diagonalLimit");
-  this->comboLimit = Parser_getInt(body, "comboLimit");
+  this->beamWidth = Parser_getInt(request, "beamWidth");
+  this->beamDepth = Parser_getInt(request, "beamDepth");
+  this->diagonalLimit = Parser_getInt(request, "diagonalLimit");
+  this->comboLimit = Parser_getInt(request, "comboLimit");
 }
 
 // beamWidth属性を取得する関数

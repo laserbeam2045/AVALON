@@ -18,7 +18,7 @@ typedef struct {
 } BoardSettings;
 
 // 初期化関数
-extern void BoardSettings_init(BoardSettings* this, char *body);
+extern void BoardSettings_init(BoardSettings* this, char request[]);
 
 // board属性の先頭ポインタを返す関数
 extern Board* BoardSettings_getBoard(BoardSettings* this);

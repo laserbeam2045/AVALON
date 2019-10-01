@@ -16,7 +16,7 @@ typedef struct {
 } LeaderSettings;
 
 // 初期化関数
-extern void LeaderSettings_init(LeaderSettings* this, char *body);
+extern void LeaderSettings_init(LeaderSettings* this, char request[]);
 
 // 自分のリーダーを取得する関数
 extern char LeaderSettings_getLeader1(LeaderSettings* this);

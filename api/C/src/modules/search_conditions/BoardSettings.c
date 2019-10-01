@@ -2,24 +2,24 @@
 
 
 // 初期化関数
-void BoardSettings_init(BoardSettings* this, char *body)
+void BoardSettings_init(BoardSettings* this, char request[])
 {
   char boardState[BOARD_LEN_MAX];
   char boardSize[6];
   char height, width;
 
-  Parser_getIntArray(body, "board", boardState);
-  Parser_getString(body, "boardSize", boardSize);
+  Parser_getIntArray(request, "board", boardState);
+  Parser_getString(request, "boardSize", boardSize);
   height = boardSize[1] - '0';
   width = boardSize[3] - '0';
   
   Board_initClass(&this->board, height, width);
   Board_init(&this->board, boardState);
-  this->dropFall = Parser_getInt(body, "dropFall");
-  this->greedy = Parser_getInt(body, "greedy");
-  this->activeDrops = Parser_getInt(body, "activeDrops");
-  this->startPosition = Parser_getInt(body, "startPosition");
-  this->noEntryPositionsCount = Parser_getIntArray(body, "noEntryPositions", this->noEntryPositions);
+  this->dropFall = Parser_getInt(request, "dropFall");
+  this->greedy = Parser_getInt(request, "greedy");
+  this->activeDrops = Parser_getInt(request, "activeDrops");
+  this->startPosition = Parser_getInt(request, "startPosition");
+  this->noEntryPositionsCount = Parser_getIntArray(request, "noEntryPositions", this->noEntryPositions);
 }
 
 // board属性の先頭ポインタを返す関数

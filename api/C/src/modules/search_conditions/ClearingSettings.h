@@ -31,7 +31,7 @@ typedef struct {
 } ClearingSettings;
 
 // 初期化関数
-extern void ClearingSettings_init(ClearingSettings* this, char *body);
+extern void ClearingSettings_init(ClearingSettings* this, char request[]);
 
 // 1つでも設定された項目があるかどうかを返す関数
 extern bool ClearingSettings_isActive(ClearingSettings* this);
