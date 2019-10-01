@@ -34,12 +34,12 @@ extern int BoardSettings_getActiveDrops(BoardSettings* this);
 
 // 与えられた引数の座標が、開始位置として選択可能かどうかを判定する関数
 // position    判定対象となる座標
-// 戻り値：0（ 選択可能）or 1（選択不可能）
-extern char BoardSettings_isUnstartable(BoardSettings* this, const char position);
+// 戻り値：true（選択不可能）or false（ 選択可能）
+extern bool BoardSettings_isUnstartable(BoardSettings* this, const char position);
 
 // 与えられた引数の座標が、操作不可地点に含まれるかどうかを判定する関数
 // position    判定対象となる座標
-// 戻り値：0（ 含まれていない）or 1（含まれている）
-extern char BoardSettings_isNoEntryPosition(BoardSettings* this, const char position);
+// 戻り値：true（含まれている）or false（ 含まれていない）
+extern bool BoardSettings_isNoEntryPosition(BoardSettings* this, const char position);
 
 #endif  // _BOARD_SETTINGS_H_

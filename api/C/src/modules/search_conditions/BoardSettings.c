@@ -47,27 +47,25 @@ int BoardSettings_getActiveDrops(BoardSettings* this)
 }
 
 // 与えられた引数の座標が、開始位置として選択可能かどうかを判定する関数
-char BoardSettings_isUnstartable(BoardSettings* this, const char position)
+bool BoardSettings_isUnstartable(BoardSettings* this, const char position)
 {
-  if (this->startPosition != -1 &&
-      this->startPosition != position)
-  {
-    return 1;
+  if (
+    this->startPosition != -1 &&
+    this->startPosition != position
+  ) {
+    return true;
   } else {
-    return 0;
+    return false;
   }
 }
 
 // 与えられた引数の座標が、操作不可地点に含まれるかどうかを判定する関数
-char BoardSettings_isNoEntryPosition(BoardSettings* this, const char position)
+bool BoardSettings_isNoEntryPosition(BoardSettings* this, const char position)
 {
-  char flag = 0;
-
-  for (char i = 0, len = this->noEntryPositionsCount; i < len; i++) {
-    if (this->noEntryPositions[i] == position) {
-      flag = 1;
-      break;
+  for (char i = 0; i < this->noEntryPositionsCount; i++) {
+    if (position == this->noEntryPositions[i]) {
+      return true;
     }
   }
-  return flag;
+  return false;
 }
