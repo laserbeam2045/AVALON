@@ -1,7 +1,7 @@
 #include "Mode.h"
 
-static void Mode_onHttpRequest(Mode* c, char requestBuffer[],
-                                char responseBuffer[], size_t responseBufferSize);
+static void Mode_onHttpRequest(Mode*, char[], char[], size_t);
+
 
 // 初期化関数
 void Mode_init(Mode* c)
@@ -75,7 +75,6 @@ static void Mode_onHttpRequest(Mode* c, char requestBuffer[],
 
     // 探索で使用したメモリを開放させる
     BeamSearch_finish(&c->beamSearch);
-
     // レスポンス用のバッファーに、JSON形式で、探索結果のデータを書き込む
     writeNodeDataStr(responseBuffer, responseBufferSize, &bestNode, elapsedTime);
   }
