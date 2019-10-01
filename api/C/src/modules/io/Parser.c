@@ -4,28 +4,10 @@
 static bool Parser_getValue(char *body, const char property[], char value[]);
 static int Parser_getValueIndex(char *body, const char property[]);
 static int Parser_getArrayFrom(char string[], char array[]);
+
 // プロパティをダブルクオートで囲ませるためのフォーマット
 static const char QUOTES_FORMAT[] = "\"%s\"";
 
-
-// HTTPのBODYが始まる位置のアドレスを返す関数
-char* Parser_getBody(char requestBuffer[])
-{
-  int returnCount = 0;
-
-  for (int i = 0, len = strlen(requestBuffer); i < len; i++) {
-    if ('\n' == requestBuffer[i] || '\r' == requestBuffer[i]) {
-      if (returnCount == 3) {
-        return (requestBuffer + i + 1); // 空行の次がBODY部という解釈
-      } else {
-        returnCount += 1;
-      }
-    } else {
-      returnCount = 0;
-    }
-  }
-  return 0;
-}
 
 // 引数の全体文字列からint型の値を取得する関数
 int Parser_getInt(char *buffer, char *property)
