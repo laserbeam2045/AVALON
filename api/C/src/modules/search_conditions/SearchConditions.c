@@ -3,12 +3,10 @@
 // 初期化関数
 void SearchConditions_init(SearchConditions* this, char requestBuffer[])
 {
-  char *body = Parser_getBody(requestBuffer);
-
-  LeaderSettings_init(&this->leaderSettings, body);
-  BoardSettings_init(&this->boardSettings, body);
-  SearchSettings_init(&this->searchSettings, body);
-  ClearingSettings_init(&this->clearingSettings, body);
+  LeaderSettings_init(&this->leaderSettings, requestBuffer);
+  BoardSettings_init(&this->boardSettings, requestBuffer);
+  SearchSettings_init(&this->searchSettings, requestBuffer);
+  ClearingSettings_init(&this->clearingSettings, requestBuffer);
 }
 
 // leaderSettingsのポインタを返す関数
