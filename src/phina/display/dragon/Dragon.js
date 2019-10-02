@@ -112,18 +112,18 @@ export default phina.define('Dragon', {
       // 中間（胴体部分）の場合は、前の座標と次の座標の、両方との差で場合分けをする
       const diff1 = process[index] - process[index - 1],
             diff2 = process[index] - process[index + 1]
-      if (diff1 === 1 && diff2 === -1)                return 9   // 横一直線（左から右）
-      else if (diff1 === -1     && diff2 === 1)       return 10  // 横一直線（右から左）
-      else if (diff1 === width  && diff2 === -width)  return 11  // 縦一直線（上から下）
-      else if (diff1 === -width && diff2 === width)   return 12  // 縦一直線（下から上）
-      else if (diff1 === 1      && diff2 === -width)  return 13  // 円弧の右上（左から下）
-      else if (diff1 === -width && diff2 === 1)       return 14  // 円弧の右上（下から左）
-      else if (diff1 === width  && diff2 === 1)       return 15  // 円弧の右下（上から左）
-      else if (diff1 === 1      && diff2 === width)   return 16  // 円弧の右下（左から上）
-      else if (diff1 === -1     && diff2 === width)   return 17  // 円弧の左下（右から上）
-      else if (diff1 === width  && diff2 === -1)      return 18  // 円弧の左下（上から右）
-      else if (diff1 === -width && diff2 === -1)      return 19  // 円弧の左上（下から右）
-      else if (diff1 === -1     && diff2 === -width)  return 20  // 円弧の左上（右から下）
+      if (diff1 === 1      && diff2 === -1)      return 9   // 横一直線（左から右）
+      if (diff1 === -1     && diff2 === 1)       return 10  // 横一直線（右から左）
+      if (diff1 === width  && diff2 === -width)  return 11  // 縦一直線（上から下）
+      if (diff1 === -width && diff2 === width)   return 12  // 縦一直線（下から上）
+      if (diff1 === 1      && diff2 === -width)  return 13  // 円弧の右上（左から下）
+      if (diff1 === -width && diff2 === 1)       return 14  // 円弧の右上（下から左）
+      if (diff1 === width  && diff2 === 1)       return 15  // 円弧の右下（上から左）
+      if (diff1 === 1      && diff2 === width)   return 16  // 円弧の右下（左から上）
+      if (diff1 === -1     && diff2 === width)   return 17  // 円弧の左下（右から上）
+      if (diff1 === width  && diff2 === -1)      return 18  // 円弧の左下（上から右）
+      if (diff1 === -width && diff2 === -1)      return 19  // 円弧の左上（下から右）
+      if (diff1 === -1     && diff2 === -width)  return 20  // 円弧の左上（右から下）
     }
     return 0 // TODO: 前後との位置関係が斜めの場合は0が返る（場合分けが必要）
   },
