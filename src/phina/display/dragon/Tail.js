@@ -8,21 +8,24 @@ export default phina.define('Tail', {
   superClass: MySprite,
 
   init (lineData) {
-    const { dropSize, x, y , lineType } = lineData
+    const { dropSize, x, y , directions } = lineData
     const IMG_SIZE = 600
     const scale = (dropSize / IMG_SIZE) * 1.3
 
     this.superInit('dragonTail', IMG_SIZE, IMG_SIZE)
-    this.setScale(scale).moveTo(x, y).$_rotate(lineType)
+    this.setScale(scale).moveTo(x, y).$_rotate(directions)
   },
 
   // 線の種類に応じて回転させるメソッド
-  $_rotate (lineType) {
-    switch (lineType) {
-      case 1: this.setRotation(-90); break //（中心から左に進む場合）
-      case 2: this.setRotation(90);  break //（中心から右に進む場合）
-      case 4: this.setRotation(180); break //（中心から下に進む場合）
+  $_rotate ({ outlet }) {
+    switch (outlet) {
+    case 2: this.setRotation(45);  break
+    case 3: this.setRotation(90);  break
+    case 4: this.setRotation(135); break
+    case 5: this.setRotation(180); break
+    case 6: this.setRotation(225); break
+    case 7: this.setRotation(270); break
+    case 8: this.setRotation(315); break
     }
-    return this
   },
 })
