@@ -8,7 +8,7 @@ export default phina.define('MyShape', {
 
   init (options) {
     options = (options || {}).$safe({
-      padding: 1,
+      padding: 15,
       backgroundColor: 'transparent',
     })
     this.superInit(options)
