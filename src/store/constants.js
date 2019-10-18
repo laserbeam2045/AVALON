@@ -32,6 +32,7 @@ export const LEADER = {
   HYLEN     : 4,
   COCO      : 5,
   VEROAH    : 6,
+  YASHAMARU : 7,
 }
 
 // Ajax通信を行う際のサーバーアドレス

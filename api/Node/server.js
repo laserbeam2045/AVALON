@@ -10,6 +10,7 @@ const AMEN = 3
 const HYLEN = 4
 const COCO = 5
 const VEROAH = 6
+const YASHAMARU = 7
 
 app.use(bodyParser.urlencoded({extended: false}))
 app.use(bodyParser.json())
@@ -64,6 +65,9 @@ function addCombo(boardData, leader, firstTime) {
 
 // リーダースキルの倍率を適用する関数
 function multiplyMagnification(boardData, leader) {
+  const unclearableDrops = boardData['dropCountArray'].filter(num => num < 3)
+  const unclearableDropSum = unclearableDrops.length ?
+                              unclearableDrops.reduce((a,b) => a+b) : 0
   switch (leader) {
   // 転生アヌビス：
   // 8コンボ以上で攻撃力が上昇、最大10倍。
@@ -78,66 +82,72 @@ function multiplyMagnification(boardData, leader) {
       default: boardData['maxMagnification'] *= 10; break
     }
     break
-    // 極醒メタトロン：
-    // HP80%以下で攻撃力が3倍。神タイプのHPと攻撃力が2倍。
-    // 7コンボ以上でダメージを軽減、攻撃力が2.5倍。
-    case METATRON:
-      boardData['maxMagnification'] *= 2
-      if (boardData['maxComboCount'] >= 7) {
-        boardData['maxMagnification'] *= 2.5
-      }
-      break
-    // コマさんS：
-    // 火と木属性のHPが1.5倍。6コンボ以上で攻撃力が5倍。
-    // ドロップを5個以上つなげて消すとダメージを軽減、攻撃力が3倍。
-    case KOMASAN_S:
-      if (boardData['maxComboCount'] >= 6) {
-        boardData['maxMagnification'] *= 5
-      }
-      if (boardData['mostDropCount'] >= 5) {
-        boardData['maxMagnification'] *= 3
-      }
-      break
-    // アメン：
-    // 【落ちコンなし】 7コンボちょうどで攻撃力が10倍。
-    // パズル後の残りドロップ数が3個以下で攻撃力が10倍。
-    case AMEN:
-      if (boardData['maxComboCount'] >= 7) {
-        boardData['maxMagnification'] *= 10
-      }
-      const unclearableDrops = boardData['dropCountArray'].filter(num => num < 3)
-      const unclearableDropSum = unclearableDrops.length ?
-                                 unclearableDrops.reduce((a,b) => a+b) : 0
-      if (unclearableDropSum <= 3) {
-        boardData['maxMagnification'] *= 10
-      }
-      break
-    // ハイレン：
-    // 水属性のHPが2倍。10コンボ以上で攻撃力が30倍。
-    // 火と水を同時に7個以上つなげて消すと、3コンボ加算。
-    case HYLEN:
-      if (boardData['maxComboCount'] >= 10) {
-        boardData['maxMagnification'] *= 30
-      }
-      break
-    // ココ・フェルケナ：
-    // 水属性の攻撃力が4倍。6コンボ以上でダメージを半減。
-    // 水を6個以上つなげて消すと攻撃力が4倍、固定5万ダメージ。
-    case COCO:
+  // 極醒メタトロン：
+  // HP80%以下で攻撃力が3倍。神タイプのHPと攻撃力が2倍。
+  // 7コンボ以上でダメージを軽減、攻撃力が2.5倍。
+  case METATRON:
+    boardData['maxMagnification'] *= 2
+    if (boardData['maxComboCount'] >= 7) {
+      boardData['maxMagnification'] *= 2.5
+    }
+    break
+  // コマさんS：
+  // 火と木属性のHPが1.5倍。6コンボ以上で攻撃力が5倍。
+  // ドロップを5個以上つなげて消すとダメージを軽減、攻撃力が3倍。
+  case KOMASAN_S:
+    if (boardData['maxComboCount'] >= 6) {
+      boardData['maxMagnification'] *= 5
+    }
+    if (boardData['mostDropCount'] >= 5) {
+      boardData['maxMagnification'] *= 3
+    }
+    break
+  // アメン：
+  // 【落ちコンなし】 7コンボちょうどで攻撃力が10倍。
+  // パズル後の残りドロップ数が3個以下で攻撃力が10倍。
+  case AMEN:
+    if (boardData['maxComboCount'] >= 7) {
+      boardData['maxMagnification'] *= 10
+    }
+    if (unclearableDropSum <= 3) {
+      boardData['maxMagnification'] *= 10
+    }
+    break
+  // ハイレン：
+  // 水属性のHPが2倍。10コンボ以上で攻撃力が30倍。
+  // 火と水を同時に7個以上つなげて消すと、3コンボ加算。
+  case HYLEN:
+    if (boardData['maxComboCount'] >= 10) {
+      boardData['maxMagnification'] *= 30
+    }
+    break
+  // ココ・フェルケナ：
+  // 水属性の攻撃力が4倍。6コンボ以上でダメージを半減。
+  // 水を6個以上つなげて消すと攻撃力が4倍、固定5万ダメージ。
+  case COCO:
+    boardData['maxMagnification'] *= 4
+    if (boardData['dropCountArray'][2] >= 6) {
       boardData['maxMagnification'] *= 4
-      if (boardData['dropCountArray'][2] >= 6) {
-        boardData['maxMagnification'] *= 4
-      }
-      break
-    // 水着ヴェロア：
-    // 水属性のHPが2倍、攻撃力は6倍。ドロップ操作を2秒延長。
-    // 水を9個以上つなげて消すと攻撃力が3倍、3コンボ加算。
-    case VEROAH:
-      boardData['maxMagnification'] *= 6
-      if (boardData['dropCountArray'][2] >= 9) {
-        boardData['maxMagnification'] *= 3
-      }
-      break
+    }
+    break
+  // 水着ヴェロア：
+  // 水属性のHPが2倍、攻撃力は6倍。ドロップ操作を2秒延長。
+  // 水を9個以上つなげて消すと攻撃力が3倍、3コンボ加算。
+  case VEROAH:
+    boardData['maxMagnification'] *= 6
+    if (boardData['dropCountArray'][2] >= 9) {
+      boardData['maxMagnification'] *= 3
+    }
+    break
+  // 鞍馬夜叉丸：
+  // 【落ちコンなし】HPと回復力が2倍。6コンボ以上で攻撃力が3倍。
+  // パズル後の残りドロップ数が15個以下で攻撃力が上昇、最大9倍。
+  case YASHAMARU:
+    if (boardData['maxComboCount'] >= 6) {
+      boardData['maxMagnification'] *= 3
+    }
+    boardData['maxMagnification'] *= Math.max(9 - 0.5 * unclearableDropSum, 1)
+    break
   }
 }
 

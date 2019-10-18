@@ -14,6 +14,7 @@ static double LeaderSkill_getMagnificationHylen(ComboData *comboData);
 static double LeaderSkill_getMagnificationCoco(ComboData *comboData);
 static double LeaderSkill_getMagnificationVeroah(ComboData *comboData);
 static double LeaderSkill_getMagnificationChilin(ComboData *comboData);
+static double LeaderSkill_getMagnificationYashamaru(ComboData *comboData);
 
 // リーダースキルで加算されるコンボ数を取得する関数
 char LeaderSkill_getAdditionalCombo(char leader, ComboData *comboData)
@@ -56,7 +57,7 @@ double LeaderSkill_getMagnification(char leader, ComboData *comboData)
     case (LEADER)HYLEN    : magnification = LeaderSkill_getMagnificationHylen(comboData); break;
     case (LEADER)COCO     : magnification = LeaderSkill_getMagnificationCoco(comboData); break;
     case (LEADER)VEROAH   : magnification = LeaderSkill_getMagnificationVeroah(comboData); break;
-    case (LEADER)CHILIN   : magnification = LeaderSkill_getMagnificationChilin(comboData); break;
+    case (LEADER)YASHAMARU: magnification = LeaderSkill_getMagnificationYashamaru(comboData); break;
   }
   return magnification;
 }
@@ -180,6 +181,24 @@ static double LeaderSkill_getMagnificationChilin(ComboData *comboData)
 
   if (leftovers <= 5)
     magnification *= 3;
+
+  return magnification;
+}
+
+// リーダー「鞍馬夜叉丸」の倍率を取得する関数
+// 【落ちコンなし】HPと回復力が2倍。6コンボ以上で攻撃力が3倍。
+// パズル後の残りドロップ数が15個以下で攻撃力が上昇、最大9倍。
+static double LeaderSkill_getMagnificationYashamaru(ComboData *comboData)
+{
+  char comboNum = ComboData_getCombo(comboData);
+  char leftovers = ComboData_getLeftovers(comboData, 0);
+  double magnification = 1;
+
+  if (6 <= comboNum)
+    magnification *= 3;
+
+  if (15 >= leftovers)
+    magnification *= 9 - 0.5 * leftovers;
 
   return magnification;
 }
