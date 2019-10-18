@@ -11,6 +11,7 @@ static double evaluateHylen(ComboData*);
 static double evaluateCoco(ComboData*);
 static double evaluateVeroah(ComboData*);
 static double evaluateChilin(ComboData*, SearchSettings*);
+static double evaluateYashamaru(ComboData*);
 
 
 // 共通の評価関数
@@ -154,7 +155,7 @@ static double getEvaluationBy(const char leader, ComboData *cdp,
     case (LEADER)HYLEN    : return evaluateHylen(cdp);
     case (LEADER)COCO     : return evaluateCoco(cdp);
     case (LEADER)VEROAH   : return evaluateVeroah(cdp);
-    case (LEADER)CHILIN   : return evaluateChilin(cdp, ssp);
+    case (LEADER)YASHAMARU: return evaluateYashamaru(cdp);
   }
 }
 
@@ -287,5 +288,20 @@ static double evaluateChilin(ComboData *comboData, SearchSettings *ssp)
   } else {
     evaluationValue = magnification + comboNum - (step << 1);
   }
+  return evaluationValue;
+}
+
+
+// リーダー「鞍馬夜叉丸」の評価関数
+// 【落ちコンなし】HPと回復力が2倍。6コンボ以上で攻撃力が3倍。
+// パズル後の残りドロップ数が15個以下で攻撃力が上昇、最大9倍。
+static double evaluateYashamaru(ComboData *comboData)
+{
+  double magnification = ComboData_getMagnification(comboData);
+  char comboNum = ComboData_getCombo(comboData);
+  char leftovers = ComboData_getLeftovers(comboData, 0);
+
+  double evaluationValue = magnification + comboNum - (leftovers << 3);
+
   return evaluationValue;
 }

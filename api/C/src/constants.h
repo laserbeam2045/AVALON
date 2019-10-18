@@ -36,7 +36,7 @@ typedef enum {
   HYLEN,
   COCO,
   VEROAH,
-  CHILIN,
+  YASHAMARU,
 } LEADER;
 
 #endif  // _CONSTANTS_H_
