@@ -11,6 +11,7 @@ static void (*BeamSearch_countCombo)(SearchNode*, SearchConditions*, bool) = NUL
 static void BeamSearch_initQueue(BeamSearch* this, BoardSettings *bsp);
 static double BeamSearch_getMoveCost(BeamSearch* this, int depth);
 static void BeamSearch_expandNodes(BeamSearch* this, SearchConditions *scp, double moveCost);
+static bool BeamSearch_isMeaninglessMove(BeamSearch* this, SearchNode*, char currIndex, char nextIndex);
 static void BeamSearch_mergeNodes(BeamSearch* this);
 static void BeamSearch_cutBranch(BeamSearch* this);
 static int cmp(const void*, const void*);
@@ -180,6 +181,9 @@ static void BeamSearch_expandNodes(BeamSearch* this, SearchConditions *scp, doub
       if (nextIndex < 0) continue;              // マイナスの座標は展開できない方向を意味する
       if (nextIndex == prevIndex) continue;     // 直前の座標に戻るのは無駄なので省く
 
+      // 斜め移動の場合、非効率な移動なら展開しない
+      if (3 < j && BeamSearch_isMeaninglessMove(this, parentNode, currIndex, nextIndex)) continue;
+
       // 次の座標が操作不可地点なら展開しない
       if (BoardSettings_isNoEntryPosition(bsp, nextIndex)) continue;
 
@@ -215,6 +219,41 @@ static void BeamSearch_expandNodes(BeamSearch* this, SearchConditions *scp, doub
         }
       }
     }
+  }
+}
+
+
+// 斜め移動が効果的かどうかを判別する関数
+// 戻り値：true(非効率) or false(効果的)
+static bool BeamSearch_isMeaninglessMove(BeamSearch* this, SearchNode *searchNode,
+                                                      char currIndex, char nextIndex)
+{
+  Board *board = SearchNode_getBoard(searchNode);
+  char nextColor = Board_getColor(board, nextIndex);
+  char cornerColor1, cornerColor2;
+
+  if (  // 左上または左下に移動しようとしている場合
+    (currIndex - nextIndex == Board_width + 1) ||
+    (currIndex - nextIndex == -Board_width + 1)
+  ) {
+    cornerColor1 = Board_getColor(board, currIndex - 1);
+    cornerColor2 = Board_getColor(board, nextIndex + 1);
+  }
+  else if ( // 右上または右下に移動しようとしている場合
+    (currIndex - nextIndex == Board_width - 1) ||
+    (currIndex - nextIndex == -Board_width - 1)
+  ) {
+    cornerColor1 = Board_getColor(board, currIndex + 1);
+    cornerColor2 = Board_getColor(board, nextIndex - 1);
+  }
+  if (
+    (nextColor == cornerColor1) ||
+    (nextColor == cornerColor2) ||
+    (cornerColor1 == cornerColor2)
+  ) {
+    return true;
+  } else {
+    return false;
   }
 }
 
