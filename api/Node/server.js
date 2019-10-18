@@ -10,6 +10,7 @@ const AMEN = 3
 const HYLEN = 4
 const COCO = 5
 const VEROAH = 6
+const YASHAMARU = 7
 
 app.use(bodyParser.urlencoded({extended: false}))
 app.use(bodyParser.json())
@@ -64,6 +65,9 @@ function addCombo(boardData, leader, firstTime) {
 
 // リーダースキルの倍率を適用する関数
 function multiplyMagnification(boardData, leader) {
+  const unclearableDrops = boardData['dropCountArray'].filter(num => num < 3)
+  const unclearableDropSum = unclearableDrops.length ?
+                              unclearableDrops.reduce((a,b) => a+b) : 0
   switch (leader) {
   // 転生アヌビス：
   // 8コンボ以上で攻撃力が上昇、最大10倍。
@@ -105,9 +109,6 @@ function multiplyMagnification(boardData, leader) {
     if (boardData['maxComboCount'] >= 7) {
       boardData['maxMagnification'] *= 10
     }
-    const unclearableDrops = boardData['dropCountArray'].filter(num => num < 3)
-    const unclearableDropSum = unclearableDrops.length ?
-                                unclearableDrops.reduce((a,b) => a+b) : 0
     if (unclearableDropSum <= 3) {
       boardData['maxMagnification'] *= 10
     }
@@ -137,6 +138,15 @@ function multiplyMagnification(boardData, leader) {
     if (boardData['dropCountArray'][2] >= 9) {
       boardData['maxMagnification'] *= 3
     }
+    break
+  // 鞍馬夜叉丸：
+  // 【落ちコンなし】HPと回復力が2倍。6コンボ以上で攻撃力が3倍。
+  // パズル後の残りドロップ数が15個以下で攻撃力が上昇、最大9倍。
+  case YASHAMARU:
+    if (boardData['maxComboCount'] >= 6) {
+      boardData['maxMagnification'] *= 3
+    }
+    boardData['maxMagnification'] *= Math.max(9 - 0.5 * unclearableDropSum, 1)
     break
   }
 }
