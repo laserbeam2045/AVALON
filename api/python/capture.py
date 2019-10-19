@@ -24,12 +24,10 @@ DROP_SIZE = 46
 TEMPLATE_NUM = 137
 
 # iphone 6 720*1280
-DEFAULT_APP_WIDTH = 416
-DEFAULT_APP_HEIGHT = 772
-DEFAULT_MARGIN_TOP = 432
-APP_WIDTH  = DEFAULT_APP_WIDTH
-APP_HEIGHT = DEFAULT_APP_HEIGHT
-MARGIN_TOP = DEFAULT_MARGIN_TOP
+IPHONE_WIDTH = 416
+IPHONE_HEIGHT = 772
+IPAD_WIDTH = 552
+IPAD_HEIGHT = 772
 
 templates = []
 
@@ -56,17 +54,35 @@ def k_nn(img):
 
 # 盤面を取得する関数
 def get_board(board_height, board_width):
+    rect = app[APP_NAME].client_rect()
+    app_width = rect.width()
+    app_height = rect.height()
+    margin_top = 0
+    margin_left = 0
+    margin_right = 0
+    margin_bottom = 0
     board = []
-    margin_left  = 2 if (board_width == 6) else 8
-    margin_right = 3 if (board_width == 6) else 9
-    drop_width = (APP_WIDTH - (margin_left + margin_right)) / board_width
-    drop_height = (APP_HEIGHT - MARGIN_TOP) / board_height
+
+    if app_width == IPHONE_WIDTH:
+        margin_top   = 432
+        margin_left  = 2 if (board_width == 6) else 8
+        margin_right = 3 if (board_width == 6) else 9
+    elif app_width == IPAD_WIDTH:
+        margin_top    = 373
+        margin_left   = 48 if (board_width == 6) else 56
+        margin_right  = 46 if (board_width == 6) else 55
+        margin_bottom = 18 if (board_width == 6) else 20
+
+    drop_width = (app_width - (margin_left + margin_right)) / board_width
+    drop_height = (app_height - margin_top - margin_bottom) / board_height
 
     # アプリケーションから盤面部分だけ画像として取得する
+    board_right = app_width - margin_right
+    board_bottom = app_height - margin_bottom
     board_img = app[APP_NAME].capture_as_image()\
-                    .crop((margin_left, MARGIN_TOP, APP_WIDTH - margin_right, APP_HEIGHT))
+                .crop((margin_left, margin_top, board_right, board_bottom))
 
-    #board_img.save("board.png")
+    board_img.save("board.png")
 
     # ドロップ単位で画像を切り抜き、色を判定して配列に入れる
     for y in range(board_height):
@@ -78,7 +94,7 @@ def get_board(board_height, board_width):
             box = (xmin, ymin, xmax, ymax)
             img = board_img.crop(box)
             img = img.resize((DROP_SIZE, DROP_SIZE))
-            #img.save("sample/drop_{}s.png".format(y*board_width+x+1))
+            img.save("sample/drop_{}s.png".format(y*board_width+x+1))
             color = k_nn(img)
             board.append(color)
     return board
@@ -88,9 +104,6 @@ app = Application()
 try:    app.connect(path = APP_DIR)
 except: app.start(cmd_line = APP_DIR)
 
-#rect = app[APP_NAME].client_rect()
-#print(rect.width())
-#print(rect.height())
 #app[APP_NAME].move_window(x=None, y=None, width=APP_WIDTH, height=APP_HEIGHT, repaint=True)
 
 # 事前にテンプレート画像を１次元ベクトル化しておく
