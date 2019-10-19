@@ -299,9 +299,16 @@ static double evaluateYashamaru(ComboData *comboData)
 {
   double magnification = ComboData_getMagnification(comboData);
   char comboNum = ComboData_getCombo(comboData);
-  char leftovers = ComboData_getLeftovers(comboData, 0);
+  char penalty = ComboData_getStep(comboData);
 
-  double evaluationValue = magnification + comboNum - (leftovers << 3);
+  for (char color = 1; color <= DROP_TYPE_MAX; color++) {
+    char leftovers = ComboData_getLeftovers(comboData, color);
+    if (0 < leftovers && leftovers < 3) {
+      penalty++;
+    }
+  }
+
+  double evaluationValue = magnification + (comboNum << 2) - penalty;
 
   return evaluationValue;
 }
