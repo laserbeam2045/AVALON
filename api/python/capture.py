@@ -82,7 +82,7 @@ def get_board(board_height, board_width):
     board_img = app[APP_NAME].capture_as_image()\
                 .crop((margin_left, margin_top, board_right, board_bottom))
 
-    board_img.save("board.png")
+    #board_img.save("board.png")
 
     # ドロップ単位で画像を切り抜き、色を判定して配列に入れる
     for y in range(board_height):
@@ -94,7 +94,7 @@ def get_board(board_height, board_width):
             box = (xmin, ymin, xmax, ymax)
             img = board_img.crop(box)
             img = img.resize((DROP_SIZE, DROP_SIZE))
-            img.save("sample/drop_{}s.png".format(y*board_width+x+1))
+            #img.save("sample/drop_{}s.png".format(y*board_width+x+1))
             color = k_nn(img)
             board.append(color)
     return board
