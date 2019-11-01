@@ -10,7 +10,6 @@ static double evaluateAmen(ComboData*);
 static double evaluateHylen(ComboData*);
 static double evaluateCoco(ComboData*);
 static double evaluateVeroah(ComboData*);
-static double evaluateChilin(ComboData*, SearchSettings*);
 static double evaluateYashamaru(ComboData*);
 
 
@@ -221,8 +220,15 @@ static double evaluateAmen(ComboData *comboData)
   double magnification = ComboData_getMagnification(comboData);
   char comboNum = ComboData_getCombo(comboData);
   char leftovers = ComboData_getLeftovers(comboData, 0);
+  char penalty = ComboData_getStep(comboData);
 
-  double evaluationValue = magnification - abs(7 - comboNum) - (leftovers << 3);
+  for (char color = 1; color <= DROP_TYPE_MAX; color++) {
+    char leftovers = ComboData_getLeftovers(comboData, color);
+    if (0 < leftovers && leftovers < 3) {
+      penalty++;
+    }
+  }
+  double evaluationValue = magnification - abs(7 - comboNum) - (leftovers << 3) - penalty;
 
   return evaluationValue;
 }
@@ -272,25 +278,6 @@ static double evaluateVeroah(ComboData *comboData)
   return evaluationValue;
 }
 
-// チィリン：
-// 【落ちコンなし】2コンボ以上で攻撃力が上昇、最大10倍。
-// パズル後の残りドロップ数が5個以下で攻撃力が3倍。
-static double evaluateChilin(ComboData *comboData, SearchSettings *ssp)
-{
-  double magnification = ComboData_getMagnification(comboData);
-  char comboLimit = SearchSettings_getComboLimit(ssp);
-  char comboNum = ComboData_getCombo(comboData);
-  char step = ComboData_getStep(comboData);
-  double evaluationValue;
-
-  if (comboLimit) {
-    evaluationValue = -(abs(comboLimit - comboNum) << 2) - (step << 1);
-  } else {
-    evaluationValue = magnification + comboNum - (step << 1);
-  }
-  return evaluationValue;
-}
-
 
 // リーダー「鞍馬夜叉丸」の評価関数
 // 【落ちコンなし】HPと回復力が2倍。6コンボ以上で攻撃力が3倍。
@@ -307,7 +294,6 @@ static double evaluateYashamaru(ComboData *comboData)
       penalty++;
     }
   }
-
   double evaluationValue = magnification + (comboNum << 2) - penalty;
 
   return evaluationValue;

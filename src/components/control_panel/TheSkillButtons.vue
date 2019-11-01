@@ -40,6 +40,13 @@ export default {
           left: () => this.capture(),
           right: () => this.capture().then(this.search),
         },
+        DARK: {
+          belongsTo: ['ALL'],
+          common: () => {
+            this.clearDarkness()
+            this.updateBoardSettings({propName: 'startPosition', newValue: 29})
+          },
+        },
         LUCIFER: {
           belongsTo: ['METATRON'],
           common: () => {
@@ -68,21 +75,32 @@ export default {
             this.changeBoardByCoordinates({ color, coordinates })
           },
         },
-        SARASVATI: {
-          belongsTo: ['COCO', 'VEROAH'],
-          common: () => this.changeBoardRight(DROP_TYPE.WATER),
-        },
         MUT: {
-          belongsTo: ['COCO', 'VEROAH'],
+          belongsTo: [],
           common: () => this.changeBoardByColor([DROP_TYPE.WOOD, DROP_TYPE.WATER]),
+        },
+        LIMLULU: {
+          belongsTo: ['YASHAMARU', 'COCO'],
+          common: () => {
+            this.changeBoardByColor([
+              [DROP_TYPE.POISON, DROP_TYPE.WATER],
+              [DROP_TYPE.DEADLY_POISON, DROP_TYPE.WATER],
+            ])
+          },
         },
         VEROAH: {
           belongsTo: ['COCO', 'VEROAH'],
           common: () => {
             this.changeBoardByColor([
               [DROP_TYPE.WOOD, DROP_TYPE.WATER],
-              [DROP_TYPE.LIGHT, DROP_TYPE.WATER]
+              [DROP_TYPE.LIGHT, DROP_TYPE.WATER],
             ])
+          },
+        },
+        PARVATI: {
+          belongsTo: ['YASHAMARU'],
+          common: () => {
+            this.changeBoardByColor([DROP_TYPE.WATER, DROP_TYPE.HEART])
           },
         },
       },
@@ -99,7 +117,7 @@ export default {
       let coordinates = []
       switch (this.boardLength) {
         case 30: coordinates = [0, 1, 2, 6, 7, 8, 12, 13, 14]; break
-        case 42: coordinates = [0, 1, 2, 3, 7, 8, 9, 10, 14, 15, 16, 17]; break
+        case 42: coordinates = [0, 1, 2, 7, 8, 9, 14, 15, 16, 21, 22, 23]; break
       }
       return coordinates
     },
@@ -122,12 +140,14 @@ export default {
   methods: {
     // スキル内で使用するミューテーションをマッピング
     ...mapMutations([
+      'clearDarkness',
       'changeBoardByColor',
       'changeBoardByCoordinates',
       'changeBoardTop',
       'changeBoardLeft',
       'changeBoardRight',
       'changeBoardBottom',
+      'updateBoardSettings',
       'updateClearingSettings',
     ]),
     // スキルを発動するメソッド
