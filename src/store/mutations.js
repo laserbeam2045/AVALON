@@ -133,6 +133,40 @@ export default {
     state.boardSettings.board = newBoard
   },
 
+  // 暗闇を消すミューテーション
+  clearDarkness (state) {
+    const board = Array.from(state.boardSettings.board)
+    const first = board[0]
+
+    for (let Y = 0; Y < 5; Y++) {
+      for (let X = 0; X < 6; X++) {
+        if (Y % 2) {
+          X = 5 - X
+        }
+        const Z = 6 * Y + X
+        if (Z == 29) {
+          board[Z] = first
+        }
+        else if (
+          (X == 0 && (Y % 2)) ||
+          (X == 5 && !(Y % 2))
+        ) {
+          board[Z] = board[Z + 6]
+        }
+        else if (Y % 2) {
+          board[Z] = board[Z - 1]
+        }
+        else {
+          board[Z] = board[Z + 1]
+        }
+        if (Y % 2) {
+          X = 5 - X
+        }
+      }
+    }
+    state.boardSettings.board = board
+  },
+
   // 特定の属性を特定の属性に変えるミューテーション
   changeBoardByColor (state, colors) {
     const board = state.boardSettings.board
