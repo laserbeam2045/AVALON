@@ -27,6 +27,7 @@ typedef struct {
   double magnification;                       // 倍率
   double evaluation;                          // 評価値
   bool fulfillConditions;                     // 指定された条件を満たしているかどうか
+  bool explosionFlag;                         // 爆弾が爆発するかどうか
 } ComboData;
 
 
@@ -112,5 +113,11 @@ extern void ComboData_setFulfillConditions(ComboData* this, bool flag);
 
 // fulfillConditions属性を取得する関数
 extern bool ComboData_getFulfillConditions(ComboData* this);
+
+// explosionFlag属性に引数の真偽値をセットする関数
+extern void ComboData_setExplosionFlag(ComboData* this, bool flag);
+
+// explosionFlag属性を取得する関数
+extern bool ComboData_getExplosionFlag(ComboData* this);
 
 #endif //_COMBO_DATA_H_

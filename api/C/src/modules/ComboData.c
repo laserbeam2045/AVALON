@@ -29,6 +29,7 @@ void ComboData_init(ComboData* this, Board *board)
   this->magnification = 1;
   this->evaluation = 0;
   this->fulfillConditions = true;
+  this->explosionFlag = false;
 }
 
 // コンボ数に指定された数をセットする関数
@@ -170,4 +171,16 @@ void ComboData_setFulfillConditions(ComboData* this, bool flag)
 bool ComboData_getFulfillConditions(ComboData* this)
 {
   return this->fulfillConditions;
+}
+
+// explosionFlag属性に引数の真偽値をセットする関数
+void ComboData_setExplosionFlag(ComboData* this, bool flag)
+{
+  this->explosionFlag = flag;
+}
+
+// explosionFlag属性を取得する関数
+bool ComboData_getExplosionFlag(ComboData* this)
+{
+  return this->explosionFlag;
 }
