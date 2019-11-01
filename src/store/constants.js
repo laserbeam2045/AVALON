@@ -7,7 +7,7 @@ export const STATE = {
 }
 
 // 扱うドロップの種類数を表す定数
-export const DROP_TYPE_MAX = 9
+export const DROP_TYPE_MAX = 10
 
 // ドロップの種類を表す定数
 export const DROP_TYPE = {

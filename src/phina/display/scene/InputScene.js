@@ -5,7 +5,7 @@ import { ItemDrop } from '../drops'
 import StartPosition from '../startPosition/StartPosition'
 import NoEntryPosition from '../NoEntryPosition'
 
-const COLOR_MAX = 9                 // ドロップの種類
+const COLOR_MAX = 10                 // ドロップの種類
 const MAX_PER_LINE = 6              // 横に並べるドロップの数
 const ITEM_DROP_SCALE = 1.90        // アイテムドロップの拡大率
 const SELECTED_ITEM_ALPHA = 1       // 選択されているアイテムの透明度
