@@ -15,8 +15,8 @@ export default {
 
   // リーダーに関する設定
   leaderSettings: {
-    leader1: LEADER.METATRON, // 自分のリーダー
-    leader2: LEADER.METATRON, // フレンドのリーダー
+    leader1: LEADER.YASHAMARU, // 自分のリーダー
+    leader2: LEADER.YASHAMARU, // フレンドのリーダー
     maxCombo: 0,              // 盤面で可能な最大コンボ数
     maxMagnification: 1,      // 盤面で可能な最大倍率
   },
@@ -37,7 +37,7 @@ export default {
       min: 1000,
       max: 50000,
       step: 1000,
-      value: 10000,
+      value: 20000,
     },
     depth: {
       min: 1,
