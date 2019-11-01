@@ -13,8 +13,8 @@ static double LeaderSkill_getMagnificationAmen(ComboData *comboData);
 static double LeaderSkill_getMagnificationHylen(ComboData *comboData);
 static double LeaderSkill_getMagnificationCoco(ComboData *comboData);
 static double LeaderSkill_getMagnificationVeroah(ComboData *comboData);
-static double LeaderSkill_getMagnificationChilin(ComboData *comboData);
 static double LeaderSkill_getMagnificationYashamaru(ComboData *comboData);
+
 
 // リーダースキルで加算されるコンボ数を取得する関数
 char LeaderSkill_getAdditionalCombo(char leader, ComboData *comboData)
@@ -168,20 +168,6 @@ static double LeaderSkill_getMagnificationVeroah(ComboData *comboData)
       break;
     }
   }
-  return magnification;
-}
-
-// リーダー「チィリン」の倍率を取得する関数
-// 【落ちコンなし】2コンボ以上で攻撃力が上昇、最大10倍。
-// パズル後の残りドロップ数が5個以下で攻撃力が3倍。
-static double LeaderSkill_getMagnificationChilin(ComboData *comboData)
-{
-  double magnification = max(1, min(10, ComboData_getCombo(comboData)));
-  char leftovers = ComboData_getLeftovers(comboData, 0);
-
-  if (leftovers <= 5)
-    magnification *= 3;
-
   return magnification;
 }
 
