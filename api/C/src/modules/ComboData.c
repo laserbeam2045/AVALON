@@ -29,7 +29,7 @@ void ComboData_init(ComboData* this, Board *board)
   this->magnification = 1;
   this->evaluation = 0;
   this->fulfillConditions = true;
-  this->explosionFlag = false;
+  this->explosionCount = 0;
 }
 
 // コンボ数に指定された数をセットする関数
@@ -161,6 +161,13 @@ char ComboData_getLeftovers(ComboData* this, const char index)
   return this->leftovers[index];
 }
 
+// 盤面に残ったドロップ数を減少させる関数
+void ComboData_decreaseLeftovers(ComboData* this, const char dropColor, const char dropCount)
+{
+  this->leftovers[0] -= dropCount;
+  this->leftovers[dropColor] -= dropCount;
+}
+
 // fulfillConditions属性に引数の真偽値をセットする関数
 void ComboData_setFulfillConditions(ComboData* this, bool flag)
 {
@@ -173,14 +180,14 @@ bool ComboData_getFulfillConditions(ComboData* this)
   return this->fulfillConditions;
 }
 
-// explosionFlag属性に引数の真偽値をセットする関数
-void ComboData_setExplosionFlag(ComboData* this, bool flag)
+// explosionCount属性の数をセットする関数
+void ComboData_setExplosionCount(ComboData* this, char count)
 {
-  this->explosionFlag = flag;
+  this->explosionCount = count;
 }
 
-// explosionFlag属性を取得する関数
-bool ComboData_getExplosionFlag(ComboData* this)
+// explosionCount属性を取得する関数
+char ComboData_getExplosionCount(ComboData* this)
 {
-  return this->explosionFlag;
+  return this->explosionCount;
 }

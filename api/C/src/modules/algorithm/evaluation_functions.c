@@ -21,7 +21,12 @@ double evaluate(ComboData *cdp, SearchConditions *scp, double moveCost)
   ClearingSettings *csp = SearchConditions_getClearingSettings(scp);
   const char leader1 = LeaderSettings_getLeader1(lsp);
   const char leader2 = LeaderSettings_getLeader2(lsp);
-  double point = -moveCost;
+  const char explosionCount = ComboData_getExplosionCount(cdp);
+  double point = -(moveCost + (explosionCount << 16));
+
+  if (explosionCount == 1 || explosionCount == 2) {
+    point -= 9999999;
+  }
 
   // リーダースキルのコンボ加算を適用する
   ComboData_addCombo(cdp, LeaderSkill_getAdditionalCombo(leader1, cdp));

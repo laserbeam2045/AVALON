@@ -17,6 +17,8 @@ static const int BITCOMBO_VERTICAL = 0b1000001000001; // 縦にコンボする�
 // プライベート関数
 // MEMO:6x7版との区別のために、staticでスコープを分けている
 static int markClearablePlace(Board *board);
+static bool isExplosion(Board *board, int bitCombo, ComboData*, BoardSettings*);
+static void explode(Board *board, int bitCombo, char bombX, char bombY, ComboData*);
 static void clearDrops(Board *board, int, ComboData*, ClearingSettings*);
 static void _clearDrops(Board *board, char, char, int, int*, char*, char[]);
 static void dropDrops(Board *board);
@@ -38,6 +40,14 @@ void countCombo(SearchNode *searchNode, SearchConditions *searchConditions, bool
   while (1) {
     // ドロップが消える位置をビットに記録する
     int bitCombo = markClearablePlace(&board);
+
+    // 盤面に爆弾が存在する場合、爆発するかどうかを確認する
+    if (ComboData_getLeftovers(comboData, (DROP_TYPE)BOMB)) {
+      // 爆発する場合は消える位置を記録しなおす
+      if (isExplosion(&board, bitCombo, comboData, boardSettings)) {
+        continue;
+      }
+    }
 
     // 消えるドロップがなければ終了
     if (!bitCombo) return;
@@ -94,6 +104,59 @@ static int markClearablePlace(Board *board)
     }
   }
   return bitCombo;
+}
+
+// 爆弾が爆発するかどうかを確認する関数
+static bool isExplosion(Board *board, int bitCombo, ComboData* comboData, BoardSettings* boardSettings)
+{
+  bool flag = false;
+
+  for (char Y = 0; Y < BOARD_HEIGHT; Y++) {
+    for (char X = 0; X < BOARD_WIDTH; X++) {
+      char index = BOARD_WIDTH * Y + X;
+      char color = Board_getColor(board, index);
+
+      if (color == (DROP_TYPE)BOMB && !(bitCombo & (1 << index))) {
+        char explosionCount = ComboData_getExplosionCount(comboData);
+ 
+        // 操作不可の位置にある爆弾が爆発する場合はペナルティが重くなるようにする
+        if (BoardSettings_isNoEntryPosition(boardSettings, index)) {
+          ComboData_setExplosionCount(comboData, explosionCount + 10);
+        } else {
+          ComboData_setExplosionCount(comboData, explosionCount + 1);
+        }
+        explode(board, bitCombo, X, Y, comboData);
+        flag = true;
+      }
+    }
+  }
+  return flag;
+}
+
+// 爆弾の縦横に存在するドロップを消す関数
+static void explode(Board *board, int bitCombo, char bombX, char bombY, ComboData* comboData)
+{
+  char X, Y, index, color;
+
+  for (Y = 0; Y < BOARD_HEIGHT; Y++) {
+    index = BOARD_WIDTH * Y + bombX;
+    color = Board_getColor(board, index);
+    if (color != (DROP_TYPE)NONE && color != (DROP_TYPE)BOMB) {
+      Board_setColor(board, index, (DROP_TYPE)NONE);
+      ComboData_decreaseLeftovers(comboData, color, 1);
+    }
+  }
+  for (X = 0; X < BOARD_WIDTH; X++) {
+    index = BOARD_WIDTH * bombY + X;
+    color = Board_getColor(board, index);
+    if (color != (DROP_TYPE)NONE && color != (DROP_TYPE)BOMB) {
+      Board_setColor(board, index, (DROP_TYPE)NONE);
+      ComboData_decreaseLeftovers(comboData, color, 1);
+    }
+  }
+  index = BOARD_WIDTH * bombY + bombX;
+  Board_setColor(board, index, (DROP_TYPE)NONE);
+  ComboData_decreaseLeftovers(comboData, (DROP_TYPE)BOMB, 1);
 }
 
 
