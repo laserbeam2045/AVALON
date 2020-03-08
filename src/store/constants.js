@@ -39,7 +39,7 @@ export const LEADER = {
 export const SERVER_ADDRESS = {
   Python  : 'http://127.0.0.1:8000/api/capture/',
   Node    : 'http://127.0.0.1:1200/api/maxData/',
-  //C       : 'http://127.0.0.1:12345/',
+  C       : 'http://127.0.0.1:12345/',
   //C       : 'http://35.221.97.56:12345/',
-  C       : 'http://35.221.97.56:12345/',
+  //C       : 'http://35.221.97.56:12345/',
 }
