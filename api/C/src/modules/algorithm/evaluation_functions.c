@@ -2,7 +2,7 @@
 
 // プライベート関数
 static int getClearingPoint(ComboData*, ClearingSettings*); 
-static double getEvaluationBy(const char leader, ComboData*, SearchSettings*, ClearingSettings*);
+static double getEvaluationBy(const char leader, ComboData*, SearchSettings*, ClearingSettings*, int depth);
 static double evaluateAnubis(ComboData*);
 static double evaluateMetatron(ComboData*, ClearingSettings*);
 static double evaluateKomasan(ComboData*);
@@ -10,18 +10,23 @@ static double evaluateAmen(ComboData*);
 static double evaluateHylen(ComboData*);
 static double evaluateCoco(ComboData*);
 static double evaluateVeroah(ComboData*);
-static double evaluateYashamaru(ComboData*);
+static double evaluateYashamaru(ComboData*, int depth);
 
 
 // 共通の評価関数
-double evaluate(ComboData *cdp, SearchConditions *scp, double moveCost)
+double evaluate(ComboData *cdp, SearchConditions *scp, int depth)
 {
   LeaderSettings *lsp = SearchConditions_getLeaderSettings(scp);
   SearchSettings *ssp = SearchConditions_getSearchSettings(scp);
   ClearingSettings *csp = SearchConditions_getClearingSettings(scp);
   const char leader1 = LeaderSettings_getLeader1(lsp);
   const char leader2 = LeaderSettings_getLeader2(lsp);
-  double point = -moveCost;
+  const char explosionCount = ComboData_getExplosionCount(cdp);
+  double point = -(depth * 0.001 + (explosionCount << 16));
+
+  if (explosionCount == 1 || explosionCount == 2) {
+    point -= 9999999;
+  }
 
   // リーダースキルのコンボ加算を適用する
   ComboData_addCombo(cdp, LeaderSkill_getAdditionalCombo(leader1, cdp));
@@ -32,8 +37,8 @@ double evaluate(ComboData *cdp, SearchConditions *scp, double moveCost)
   ComboData_multiplyMagnification(cdp, LeaderSkill_getMagnification(leader2, cdp));
 
   // リーダー別の評価値を加算する
-  ComboData_addEvaluation(cdp, getEvaluationBy(leader1, cdp, ssp, csp));
-  ComboData_addEvaluation(cdp, getEvaluationBy(leader2, cdp, ssp, csp));
+  ComboData_addEvaluation(cdp, getEvaluationBy(leader1, cdp, ssp, csp, depth));
+  ComboData_addEvaluation(cdp, getEvaluationBy(leader2, cdp, ssp, csp, depth));
 
   // コンボ数が指定と異なっていたらペナルティ
   char comboLimit = SearchSettings_getComboLimit(ssp);
@@ -79,10 +84,10 @@ static int getClearingPoint(ComboData *cdp, ClearingSettings *csp)
       }
     }
     // 消してはいけない色について、消している場合は減点
-    if (ClearingSettings_isActiveOf(csp, (CS_TYPE)CLEAR_ZERO, color)) {
+    if (ClearingSettings_isActiveOf(csp, (CS_TYPE)NOT_CLEAR, color)) {
       comboCount = ComboData_getComboOf(cdp, 0, color);
       if (comboCount) {
-        point -= (comboCount << 3);
+        point -= (comboCount << 16);
         ComboData_setFulfillConditions(cdp, false);
       }
     }
@@ -134,7 +139,7 @@ static int getClearingPoint(ComboData *cdp, ClearingSettings *csp)
   if (ClearingSettings_isActiveOf(csp, (CS_TYPE)LINE, 7)) {
     comboCount = ComboData_getClearStyle(cdp, (CS_TYPE)LINE, 7);
     if (comboCount)
-      point += 300;
+      point += 3000000;
     else
       ComboData_setFulfillConditions(cdp, false);
   }
@@ -144,7 +149,7 @@ static int getClearingPoint(ComboData *cdp, ClearingSettings *csp)
 
 // リーダー別の評価値を求める関数
 static double getEvaluationBy(const char leader, ComboData *cdp,
-                              SearchSettings *ssp, ClearingSettings *csp)
+                              SearchSettings *ssp, ClearingSettings *csp, int depth)
 {
   switch (leader) {
     case (LEADER)ANUBIS   : return evaluateAnubis(cdp);
@@ -154,7 +159,7 @@ static double getEvaluationBy(const char leader, ComboData *cdp,
     case (LEADER)HYLEN    : return evaluateHylen(cdp);
     case (LEADER)COCO     : return evaluateCoco(cdp);
     case (LEADER)VEROAH   : return evaluateVeroah(cdp);
-    case (LEADER)YASHAMARU: return evaluateYashamaru(cdp);
+    case (LEADER)YASHAMARU: return evaluateYashamaru(cdp, depth);
   }
 }
 
@@ -282,11 +287,11 @@ static double evaluateVeroah(ComboData *comboData)
 // リーダー「鞍馬夜叉丸」の評価関数
 // 【落ちコンなし】HPと回復力が2倍。6コンボ以上で攻撃力が3倍。
 // パズル後の残りドロップ数が15個以下で攻撃力が上昇、最大9倍。
-static double evaluateYashamaru(ComboData *comboData)
+static double evaluateYashamaru(ComboData *comboData, int depth)
 {
   double magnification = ComboData_getMagnification(comboData);
   char comboNum = ComboData_getCombo(comboData);
-  char penalty = ComboData_getStep(comboData);
+  int penalty = ComboData_getStep(comboData);
 
   for (char color = 1; color <= DROP_TYPE_MAX; color++) {
     char leftovers = ComboData_getLeftovers(comboData, color);

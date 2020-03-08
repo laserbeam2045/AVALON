@@ -9,8 +9,7 @@ static void (*BeamSearch_countCombo)(SearchNode*, SearchConditions*, bool) = NUL
 
 // プライベート関数
 static void BeamSearch_initQueue(BeamSearch* this, BoardSettings *bsp);
-static double BeamSearch_getMoveCost(BeamSearch* this, int depth);
-static void BeamSearch_expandNodes(BeamSearch* this, SearchConditions *scp, double moveCost);
+static void BeamSearch_expandNodes(BeamSearch* this, SearchConditions *scp, int depth);
 static bool BeamSearch_isMeaninglessMove(BeamSearch* this, SearchNode*, char currIndex, char nextIndex);
 static void BeamSearch_mergeNodes(BeamSearch* this);
 static void BeamSearch_cutBranch(BeamSearch* this);
@@ -56,9 +55,11 @@ void BeamSearch_init(BeamSearch* this, SearchConditions *searchConditions)
 
   // 使用する関数のポインタを決める
   switch (Board_length) {
-    case 30: BeamSearch_countCombo = countCombo; break;
+    case 30: BeamSearch_countCombo = countCombo_5x6; break;
     case 42: BeamSearch_countCombo = countCombo_6x7; break;
   }
+  // CountComboクラスの初期化
+  CountCombo_init(bsp);
 }
 
 
@@ -78,13 +79,11 @@ void BeamSearch_finish(BeamSearch* this)
 SearchNode BeamSearch_run(BeamSearch* this, SearchConditions *scp)
 {
   // 指定された深さまでビーム探索を行う
-  for (int i = 0; i < this->beamDepth; i++) {
+  for (int depth = 0; depth < this->beamDepth; depth++) {
     if (this->endFlag) break;
 
-    // 深さに応じた移動コストを求める
-    double moveCost = BeamSearch_getMoveCost(this, i);
     // キューからノードを取り出し、展開する
-    BeamSearch_expandNodes(this, scp, moveCost);
+    BeamSearch_expandNodes(this, scp, depth);
     // スレッド別に、離れたアドレス上に持たせたノードを、連続するデータ（ポインタ配列）として統合する
     BeamSearch_mergeNodes(this);
     // ノード数がビーム幅に達していたら、評価値について降順に並べ、ビーム幅を次回の反復回数の上限とする
@@ -129,22 +128,10 @@ static void BeamSearch_initQueue(BeamSearch* this, BoardSettings *bsp)
 }
 
 
-// 移動コストを求める関数（落ちコンありの場合は10手ごとに増える）
-// depth     深さ（何手目であるか）
-// 戻り値：移動コスト
-static double BeamSearch_getMoveCost(BeamSearch* this, int depth)
-{
-  if (this->dropFall)
-    return (double)(int)(depth / 10) * 0.001;
-  else
-    return (double)depth * 0.001;
-}
-
-
 // キューからノードを取り出し、展開する関数
 // moveCost 深さに応じた移動コスト
 // *scp     探索条件オブジェクトのアドレス
-static void BeamSearch_expandNodes(BeamSearch* this, SearchConditions *scp, double moveCost)
+static void BeamSearch_expandNodes(BeamSearch* this, SearchConditions *scp, int depth)
 {
   BoardSettings *bsp = SearchConditions_getBoardSettings(scp);
   SearchSettings *ssp = SearchConditions_getSearchSettings(scp);
@@ -207,7 +194,7 @@ static void BeamSearch_expandNodes(BeamSearch* this, SearchConditions *scp, doub
       SearchNode_initComboData(childNode);
       BeamSearch_countCombo(childNode, scp, false);
       comboData = SearchNode_getComboData(childNode);
-      evaluation = evaluate(comboData, scp, moveCost);
+      evaluation = evaluate(comboData, scp, depth);
 
       // 最高評価値を更新したら、優秀なノードとしてスタックに追加する
       if (ExcellentNodes_getBestEvaluation(enp) <= evaluation) {

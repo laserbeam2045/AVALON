@@ -35,19 +35,19 @@ export default {
   searchSettings: {
     width: {
       min: 1000,
-      max: 50000,
+      max: 90000,
       step: 1000,
       value: 20000,
     },
     depth: {
       min: 1,
-      max: 60,
+      max: 90,
       step: 1,
       value: 38,
     },
     diagonalLimit: {
       min: 0,
-      max: 3,
+      max: 5,
       step: 1,
       value: 0,
     },
@@ -68,7 +68,8 @@ export default {
     L           : [false, false, false, false, false, false, false],
     required    : [false, false, false, false, false, false, false, false, false, false],
     clearAll    : [false, false, false, false, false, false, false, false, false, false],
-    clearZero   : [false, false, false, false, false, false, false, false, false, false],
+    notClear    : [false, false, false, false, false, false, false, false, false, false],
+    cantClear : [false, false, false, false, false, false, false, false, false, false],
     activeDrops : [true, true, true, true, true, true, true, false, false, false],
   },
 }

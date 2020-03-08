@@ -34,7 +34,7 @@ app.get('/api/maxData/:leader1-:leader2-:board', function(req, res){
   multiplyMagnification(boardData, leader2)
 
   res.send(JSON.stringify(boardData))
-}).listen(1000)
+}).listen(1200)
 
 console.log("Node server listening...")
 

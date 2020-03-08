@@ -68,10 +68,10 @@ def get_board(board_height, board_width):
         margin_left  = 2 if (board_width == 6) else 8
         margin_right = 3 if (board_width == 6) else 9
     elif app_width == IPAD_WIDTH:
-        margin_top    = 373
-        margin_left   = 48 if (board_width == 6) else 56
-        margin_right  = 46 if (board_width == 6) else 55
-        margin_bottom = 18 if (board_width == 6) else 20
+        margin_top    = 380
+        margin_left   = 40 if (board_width == 6) else 56
+        margin_right  = 38 if (board_width == 6) else 55
+        margin_bottom =  0 if (board_width == 6) else 20
 
     drop_width = (app_width - (margin_left + margin_right)) / board_width
     drop_height = (app_height - margin_top - margin_bottom) / board_height
@@ -82,7 +82,7 @@ def get_board(board_height, board_width):
     board_img = app[APP_NAME].capture_as_image()\
                 .crop((margin_left, margin_top, board_right, board_bottom))
 
-    #board_img.save("board.png")
+    board_img.save("board.png")
 
     # ドロップ単位で画像を切り抜き、色を判定して配列に入れる
     for y in range(board_height):
@@ -94,7 +94,7 @@ def get_board(board_height, board_width):
             box = (xmin, ymin, xmax, ymax)
             img = board_img.crop(box)
             img = img.resize((DROP_SIZE, DROP_SIZE))
-            #img.save("sample/drop_{}s.png".format(y*board_width+x+1))
+            img.save("sample/drop_{}s.png".format(y*board_width+x+1))
             color = k_nn(img)
             board.append(color)
     return board

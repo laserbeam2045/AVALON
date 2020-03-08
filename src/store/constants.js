@@ -7,7 +7,7 @@ export const STATE = {
 }
 
 // 扱うドロップの種類数を表す定数
-export const DROP_TYPE_MAX = 9
+export const DROP_TYPE_MAX = 10
 
 // ドロップの種類を表す定数
 export const DROP_TYPE = {
@@ -38,6 +38,8 @@ export const LEADER = {
 // Ajax通信を行う際のサーバーアドレス
 export const SERVER_ADDRESS = {
   Python  : 'http://127.0.0.1:8000/api/capture/',
-  Node    : 'http://127.0.0.1:1000/api/maxData/',
-  C       : 'http://127.0.0.1:12345/',
+  Node    : 'http://127.0.0.1:1200/api/maxData/',
+  //C       : 'http://127.0.0.1:12345/',
+  //C       : 'http://35.221.97.56:12345/',
+  C       : 'http://35.221.97.56:12345/',
 }

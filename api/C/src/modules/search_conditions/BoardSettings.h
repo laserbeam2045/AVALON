@@ -11,7 +11,8 @@ typedef struct {
   Board board;                          // 初期盤面
   bool dropFall;                        // 落ちコンの有無
   bool greedy;                          // 最後まで探索するかどうか
-  int activeDrops;                      // 落ちてくるドロップ（ビットフラグ）
+  int canNotClearDrops;                 // 消せないドロップ（ビットフラグ）
+  int activeDrops;                      // 落ちうるドロップ（ビットフラグ）
   char startPosition;                   // 開始位置指定
   char noEntryPositions[BOARD_LEN_MAX]; // 操作不可地点
   char noEntryPositionsCount;           // 操作不可地点の数
@@ -28,6 +29,9 @@ extern bool BoardSettings_getDropFall(BoardSettings* this);
 
 // greedy属性を返す関数
 extern bool BoardSettings_getGreedy(BoardSettings* this);
+
+// canNotClearDrops属性を返す関数
+extern int BoardSettings_getCanNotClearDrops(BoardSettings* this);
 
 // activeDrops属性を返す関数
 extern int BoardSettings_getActiveDrops(BoardSettings* this);

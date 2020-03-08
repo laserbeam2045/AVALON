@@ -13,7 +13,7 @@ typedef enum {
   L,
   REQUIRED,
   CLEAR_ALL,
-  CLEAR_ZERO
+  NOT_CLEAR,
 } CS_TYPE;
 
 // 消し方に関する設定のクラス
@@ -26,7 +26,7 @@ typedef struct {
   int L;                // L字消しを含めるかどうか
   int required;         // 必ず消す必要があるかどうか
   int clearAll;         // 全消しをするかどうか
-  int clearZero;        // 消してはいけないかどうか
+  int notClear;         // 消してはいけないかどうか
   bool active;          // １つでも設定項目があるかどうか
 } ClearingSettings;
 

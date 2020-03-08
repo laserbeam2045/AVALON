@@ -10,7 +10,7 @@ void ClearingSettings_init(ClearingSettings* this, char request[])
   this->L = Parser_getInt(request, "L");
   this->required = Parser_getInt(request, "required");
   this->clearAll = Parser_getInt(request, "clearAll");
-  this->clearZero = Parser_getInt(request, "clearZero");
+  this->notClear = Parser_getInt(request, "notClear");
 
   if (
     this->twoWay == 0 &&
@@ -20,7 +20,7 @@ void ClearingSettings_init(ClearingSettings* this, char request[])
     this->L == 0 &&
     this->required == 0 &&
     this->clearAll == 0 &&
-    this->clearZero == 0
+    this->notClear == 0
   ) {
     this->active = false;
   } else {
@@ -45,6 +45,6 @@ bool ClearingSettings_isActiveOf(ClearingSettings* this, const char type, const 
   case (CS_TYPE)L             : return (1 << color) & this->L;
   case (CS_TYPE)REQUIRED      : return (1 << color) & this->required;
   case (CS_TYPE)CLEAR_ALL     : return (1 << color) & this->clearAll;
-  case (CS_TYPE)CLEAR_ZERO    : return (1 << color) & this->clearZero;
+  case (CS_TYPE)NOT_CLEAR     : return (1 << color) & this->notClear;
   }
 }

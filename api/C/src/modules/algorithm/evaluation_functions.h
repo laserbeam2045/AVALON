@@ -12,6 +12,6 @@
 // searchConditions  探索条件
 // moveCost          移動コスト
 // 戻り値：評価値
-extern double evaluate(ComboData *data, SearchConditions *searchConditions, double moveCost);
+extern double evaluate(ComboData *data, SearchConditions *searchConditions, int depth);
 
 #endif  // _EVALUATION_FUNCTIONS_H_

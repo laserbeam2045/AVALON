@@ -27,6 +27,7 @@ typedef struct {
   double magnification;                       // 倍率
   double evaluation;                          // 評価値
   bool fulfillConditions;                     // 指定された条件を満たしているかどうか
+  char explosionCount;                        // 爆発する爆弾の数
 } ComboData;
 
 
@@ -107,10 +108,19 @@ extern char ComboData_getMaxConnection(ComboData* this);
 // index  添え字に指定する値
 extern char ComboData_getLeftovers(ComboData* this, const char index);
 
+// 盤面に残ったドロップ数を減少させる関数
+extern void ComboData_decreaseLeftovers(ComboData* this, const char dropColor, const char dropCount);
+
 // fulfillConditions属性に引数の真偽値をセットする関数
 extern void ComboData_setFulfillConditions(ComboData* this, bool flag);
 
 // fulfillConditions属性を取得する関数
 extern bool ComboData_getFulfillConditions(ComboData* this);
+
+// explosionCount属性の数をセットする関数
+extern void ComboData_setExplosionCount(ComboData* this, char count);
+
+// explosionCount属性を取得する関数
+extern char ComboData_getExplosionCount(ComboData* this);
 
 #endif //_COMBO_DATA_H_
