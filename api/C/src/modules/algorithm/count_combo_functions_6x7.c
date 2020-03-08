@@ -1,5 +1,10 @@
 #include "count_combo.h"
 
+// 消せる色かどうかを判定するマクロ
+#define isClearable(color) (!(CountCombo_canNotClearDrops & (UINT64_1 << color)))
+// 落ちうる色かどうかを判定するマクロ
+#define isActive(color) (CountCombo_activeDrops & (UINT64_1 << color))
+
 // プライベート定数
 // MEMO:6x7版との区別のために、staticでスコープを分けている
 static const char BOARD_HEIGHT = 6;             // 盤面の高さ
@@ -21,7 +26,7 @@ static uint64_t markClearablePlace(Board *board);
 static void clearDrops(Board *board, uint64_t, ComboData*, ClearingSettings*);
 static void _clearDrops(Board *board, char, char, uint64_t, uint64_t*, char*, char[]);
 static void dropDrops(Board *board);
-static void fillSpace(Board *board, int);
+static void fillSpace(Board *board);
 
 
 // コンボ数などを数える関数
@@ -30,7 +35,6 @@ void countCombo_6x7(SearchNode *searchNode, SearchConditions *searchConditions, 
   ComboData *comboData = SearchNode_getComboData(searchNode);
   BoardSettings *boardSettings = SearchConditions_getBoardSettings(searchConditions);
   ClearingSettings *clearingSettings = SearchConditions_getClearingSettings(searchConditions);
-  int activeDrops = BoardSettings_getActiveDrops(boardSettings);
   Board board;
 
   // 盤面をコピーして、新しいBoardインスタンスを使う
@@ -51,7 +55,7 @@ void countCombo_6x7(SearchNode *searchNode, SearchConditions *searchConditions, 
 
     // 落ちコンありの指定ならば空いたスペースを埋める
     if (dropFallFlag) {
-      fillSpace(&board, activeDrops);
+      fillSpace(&board);
     }
   }
 }
@@ -233,14 +237,14 @@ static void dropDrops(Board *board)
 char board[]      対象の盤面
 int  activeDrops  落ちうる色（ビットフラグ）
 */
-static void fillSpace(Board *board, int activeDrops)
+static void fillSpace(Board *board)
 {
   char color;
   for (char index = BOARD_LENGTH; index--;) {
     if ((DROP_TYPE)NONE == Board_getColor(board, index)) {
       do {
         color = rand() % DROP_TYPE_MAX + 1;
-      } while (!(activeDrops & (1 << color)));
+      } while (!isActive(color));
       Board_setColor(board, index, color);
     }
   }

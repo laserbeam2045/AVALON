@@ -1,5 +1,10 @@
 #include "count_combo.h"
 
+// 消せる色かどうかを判定するマクロ
+#define isClearable(color) (!(CountCombo_canNotClearDrops & (1 << color)))
+// 落ちうる色かどうかを判定するマクロ
+#define isActive(color) (CountCombo_activeDrops & (1 << color))
+
 // プライベート定数
 // MEMO:6x7版との区別のために、staticでスコープを分けている
 static const char BOARD_HEIGHT = 5;                   // 盤面の高さ
@@ -22,16 +27,15 @@ static void explode(Board *board, int bitCombo, char bombX, char bombY, ComboDat
 static void clearDrops(Board *board, int, ComboData*, ClearingSettings*);
 static void _clearDrops(Board *board, char, char, int, int*, char*, char[]);
 static void dropDrops(Board *board);
-static void fillSpace(Board *board, int);
+static void fillSpace(Board *board);
 
 
 // コンボ数などを数える関数
-void countCombo(SearchNode *searchNode, SearchConditions *searchConditions, bool dropFallFlag)
+void countCombo_5x6(SearchNode *searchNode, SearchConditions *searchConditions, bool dropFallFlag)
 {
   ComboData *comboData = SearchNode_getComboData(searchNode);
-  BoardSettings *boardSettings = SearchConditions_getBoardSettings(searchConditions);
-  ClearingSettings *clearingSettings = SearchConditions_getClearingSettings(searchConditions);
-  int activeDrops = BoardSettings_getActiveDrops(boardSettings);
+  BoardSettings *bsp = SearchConditions_getBoardSettings(searchConditions);
+  ClearingSettings *csp = SearchConditions_getClearingSettings(searchConditions);
   Board board;
 
   // 盤面をコピーして、新しいBoardインスタンスを使う
@@ -44,7 +48,7 @@ void countCombo(SearchNode *searchNode, SearchConditions *searchConditions, bool
     // 盤面に爆弾が存在する場合、爆発するかどうかを確認する
     if (ComboData_getLeftovers(comboData, (DROP_TYPE)BOMB)) {
       // 爆発する場合は消える位置を記録しなおす
-      if (isExplosion(&board, bitCombo, comboData, boardSettings)) {
+      if (isExplosion(&board, bitCombo, comboData, bsp)) {
         continue;
       }
     }
@@ -53,14 +57,14 @@ void countCombo(SearchNode *searchNode, SearchConditions *searchConditions, bool
     if (!bitCombo) return;
 
     // ドロップを消す
-    clearDrops(&board, bitCombo, comboData, clearingSettings);
+    clearDrops(&board, bitCombo, comboData, csp);
 
     // ドロップを落とす
     dropDrops(&board);
 
     // 落ちコンありの指定ならば空いたスペースを埋める
     if (dropFallFlag) {
-      fillSpace(&board, activeDrops);
+      fillSpace(&board);
     }
   }
 }
@@ -81,6 +85,7 @@ static int markClearablePlace(Board *board)
       index = BOARD_WIDTH * Y + X;
       color = Board_getColor(board, index);
       if (
+        isClearable(color) &&
         color != (DROP_TYPE)NONE &&
         color == Board_getColor(board, index + 1) &&
         color == Board_getColor(board, index + 2)
@@ -95,6 +100,7 @@ static int markClearablePlace(Board *board)
       index = BOARD_WIDTH * Y + X;
       color = Board_getColor(board, index);
       if (
+        isClearable(color) &&
         color != (DROP_TYPE)NONE &&
         color == Board_getColor(board, index + BOARD_WIDTH) &&
         color == Board_getColor(board, index + BOARD_WIDTH_DOUBLE)
@@ -291,16 +297,15 @@ static void dropDrops(Board *board)
 
 /* ドロップが落ちて空いたスペースにドロップを埋める関数
 char board[]      対象の盤面
-int  activeDrops  落ちうる色（ビットフラグ）
 */
-static void fillSpace(Board *board, int activeDrops)
+static void fillSpace(Board *board)
 {
   char color;
   for (char index = BOARD_LENGTH; index--;) {
     if ((DROP_TYPE)NONE == Board_getColor(board, index)) {
       do {
         color = rand() % DROP_TYPE_MAX + 1;
-      } while (!(activeDrops & (1 << color)));
+      } while (!isActive(color));
       Board_setColor(board, index, color);
     }
   }

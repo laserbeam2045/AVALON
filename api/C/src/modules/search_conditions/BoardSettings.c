@@ -17,6 +17,7 @@ void BoardSettings_init(BoardSettings* this, char request[])
   Board_init(&this->board, boardState);
   this->dropFall = Parser_getInt(request, "dropFall");
   this->greedy = Parser_getInt(request, "greedy");
+  this->canNotClearDrops = Parser_getInt(request, "cantClear");
   this->activeDrops = Parser_getInt(request, "activeDrops");
   this->startPosition = Parser_getInt(request, "startPosition");
   this->noEntryPositionsCount = Parser_getIntArray(request, "noEntryPositions", this->noEntryPositions);
@@ -38,6 +39,12 @@ bool BoardSettings_getDropFall(BoardSettings* this)
 bool BoardSettings_getGreedy(BoardSettings* this)
 {
   return this->greedy;
+}
+
+// canNotClearDrops属性を返す関数
+int BoardSettings_getCanNotClearDrops(BoardSettings* this)
+{
+  return this->canNotClearDrops;
 }
 
 // activeDrops属性を返す関数
