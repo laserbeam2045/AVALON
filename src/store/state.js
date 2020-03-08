@@ -1,49 +1,53 @@
-import * as CONST from '../constants'
+import { STATE, LEADER } from './constants'
 
 export default {
-  stateFlag: 0,     // 状態フラグ
-  gameApp: null,    // ゲームインスタンス
-  bestNode: null,   // 探索結果の最良ノード
+  stateFlag: STATE.STANDBY, // 状態フラグ
+  gameMethods: null,        // ゲームインスタンスのメソッド
+  bestNode: null,           // 探索結果の最良ノード
+  errorMessage: '',         // エラーメッセージ
 
-  // 盤面で可能な最大コンボ数と最大倍率
-  maximum: {
-    combo: 0,
-    magnification: 1,
+  // API通信の成功・失敗フラグ
+  apiConnectionFlag: {
+    maximum: true,
+    capture: true,
+    search: true,
   },
 
   // リーダーに関する設定
   leaderSettings: {
-    leader1: CONST.LEADER.METATRON,
-    leader2: CONST.LEADER.METATRON,
+    leader1: LEADER.YASHAMARU, // 自分のリーダー
+    leader2: LEADER.YASHAMARU, // フレンドのリーダー
+    maxCombo: 0,              // 盤面で可能な最大コンボ数
+    maxMagnification: 1,      // 盤面で可能な最大倍率
   },
 
   // 盤面に関する設定
   boardSettings: {
-    board: [],                      // 盤面の状態
-    boardSize: '5x6',               // 盤面のサイズ
-    dropFall: false,                // 落ちコンの有無
-    greedy: false,                  // 最後まで探索するかどうか
-    startPosition: -1,              // 開始位置指定
-    immovablePositions: new Set(),  // 操作不可地点
+    board: [],                    // 盤面の状態
+    boardSize: '5x6',             // 盤面のサイズ
+    dropFall: false,              // 落ちコンの有無
+    greedy: false,                // 最後まで探索するかどうか
+    startPosition: -1,            // 開始位置指定
+    noEntryPositions: new Set(),  // 操作不可地点
   },
 
   // 探索方法全般に関する設定
   searchSettings: {
     width: {
       min: 1000,
-      max: 50000,
+      max: 90000,
       step: 1000,
-      value: 10000,
+      value: 20000,
     },
     depth: {
       min: 1,
-      max: 60,
+      max: 90,
       step: 1,
       value: 38,
     },
     diagonalLimit: {
       min: 0,
-      max: 0,
+      max: 5,
       step: 1,
       value: 0,
     },
@@ -64,7 +68,8 @@ export default {
     L           : [false, false, false, false, false, false, false],
     required    : [false, false, false, false, false, false, false, false, false, false],
     clearAll    : [false, false, false, false, false, false, false, false, false, false],
-    clearZero   : [false, false, false, false, false, false, false, false, false, false],
+    notClear    : [false, false, false, false, false, false, false, false, false, false],
+    cantClear : [false, false, false, false, false, false, false, false, false, false],
     activeDrops : [true, true, true, true, true, true, true, false, false, false],
   },
 }

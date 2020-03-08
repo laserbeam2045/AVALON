@@ -1,6 +1,15 @@
-import * as CONST from '../constants'
+import { LEADER } from './constants'
 
 export default {
+  // API通信でエラーが発生している状態かどうか
+  hasApiError (state) {
+    return (
+      !state.apiConnectionFlag['maximum'] ||
+      !state.apiConnectionFlag['capture'] ||
+      !state.apiConnectionFlag['search']
+    )
+  },
+
   // 盤面の高さ
   height (state) {
     return Number(state.boardSettings.boardSize.split('x')[0])
@@ -12,8 +21,8 @@ export default {
   },
 
   // 盤面のドロップ数
-  boardLength (state) {
-    return state.height * state.width
+  boardLength (state, getters) {
+    return getters.height * getters.width
   },
 
   // 探索結果が危険性を伴うかどうか
@@ -29,12 +38,18 @@ export default {
     )
   },
 
+  // 探索結果の操作手順
+  process (state) {
+    const bestNode = state.bestNode
+    return bestNode ? bestNode.process.slice(0, bestNode.movedCount + 1) : null
+  },
+
   // 現在のリーダーが引数のものであるかどうか
   leaderIs: (state) => (name) => {
     const { leader1, leader2 } = state.leaderSettings
     return (
-      leader1 === CONST.LEADER[name] ||
-      leader2 === CONST.LEADER[name]
+      leader1 === LEADER[name] ||
+      leader2 === LEADER[name]
     )
   },
 
@@ -44,18 +59,18 @@ export default {
 
     settings.dropFall = Number(settings.dropFall)
     settings.greedy = Number(settings.greedy)
-    settings.immovablePositions = [...settings.immovablePositions]
+    settings.noEntryPositions = [...settings.noEntryPositions]
     return settings
   },
 
-  // 探索に関する設定を、valueだけにし、プロパティ名を一部変更したもの
+  // 探索に関する設定からvalueだけを取り出し、プロパティ名を一部変更したもの
   searchSettingsForSearch (state) {
     const { width, depth, diagonalLimit, comboLimit } = state.searchSettings
     return {
-      'beamWidth'     : width.value,
-      'beamDepth'     : depth.value,
-      'diagonalLimit' : diagonalLimit.value,
-      'comboLimit'    : comboLimit.value,
+      beamWidth     : width.value,
+      beamDepth     : depth.value,
+      diagonalLimit : diagonalLimit.value,
+      comboLimit    : comboLimit.value,
     }
   },
 
@@ -81,8 +96,6 @@ export default {
       ...getters.boardSettingsForSearch,
       ...getters.searchSettingsForSearch,
       ...getters.clearingSettingsForSearch,
-      'maxCombo'          : state.maximum.combo,
-      'maxMagnification'  : state.maximum.magnification,
     })
   },
 }

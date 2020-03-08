@@ -1,13 +1,13 @@
 <template>
   <fieldset id="state">
     <div>
-      <p>{{ message }}</p>
+      <p v-html="message" :class="{ 'text-danger': hasError }" />
     </div>
   </fieldset>
 </template>
 
 <script>
-import * as CONST from '../../constants'
+import { STATE } from '../../store/constants'
 
 export default {
   name: 'TheStateData',
@@ -15,12 +15,25 @@ export default {
     stateFlag () {
       return this.$store.state.stateFlag
     },
-    message () {
+    hasError () {
+      return this.$store.getters.hasApiError
+    },
+    errorMessage () {
+      return this.$store.state.errorMessage
+    },
+    normalMessage () {
       switch (this.stateFlag) {
-        case CONST.STANDBY    : return 'STANDBY'
-        case CONST.SEARCHING  : return 'SEARCHING...'
-        case CONST.SEARCH_END : return 'SEARCH END'
+        case STATE.STANDBY    : return 'STANDBY'
+        case STATE.SEARCHING  : return 'SEARCHING...'
+        case STATE.SEARCH_END : return 'SEARCH END'
         default               : return ''
+      }
+    },
+    message () {
+      if (this.hasError) {
+        return this.errorMessage
+      } else {
+        return this.normalMessage
       }
     },
   },
@@ -31,10 +44,19 @@ export default {
 #state {
   height: 75px;
  
+  // MEMO: fieldsetはflexboxが効かないためwrapperが必要
   div {
+    height: 100%;
     display: flex;
     align-items: center;
     justify-content: center;
+
+    p {
+      flex-shrink: 0;
+    }
+    .text-danger {
+      color: red;
+    }
   }
 }
 </style>
