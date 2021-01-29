@@ -2,7 +2,7 @@
   <div
     id="root"
     @click="focus"
-    @click.right.prevent="searchAndFocus"
+    @click.right="focus"
   >
     <div>
       <TheGameArea/>
@@ -61,7 +61,7 @@ export default {
       'boardSettings',
     ]),
     initialBoard () {
-      const boardSize = this.boardSettings.boardSize
+      const boardSize = this.boardSettings['typeA']['boardSize']['value']
       const board = this.initialBoards[boardSize]
       return Array.from(board)
     },
@@ -74,13 +74,13 @@ export default {
     'leaderSettings.leader2' () {
       this.focus()
     },
-    'boardSettings.boardSize' () {
+    'boardSettings.typeA.boardSize.value' () {
       this.$store.commit('resetHarassments')
       this.$store.commit('resetSearchData')
       this.initBoard()
       this.startNewGame()
     },
-    'boardSettings.board' () {
+    'boardSettings.typeC.board' () {
       this.$store.dispatch('updateMaxData')
     },
   },
@@ -93,8 +93,8 @@ export default {
     // 盤面を初期化するメソッド
     initBoard () {
       this.$store.commit('updateBoardSettings', {
-        propName: 'board',
-        newValue: this.initialBoard,
+        property: 'board',
+        value: this.initialBoard,
       })
     },
     // INPUT要素にフォーカスし、キー入力受付状態にするメソッド

@@ -33,13 +33,18 @@ export const LEADER = {
   COCO      : 5,
   VEROAH    : 6,
   YASHAMARU : 7,
+  SHIKI     : 8,
+  TRAGON    : 9,
+  APOLLON   : 10,
+  AMAKOZUMI : 11,
+  WRATH     : 12,
 }
 
 // Ajax通信を行う際のサーバーアドレス
 export const SERVER_ADDRESS = {
   Python  : 'http://127.0.0.1:8000/api/capture/',
-  //Node    : 'http://127.0.0.1:1200/api/maxData/',
-  Node    : 'http://35.221.97.56:1200/api/maxData/',
-  //C       : 'http://127.0.0.1:12345/',
-  C       : 'http://35.221.97.56:12345/',
+  Node    : 'http://127.0.0.1:1200/api/maxData/',
+  //Node    : 'http://35.221.97.56:1200/api/maxData/',
+  C       : 'http://127.0.0.1:12345/',
+  //C       : 'http://35.221.97.56:12345/',
 }

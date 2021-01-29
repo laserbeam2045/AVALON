@@ -48,7 +48,7 @@ export default () => {
     moveDrops (process, moveTime, duration = 0) {
       this.process = process
       setTimeout(() => {
-        this.$_moveDrops(moveTime)
+        this.$_moveButtonProcessing()
       }, duration)
     },
 
@@ -105,7 +105,7 @@ export default () => {
           }
         }
         if (options.moveButtonFlag) {
-          this.moveDrops(this.process, 100)
+          this.$_moveDrops(100)
         }
       }
     },
@@ -256,7 +256,7 @@ export default () => {
 
       // 消えるドロップがなければ終了
       if (!comboNum) {
-        if (this.dropFall) {
+        if (this.fallDrop[0]) {
           this.dragOkFlag = true
         }
         setTimeout (() => {
@@ -305,7 +305,7 @@ export default () => {
         }
       }
       // 落ちコンありの設定なら、新しいドロップを作成する
-      if (this.dropFall) this.$_dropNewDrops(FALL_TIME)
+      if (this.fallDrop[0]) this.$_dropNewDrops(FALL_TIME)
 
       // ドロップが落ちるのを待ってから、ドロップを消すメソッドを呼び出す
       setTimeout(this.$_clearDrops.bind(this), FALL_TIME)
@@ -339,10 +339,10 @@ export default () => {
     // ランダムな色を返すメソッド
     $_getRandomColor () {
       let color = 0
-      if (this.activeDrops[0]) {
+      if (this.fallDrop[0]) {
         do {
           color = Math.floor(Math.random() * 10 + 1)
-        } while(!this.activeDrops[color])
+        } while(!this.fallDrop[color])
       }
       return color
     },

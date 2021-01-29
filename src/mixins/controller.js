@@ -15,12 +15,11 @@ export default {
     ]),
     // ゲームインスタンスに渡すデータ
     gameData () {
-      const { board, dropFall, startPosition, noEntryPositions } = this.boardSettings
-      const { activeDrops } = this.clearingSettings
+      const { fallDrop } = this.boardSettings['typeB']
+      const { board, startPosition, noEntryPositions } = this.boardSettings['typeC']
       return {
+        fallDrop: Array.from(fallDrop),
         board: Array.from(board),
-        dropFall,
-        activeDrops: Array.from(activeDrops),
         startPosition,
         noEntryPositions: new Set(noEntryPositions),
       }
@@ -76,7 +75,7 @@ export default {
     // 盤面をシャッフルするメソッド(ついでに設定も初期化する）
     // MEMO: gameAppが利用する
     shuffleBoard () {
-      if (!this.clearingSettings.activeDrops[0]) return
+      if (!this.boardSettings['typeB']['fallDrop'][0]) return
       this.$store.commit('shuffleBoard')
       this.$store.commit('resetHarassments')
       this.$store.commit('resetSearchData')
@@ -87,16 +86,16 @@ export default {
     // MEMO: gameAppが利用する
     updateBoardSettings (boardData) {
       this.$store.commit('updateBoardSettings', {
-        propName: 'board',
-        newValue: boardData.board,
+        property: 'board',
+        value: boardData.board,
       })
       this.$store.commit('updateBoardSettings', {
-        propName: 'startPosition',
-        newValue: boardData.startPosition,
+        property: 'startPosition',
+        value: boardData.startPosition,
       })
       this.$store.commit('updateBoardSettings', {
-        propName: 'noEntryPositions',
-        newValue: boardData.noEntryPositions,
+        property: 'noEntryPositions',
+        value: boardData.noEntryPositions,
       })
     },
 

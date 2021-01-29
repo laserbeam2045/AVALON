@@ -1,27 +1,25 @@
 <template>
   <label v-on:wheel="updateNumber">
-    {{ label | space | upperCase }}
-    <input
-      type="number"
-      v-show="false"
-      :step="setting.step"
-      :min="setting.min"
-      :max="setting.max"
-      :value:number="setting.value"
+    <span>{{ label | space | upperCase }}</span>
+    <BaseInputNumber
+      :setting="setting"
+      :active="true"
     />
-    <span class="active">{{ numberToDisplay }}</span>
-  </label>
+    </label>
 </template>
 
 <script>
 import filters from '../../mixins/filters'
-import { TweenLite } from 'gsap'
+import BaseInputNumber from './BaseInputNumber'
 
 export default {
   name: 'SettingSearch',
   mixins: [
     filters,
   ],
+  components: {
+    BaseInputNumber,
+  },
   props: {
     label: {
       type: String,
@@ -30,25 +28,6 @@ export default {
     setting: {
       type: Object,
       required: true,
-    },
-  },
-  data () {
-    return {
-      tweenedNumber: this.setting.value,
-    }
-  },
-  computed: {
-    // ビーム幅のみアニメーションをつける
-    numberToDisplay () {
-      return (this.setting.step === 1) ? this.setting.value : this.animatedNumber
-    },
-    animatedNumber () {
-      return this.tweenedNumber.toFixed(0)
-    },
-  },
-  watch: {
-    "setting.value": function(newValue) {
-      TweenLite.to(this.$data, 0.25, {tweenedNumber: newValue})
     },
   },
   methods: {
@@ -65,19 +44,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-label:nth-of-type(1) {
   span {
-    width: 41px;
+    margin-right: 4px;
   }
-}
-label {
-  padding: 3px 5px;
-
-  span {
-    width: 17px;
-    display: inline-block;
-    text-align: center;
-    cursor: text;
-  }
-}
 </style>

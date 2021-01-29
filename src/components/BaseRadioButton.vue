@@ -1,24 +1,19 @@
 <template>
-  <label :class="{ checked: checked }">
+  <label :class="{ checked, unchecked: !checked }">
     <input
       type="radio"
       v-show="false"
-      :value="value"
       :checked="checked"
       @change="$emit('change', value)"
     />
-    {{ label }}
+    <slot></slot>
   </label>
 </template>
 
 <script>
 export default {
-  name: 'SettingBoardRadioButton',
+  name: 'BaseRadioButton',
   props: {
-    label: {
-      type: String,
-      required: true,
-    },
     value: {
       type: [String, Boolean],
       required: true,

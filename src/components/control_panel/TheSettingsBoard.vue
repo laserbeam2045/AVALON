@@ -1,66 +1,51 @@
 <template>
   <fieldset id="board-settings">
     <legend>BOARD SETTINGS</legend>
-    <div>
-      <SettingBoard
-        v-for="(setting, name, index) in settings"
-        :key="index"
-        :label="name"
-        :settings="setting"
+    <table>
+      <SettingsBoardTypeA
+        v-for="(setting, name) in settingsA"
+        :key="name"
+        :name="name"
+        :setting="setting"
         @change="updateBoardSettings"
       />
-    </div>
+      <SettingsBoardTypeB
+        v-for="(setting, name) in settingsB"
+        :key="name"
+        :name="name"
+        :setting="setting"
+        @change="updateBoardSettings"
+      />
+    </table>
   </fieldset>
 </template>
 
 <script>
-import SettingBoard from './SettingBoard'
+import SettingsBoardTypeA from './SettingsBoardTypeA'
+import SettingsBoardTypeB from './SettingsBoardTypeB'
 
 export default {
   name: 'TheSettingsBoard',
   components: {
-    SettingBoard,
+    SettingsBoardTypeA,
+    SettingsBoardTypeB,
   },
   computed: {
-    settings () {
-      return {
-        boardSize: [
-          {
-            label: '5x6',
-            value: '5x6',
-          },
-          {
-            label: '6x7',
-            value: '6x7',
-          },
-        ],
-        dropFall: [
-          {
-            label: 'ON',
-            value: true,
-          },
-          {
-            label: 'OFF',
-            value: false,
-          },
-        ],
-        greedy: [
-          {
-            label: 'ON',
-            value: true,
-          },
-          {
-            label: 'OFF',
-            value: false,
-          },
-        ],
+    settingsA () {
+      return this.$store.state.boardSettings.typeA
+    },
+    settingsB () {
+      const typeB = {
+        ...this.$store.state.boardSettings.typeB
       }
+      delete typeB.default
+      return typeB
     },
   },
   methods: {
     updateBoardSettings ($event) {
       this.$store.commit('updateBoardSettings', $event)
-      if ($event.newValue)
+      if ($event.value)
         this.$playSound('sound-on')
       else
         this.$playSound('sound-off')
@@ -69,14 +54,23 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped>
-#board-settings {
-  > div {
-    display: flex;
-    justify-content: space-between;
+<style lang="scss">
+th {
+  padding: 0;
+  height: 25px;
+  
+  span {
+    position: relative;
+    top: 2px;
+    cursor: pointer;
   }
-  > div:last-child {
-    margin-right: 5px;
+}
+td {
+  padding: 0 0 0 10px;
+
+  label {
+    padding: 1px 2px;
+    display: inline-block;
   }
 }
 </style>

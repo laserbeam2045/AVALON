@@ -1,4 +1,5 @@
 import { STATE, DROP_TYPE_MAX } from './constants'
+import { switchArray } from '../mixins/dataProcessor'
 import Vue from 'vue'
 
 export default {
@@ -53,24 +54,26 @@ export default {
 
   // 盤面で可能な最大コンボ数を更新するミューテーション
   setMaxCombo (state, payload) {
-    const maxCombo = state.leaderSettings.maxCombo = payload
-    const comboLimit = state.searchSettings.comboLimit
+    /*const maxCombo = */state.leaderSettings.maxCombo = payload
+    //const comboLimit = state.searchSettings.comboLimit
 
+    /*
     comboLimit.max = maxCombo
     if (comboLimit.value > maxCombo) {
       comboLimit.value = maxCombo
     }
+    */
   },
 
   // 盤面で可能な最大倍率を更新するミューテーション
   setMaxMagnification (state, payload) {
-    state.leaderSettings.maxMagnification = payload
+    state.leaderSettings.maxMagni = payload
   },
 
   // 嫌がらせギミックの設定を初期化するミューテーション
   resetHarassments (state) {
-    state.boardSettings.startPosition = -1
-    state.boardSettings.noEntryPositions.clear()
+    state.boardSettings['typeC']['startPosition'] = -1
+    state.boardSettings['typeC']['noEntryPositions'].clear()
   },
 
   // 探索データを初期化するミューテーション
@@ -81,12 +84,26 @@ export default {
 
   // boardSettingsに変更を加えるミューテーション
   updateBoardSettings (state, payload) {
-    const { propName, newValue } = payload
-    state.boardSettings[propName] = newValue
-    if (propName === 'dropFall' && newValue) {
-      state.boardSettings.greedy = true
-    } else if (propName === 'greedy' && !newValue) {
-      state.boardSettings.dropFall = false
+    const { property, index, value } = payload
+    let settings
+
+    switch (property) {
+    case 'boardSize':
+    case 'greedy':
+      settings = state.boardSettings['typeA']
+      settings[property].value = value
+      break
+    case 'clearable':
+    case 'fallDrop':
+      settings = state.boardSettings['typeB']
+      switchArray(settings[property], index, value, settings['default'][property])
+      break
+    case 'board':
+    case 'startPosition':
+    case 'noEntryPositions':
+      settings = state.boardSettings['typeC']
+      settings[property] = value
+      break
     }
   },
 
@@ -104,38 +121,30 @@ export default {
 
   // clearingSettingsに変更を加えるミューテーション
   updateClearingSettings (state, payload) {
-    const { propName, index, newValue } = payload
-    const setting = state.clearingSettings[propName]
+    const { name, index, value } = payload
+    const setting = state.clearingSettings[name]
 
-    Vue.set(setting, index, newValue)
-    if (index) {
-      // 先頭以外をクリックした場合、データの先頭を、
-      // 先頭以外にtrueがあればtrue、１つもなければfalseにする
-      Vue.set(setting, 0, (setting.slice(1).find(bool => bool)))
-    } else {
-      // 先頭をクリックした場合、残りのデータを先頭に合わせる
-      setting.forEach((elm, idx) => Vue.set(setting, idx, setting[0]))
-    }
+    switchArray(setting, index, value)
   },
 
   // 盤面をシャッフルする
   shuffleBoard (state) {
-    const activeDrops = state.clearingSettings.activeDrops
-    const board = state.boardSettings.board
+    const fallDrop = state.boardSettings['typeB']['fallDrop']
+    const board = state.boardSettings['typeC']['board']
     const newBoard = []
     for (let i = board.length; i--;) {
       let color
       do {
         color = Math.floor(Math.random() * DROP_TYPE_MAX) + 1
-      } while (!activeDrops[color])
+      } while (!fallDrop[color])
       newBoard[i] = color
     }
-    state.boardSettings.board = newBoard
+    state.boardSettings['typeC']['board'] = newBoard
   },
 
   // 暗闇を消すミューテーション
   clearDarkness (state) {
-    const board = Array.from(state.boardSettings.board)
+    const board = Array.from(state.boardSettings['typeC']['board'])
     const first = board[0]
 
     for (let Y = 0; Y < 5; Y++) {
@@ -164,12 +173,12 @@ export default {
         }
       }
     }
-    state.boardSettings.board = board
+    state.boardSettings['typeC']['board'] = board
   },
 
   // 特定の属性を特定の属性に変えるミューテーション
   changeBoardByColor (state, colors) {
-    const board = state.boardSettings.board
+    const board = state.boardSettings['typeC']['board']
     if (!Array.isArray(colors[0])) {
       colors = [colors]
     }
@@ -187,7 +196,7 @@ export default {
   // 特定の座標を特定の色に変えるミューテーション
   changeBoardByCoordinates (state, payload) {
     const { color, coordinates } = payload
-    const board = state.boardSettings.board
+    const board = state.boardSettings['typeC']['board']
 
     coordinates.forEach(index => {
       Vue.set(board, index, color)
@@ -197,24 +206,24 @@ export default {
   // 最上段横一列を引数の属性に変えるミューテーション
   changeBoardTop (state, color) {
     for (let X = 0; X < this.getters.width; X++)
-      Vue.set(state.boardSettings.board, X, color)
+      Vue.set(state.boardSettings['typeC']['board'], X, color)
   },
 
   // 左端縦一列を引数の属性に変えるミューテーション
   changeBoardLeft (state, color) {
     for (let Y = 0; Y < this.getters.height; Y++)
-      Vue.set(state.boardSettings.board, this.getters.width * Y, color)
+      Vue.set(state.boardSettings['typeC']['board'], this.getters.width * Y, color)
   },
 
   // 右端縦一列を引数の属性に変えるミューテーション
   changeBoardRight (state, color) {
     for (let Y = 1; Y <= this.getters.height; Y++)
-      Vue.set(state.boardSettings.board, this.getters.width * Y - 1, color)
+      Vue.set(state.boardSettings['typeC']['board'], this.getters.width * Y - 1, color)
   },
 
   // 最下段横一列を引数の属性に変えるミューテーション
   changeBoardBottom (state, color) {
     for (let X = 1; X <= this.getters.width; X++)
-      Vue.set(state.boardSettings.board, this.getters.boardLength - X, color)
+      Vue.set(state.boardSettings['typeC']['board'], this.getters.boardLength - X, color)
   },
 }

@@ -30,11 +30,10 @@ export default phina.define('MyGameApp', {
   // 外部に公開するメソッドを取得するメソッド
   getGameMethods () {
     return {
-      displayLine   : this.displayLine.bind(this),
-      moveDrops     : this.moveDrops.bind(this),
-      startNewGame  : this.startNewGame.bind(this),
-      setDropFall   : this.setDropFall.bind(this),
-      setActiveDrops: this.setActiveDrops.bind(this),
+      displayLine : this.displayLine.bind(this),
+      moveDrops   : this.moveDrops.bind(this),
+      startNewGame: this.startNewGame.bind(this),
+      setFallDrop : this.setFallDrop.bind(this),
     }
   },
 
@@ -61,8 +60,7 @@ export default phina.define('MyGameApp', {
   // ゲームを新しい状態で開始するメソッド
   // options: 以下のプロパティを持つオブジェクト
   //   board: 盤面の状態を表す配列（必須）
-  //   dropFall: 落ちコンの有無（真偽値）
-  //   activeDrops: 落ちる可能性のある色（真偽値の配列）
+  //   fallDrop: 落ちる可能性のある色（真偽値の配列）
   //   startPosition: 開始位置指定（-1以上の整数値）
   //   noEntryPositions: 操作不可地点（Setオブジェクト）
   startNewGame (options) {
@@ -77,16 +75,10 @@ export default phina.define('MyGameApp', {
     })
   },
 
-  // dropFallプロパティをセットするメソッド
-  // value: 真偽値
-  setDropFall (value) {
-    this.currentScene.dropFall = value
-  },
-
-  // activeDropsプロパティをセットするメソッド
+  // fallDropプロパティをセットするメソッド
   // value: 真偽値の配列
-  setActiveDrops (value) {
-    this.currentScene.activeDrops = value
+  setFallDrop (value) {
+    this.currentScene.fallDrop = value
   },
 })
 
@@ -94,7 +86,7 @@ export default phina.define('MyGameApp', {
 // 盤面に関する情報を抽出してまとめる関数
 // 戻り値：オブジェクト
 function getBoardData(options) {
-  const { board, dropFall, activeDrops, startPosition, noEntryPositions } = options
+  const { board, fallDrop, startPosition, noEntryPositions } = options
   let boardHeight = null
   let boardWidth = null
   let boardSize = null
@@ -112,7 +104,7 @@ function getBoardData(options) {
     break
   }
   return {
-    board, dropFall, activeDrops, startPosition, noEntryPositions,
+    board, fallDrop, startPosition, noEntryPositions,
     boardHeight, boardWidth, boardSize,
   }
 }

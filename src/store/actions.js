@@ -4,7 +4,7 @@ export default {
   // 盤面で可能な最大コンボ数と、最大倍率を取得するアクション
   updateMaxData ({ commit, state }) {
     const { leader1, leader2 } = state.leaderSettings
-    const board = JSON.stringify(state.boardSettings.board)
+    const board = JSON.stringify(state.boardSettings['typeC']['board'])
     const address = SERVER_ADDRESS['Node'] + `${leader1}-${leader2}-${board}`
 
     return fetch(address)
@@ -24,14 +24,15 @@ export default {
 
   // 画面をキャプチャーして盤面を取得するアクション
   capture ({ commit, state }) {
-    const address = SERVER_ADDRESS['Python'] + state.boardSettings.boardSize
+    const boardSize = state.boardSettings['typeA']['boardSize'].value
+    const address = SERVER_ADDRESS['Python'] + boardSize
 
     return fetch(address)
       .then(response => response.json())
       .then(jsonData => {
         commit('updateBoardSettings', {
-          propName: 'board',
-          newValue: jsonData.board,
+          property: 'board',
+          value: jsonData.board,
         })
         commit('resetSearchData')
         commit('setCaptureApiFlag', true)
@@ -51,6 +52,7 @@ export default {
       method: 'POST',
       body: getters.searchConditions,
     }
+    //console.log(getters.searchConditions)
 
     commit('setBestNode', null)
     commit('setStateFlag', STATE.SEARCHING)

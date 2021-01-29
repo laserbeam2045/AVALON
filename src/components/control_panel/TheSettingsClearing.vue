@@ -27,8 +27,8 @@ export default {
     },
   },
   methods: {
-    updateClearingSettings (event) {
-      this.$store.commit('updateClearingSettings', event)
+    updateClearingSettings ($event) {
+      this.$store.commit('updateClearingSettings', $event)
 
       if (event.newValue) {
         this.$playSound('sound-on')

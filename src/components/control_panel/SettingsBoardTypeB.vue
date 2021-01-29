@@ -1,11 +1,11 @@
 <template>
   <tr>
-    <th :class="{ active: isActive }">
-      <span @click="change">{{ label | space | upperCase }}</span>
+    <th>
+      <span @click="change">{{ name | space | upperCase }}</span>
     </th>
     <td>
-      <SettingClearingCheckBox
-        v-for="(bool, index) in filteredData"
+      <SettingsBoardTypeBCheckBox
+        v-for="(bool, index) in filteredSetting"
         :key="index"
         :index="index + 1"
         :checked="bool"
@@ -16,37 +16,43 @@
 </template>
 
 <script>
-import SettingClearingCheckBox from './SettingClearingCheckBox'
+import SettingsBoardTypeBCheckBox from './SettingsBoardTypeBCheckBox'
 import filters from '../../mixins/filters'
 
 export default {
-  name: 'SettingClearing',
+  name: 'SettingsBoardTypeB',
   components: {
-    SettingClearingCheckBox,
+    SettingsBoardTypeBCheckBox,
   },
   mixins: [
     filters,
   ],
   props: {
-    label: {
+    name: {
       type: String,
       required: true,
+      validator (value) {
+        return [
+          'clearable',
+          'fallDrop',
+        ].indexOf(value) !== -1
+      },
     },
-    data: {
+    setting: {
       type: Array,
       required: true,
     },
   },
   computed: {
     isActive () {
-      return this.data[0]
+      return this.setting[0]
     },
-    filteredData () {
-      return this.data.slice(1)
+    filteredSetting () {
+      return this.setting.slice(1)
     },
     thEventProps () {
       return {
-        name: this.label,
+        property: this.name,
         index: 0,
         value: !this.isActive,
       }
@@ -57,23 +63,9 @@ export default {
       if ($event.type === 'click') {
         this.$emit('change', this.thEventProps)
       } else {
-        this.$emit('change', Object.assign($event, {name: this.label}))
+        this.$emit('change', Object.assign($event, {property: this.name}))
       }
     },
   },
 }
 </script>
-
-<style lang="scss" scoped>
-th {
-  padding: 0;
-  span {
-    position: relative;
-    top: 2px;
-    cursor: pointer;
-  }
-}
-td {
-  padding: 0 0 0 8px;
-}
-</style>

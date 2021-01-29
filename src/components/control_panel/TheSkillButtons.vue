@@ -44,7 +44,7 @@ export default {
           belongsTo: ['ALL'],
           common: () => {
             this.clearDarkness()
-            this.updateBoardSettings({propName: 'startPosition', newValue: 29})
+            this.updateBoardSettings({property: 'startPosition', value: 29})
           },
         },
         LUCIFER: {

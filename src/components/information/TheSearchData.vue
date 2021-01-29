@@ -49,11 +49,11 @@ export default {
 
 <style scoped lang="scss">
 #search-data {
-  height: 92px;
+  height: 97px;
   margin-left: 7px;
 
   table {
-    height: 70px;
+    height: 66px;
     margin: 0 auto;
 
     th, td {
@@ -68,26 +68,6 @@ export default {
     td {
       padding-left: 10px;
     }
-    td.ok {
-      color: white;
-      text-shadow: 0 0 2px #07f7e7;
-    }
-    td.danger {
-      color: white;
-      font-weight: bold;
-      text-shadow: 0 0 3px red;
-      animation-name: danger;
-      animation-duration: 0.25s;
-      animation-iteration-count: infinite;
-      animation-timing-function: linear;
-      animation-direction: alternate;
-    }
-  }
-}
-
-@keyframes danger {
-  100% {
-    color: red;
   }
 }
 </style>

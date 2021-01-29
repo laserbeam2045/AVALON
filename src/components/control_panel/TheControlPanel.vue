@@ -45,8 +45,12 @@ export default {
   .checked, .active {
     color: orange;
   }
+  .unchecked, .disactive {
+    color: darkcyan;
+    cursor: pointer;
+  }
   fieldset {
-    padding: 5px 10px 10px;
+    padding: 5px 10px 10px 15px;
     border: 1px solid rgb(23,210,207);
     border-radius: 5px;
 

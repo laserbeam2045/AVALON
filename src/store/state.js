@@ -17,18 +17,42 @@ export default {
   leaderSettings: {
     leader1: LEADER.YASHAMARU, // 自分のリーダー
     leader2: LEADER.YASHAMARU, // フレンドのリーダー
-    maxCombo: 0,              // 盤面で可能な最大コンボ数
-    maxMagnification: 1,      // 盤面で可能な最大倍率
+    maxCombo: 0,               // 盤面で可能な最大コンボ数
+    maxMagni: 1,               // 盤面で可能な最大倍率
   },
 
   // 盤面に関する設定
   boardSettings: {
-    board: [],                    // 盤面の状態
-    boardSize: '5x6',             // 盤面のサイズ
-    dropFall: false,              // 落ちコンの有無
-    greedy: false,                // 最後まで探索するかどうか
-    startPosition: -1,            // 開始位置指定
-    noEntryPositions: new Set(),  // 操作不可地点
+    typeA: {
+      // 盤面のサイズ
+      boardSize: {
+        value: '5x6',
+        values: ['5x6', '6x7'],
+        labels: ['5x6', '6x7'],
+      },
+      // 最後まで探索するかどうか
+      greedy: {
+        value: false,
+        values: [true, false],
+        labels: ['ON', 'OFF'],
+      },
+    },
+    typeB: {
+      // 初期設定
+      default: {
+        clearable: [true, true, true, true, true, true, true, true, true, true, true],
+        fallDrop: [true, true, true, true, true, true, true, false, false, false],
+      },
+      // 消せるドロップかどうか
+      clearable: [true, true, true, true, true, true, true, true, true, true, true],
+      // 落ちてくる可能性のあるドロップかどうか
+      fallDrop: [true, true, true, true, true, true, true, false, false, false],
+    },
+    typeC: {
+      board: [],                    // 盤面の状態
+      startPosition: -1,            // 開始位置指定
+      noEntryPositions: new Set(),  // 操作不可地点  
+    },
   },
 
   // 探索方法全般に関する設定
@@ -37,7 +61,7 @@ export default {
       min: 1000,
       max: 90000,
       step: 1000,
-      value: 20000,
+      value: 50000,
     },
     depth: {
       min: 1,
@@ -51,9 +75,9 @@ export default {
       step: 1,
       value: 0,
     },
-    comboLimit: {
+    addCombo: {
       min: 0,
-      max: 0,
+      max: 20,
       step: 1,
       value: 0,
     },
@@ -61,15 +85,11 @@ export default {
 
   // 消し方に関する設定
   clearingSettings: {
-    twoWay      : [false, false, false, false, false, false, false],
-    breakThrough: [false, false, false, false, false, false, false],
-    line        : [false, false, false, false, false, false, false, false],
-    cross       : [false, false, false, false, false, false, false],
-    L           : [false, false, false, false, false, false, false],
-    required    : [false, false, false, false, false, false, false, false, false, false],
-    clearAll    : [false, false, false, false, false, false, false, false, false, false],
-    notClear    : [false, false, false, false, false, false, false, false, false, false],
-    cantClear : [false, false, false, false, false, false, false, false, false, false],
-    activeDrops : [true, true, true, true, true, true, true, false, false, false],
+    four      : [false, false, false, false, false, false, false],
+    line      : [false, false, false, false, false, false, false, false],
+    L         : [false, false, false, false, false, false, false],
+    cross     : [false, false, false, false, false, false, false],
+    square    : [false, false, false, false, false, false, false],
+    numberOfClear: [false, false, false, false, false, false, false, false, false, false],
   },
 }

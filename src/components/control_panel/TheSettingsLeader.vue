@@ -58,7 +58,7 @@ div {
   display: flex;
   align-items: center;
   justify-content: flex-end;
-  margin: 10px 55px -5px 0;
+  margin: 10px 30px -5px 0;
 
   select {
     padding: 5px;

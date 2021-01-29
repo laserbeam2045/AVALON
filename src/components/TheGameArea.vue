@@ -36,11 +36,8 @@ export default {
 
   // Vue側の更新と同時にGameApp側のデータも更新する
   watch: {
-    'boardSettings.dropFall' (value) {
-      this.gameMethods.setDropFall(value)
-    },
-    'clearingSettings.activeDrops' (value) {
-      this.gameMethods.setActiveDrops(Array.from(value))
+    'boardSettings.typeB.fallDrop' (value) {
+      this.gameMethods.setFallDrop(Array.from(value))
     },
   },
 

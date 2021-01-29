@@ -1,24 +1,26 @@
 <template>
   <fieldset id="combo-data">
-    <table>
-      <ComboDataTr>
-        <template #default>Max</template>
-        <template #combo>{{ maxCombo }}</template>
-        <template #magni>{{ maxMagnification }}</template>
-        <template #drops>
-          <ComboDataTrDrops :drops="dropTypes1"/>
-        </template>
-      </ComboDataTr>
-      
-      <ComboDataTr v-if="bestNode" v-bind="maxClass">
-        <template #combo>{{ combo }}</template>
-        <template #magni>{{ magnification }}</template>
-        <template #drops>
-          <ComboDataTrDrops :drops="dropTypes2"/>
-        </template>
-      </ComboDataTr>
-      <tr v-else></tr>
-    </table>
+      <table>
+        <ComboDataTr>
+          <template #default>Max.</template>
+          <template #combo>{{ maxCombo }}</template>
+          <template #magni>{{ maxMagni }}</template>
+          <template #drops>
+            <ComboDataTrDrops :drops="dropTypes1"/>
+          </template>
+        </ComboDataTr>
+
+    <transition name="fade" appear>
+        <ComboDataTr v-if="bestNode" v-bind="maxClass" key="foo">
+          <template #combo>{{ combo }}</template>
+          <template #magni>{{ magni }}</template>
+          <template #drops>
+            <ComboDataTrDrops :drops="dropTypes2"/>
+          </template>
+        </ComboDataTr>
+        <tr v-else></tr>
+    </transition>
+      </table>
   </fieldset>
 </template>
 
@@ -38,7 +40,7 @@ export default {
     ...mapState({
       bestNode: 'bestNode',
       leaderSettings: 'leaderSettings',
-      board: state => state.boardSettings.board,
+      board: state => state.boardSettings['typeC']['board'],
     }),
     // 盤面に存在するドロップの数（種類別）
     dropCountArray () {
@@ -89,23 +91,23 @@ export default {
       return this.leaderSettings.maxCombo
     },
     // 可能な最大倍率（表示用に四捨五入して３桁区切り）
-    maxMagnification () {
-      return this.adjust(this.leaderSettings.maxMagnification)
+    maxMagni () {
+      return this.adjust(this.leaderSettings.maxMagni)
     },
     // 探索結果のコンボ数（表示用に四捨五入）
     combo () {
       return this.adjust(this.comboData.combo[0][0], 10)
     },
     // 探索結果の倍率（表示用に四捨五入して3桁区切り）
-    magnification () {
+    magni () {
       return this.adjust(this.comboData.magnification)
     },
     // コンボ数や倍率が最大値の場合に、それぞれ「maximum」classが付与される
     maxClass () {
-      const { maxCombo, maxMagnification } = this.leaderSettings
+      const { maxCombo, maxMagni } = this.leaderSettings
       return {
-        'combo': {'maximum': (maxCombo <= this.comboData.combo[0][0])},
-        'magni': {'maximum': (maxMagnification <= this.comboData.magnification)},
+        'maxCombo': {'maximum': (maxCombo <= this.comboData.combo[0][0])},
+        'maxMagni': {'maximum': (maxMagni <= this.comboData.magnification)},
       }
     },
   },
@@ -125,11 +127,23 @@ export default {
 
 <style lang="scss" scoped>
 #combo-data {
-  margin-top: 7px;
-  padding-top: 5px;
+  margin: 7px 0 0;
 
   table {
-    height: 60px;
+    height: 50px;
+  }
+
+  .fade-enter-active {
+    transition: all .3s cubic-bezier(1.0, 0.5, 0.8, 1.0);
+  }
+  .fade-leave-active {
+    transition: all .3s cubic-bezier(1.0, 0.5, 0.8, 1.0);
+  }
+  .fade-enter {
+    opacity: 0;
+  }
+  .fade-leave-to {
+    opacity: 0;
   }
 }
 </style>

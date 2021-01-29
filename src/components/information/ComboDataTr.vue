@@ -1,15 +1,21 @@
 <template>
   <tr>
     <td>
-      <slot></slot>
+      <span>
+        <slot></slot>
+      </span>
     </td>
-    <td class="combo" :class="combo">
-      <slot name="combo"></slot>combo
+    <td class="combo" :class="maxCombo">
+      <span>
+        <slot name="combo"></slot>&nbsp;combo
+      </span>
     </td>
-    <td class="magni" :class="magni">
-      ×<slot name="magni"></slot>
+    <td class="magni" :class="maxMagni">
+      <span>
+        ×<slot name="magni"></slot>
+      </span>
     </td>
-    <td v-on="$listeners">
+    <td class="drops" v-on="$listeners">
       <slot name="drops"></slot>
     </td>
   </tr>
@@ -19,11 +25,11 @@
 export default {
   name: 'ComboDataTr',
   props: {
-    combo: {
+    maxCombo: {
       type: Object,
       required: false,
     },
-    magni: {
+    maxMagni: {
       type: Object,
       required: false,
     },
@@ -33,24 +39,23 @@ export default {
 
 <style lang="scss" scoped>
 td {
-  height: 30px;
   padding: 0;
-  line-height: 1em;
+  height: 25px;
+  line-height: 25px;
   text-align: right;
-  vertical-align: bottom;
-}
-tr:first-child {
-  td.combo,
-  td.magni {
-    padding-left: 7px;
+  vertical-align: middle;
+
+  span {
+    position: relative;
+    top: 2px;
   }
 }
-td.maximum {
-  color: white;
-  text-shadow: 0 0 2px #07f7e7;
-}
-td:last-child {
+td.combo,
+td.magni {
   padding-left: 7px;
+}
+td.drops {
+  padding-left: 15px;
   cursor: pointer;
 }
 </style>

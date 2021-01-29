@@ -8,7 +8,6 @@
     >
     <BaseDrop
       :index="index"
-      :number="0"
       :is-active="checked"
     />
   </label>
@@ -18,7 +17,7 @@
 import BaseDrop from '../BaseDrop'
 
 export default {
-  name: 'SettingClearingCheckBox',
+  name: 'SettingsBoardTypeBCheckBox',
   components: {
     BaseDrop,
   },
@@ -45,8 +44,6 @@ export default {
 
 <style lang="scss" scoped>
 label {
-  padding: 1px 4px;
-  display: inline-block;
   vertical-align: middle;
   font-size: 0 !important;
   cursor: pointer;

@@ -1,4 +1,5 @@
 import { LEADER } from './constants'
+import { array2binary } from '../mixins/dataProcessor'
 
 export default {
   // API通信でエラーが発生している状態かどうか
@@ -12,12 +13,12 @@ export default {
 
   // 盤面の高さ
   height (state) {
-    return Number(state.boardSettings.boardSize.split('x')[0])
+    return Number(state.boardSettings['typeA']['boardSize'].split('x')[0])
   },
 
   // 盤面の横幅
   width (state) {
-    return Number(state.boardSettings.boardSize.split('x')[1])
+    return Number(state.boardSettings['typeA']['boardSize'].split('x')[1])
   },
 
   // 盤面のドロップ数
@@ -55,22 +56,32 @@ export default {
 
   // 盤面に関する設定を、ブール値を数値(0,1)に、Setオブジェクトを配列に変換したもの
   boardSettingsForSearch (state) {
-    const settings = Object.assign({}, state.boardSettings)
+    const typeA = state.boardSettings.typeA
+    const boardSize = typeA.boardSize.value
+    const greedy = typeA.greedy.value
 
-    settings.dropFall = Number(settings.dropFall)
-    settings.greedy = Number(settings.greedy)
+    const settings = {
+      ...state.boardSettings.typeB,
+      ...state.boardSettings.typeC,
+    }
+    delete settings.default
+    settings.boardSize = boardSize
+    settings.greedy = Number(greedy)
+    settings.clearable = array2binary(settings.clearable)
+    settings.fallDrop = array2binary(settings.fallDrop)
     settings.noEntryPositions = [...settings.noEntryPositions]
+
     return settings
   },
 
   // 探索に関する設定からvalueだけを取り出し、プロパティ名を一部変更したもの
   searchSettingsForSearch (state) {
-    const { width, depth, diagonalLimit, comboLimit } = state.searchSettings
+    const { width, depth, diagonalLimit, addCombo } = state.searchSettings
     return {
-      beamWidth     : width.value,
-      beamDepth     : depth.value,
-      diagonalLimit : diagonalLimit.value,
-      comboLimit    : comboLimit.value,
+      beamWidth       : width.value,
+      beamDepth       : depth.value,
+      diagonalLimit   : diagonalLimit.value,
+      additionalCombo : addCombo.value,
     }
   },
 
@@ -80,11 +91,7 @@ export default {
     const bitSettings = {}
 
     for (let key of Object.keys(settings)) {
-      let bit = 0
-      settings[key].forEach((bool, index) => {
-        bit |= Number(bool) << index
-      })
-      bitSettings[key] = bit
+      bitSettings[key] = array2binary(settings[key])
     }
     return bitSettings
   },

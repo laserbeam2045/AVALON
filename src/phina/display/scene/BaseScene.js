@@ -29,8 +29,7 @@ export default phina.define('BaseScene', {
       dragon: this.dragon,
       process: this.process,
       lineFlag: this.lineFlag,
-      dropFall: this.dropFall,
-      activeDrops: this.activeDrops,
+      fallDrop: this.fallDrop,
       startPosition: this.startPosition,
       noEntryPositions: this.noEntryPositions,
     }, options))
@@ -172,21 +171,15 @@ export default phina.define('BaseScene', {
 
   // setter関数を初期化するメソッド
   $_initSetter () {
-    this.setter('dropFall', value => {
-      this.$_dropFall = value
-    })
-    this.setter('activeDrops', value => {
-      this.$_activeDrops = Array.from(value)
+    this.setter('fallDrop', value => {
+      this.$_fallDrop = Array.from(value)
     })
   },
 
   // getter関数を初期化するメソッド
   $_initGetter () {
-    this.getter('dropFall', () => {
-      return this.$_dropFall
-    })
-    this.getter('activeDrops', () => {
-      return Array.from(this.$_activeDrops)
+    this.getter('fallDrop', () => {
+      return Array.from(this.$_fallDrop)
     })
   },
 
@@ -205,8 +198,7 @@ export default phina.define('BaseScene', {
     this.dragon = options.dragon
     this.process = options.process
     this.lineFlag = options.lineFlag
-    this.dropFall = options.dropFall
-    this.activeDrops = options.activeDrops
+    this.fallDrop = options.fallDrop
     this.board = Array.from(boardData.board)
   },
 
